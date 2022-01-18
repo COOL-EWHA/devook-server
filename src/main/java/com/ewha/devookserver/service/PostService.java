@@ -1,11 +1,13 @@
 package com.ewha.devookserver.service;
 
 import com.ewha.devookserver.domain.dto.PostListDto;
+import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.domain.post.PostLambdaDto;
 import com.ewha.devookserver.repository.PostRepository;
+import com.ewha.devookserver.repository.QueryRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +27,7 @@ import reactor.core.publisher.Mono;
 public class PostService {
   private final MemberRepository memberRepository;
   private final PostRepository postRepository;
+  private final QueryRepository queryRepository;
 
 
   public boolean isPostUserExists(String url, String userIdx){
@@ -42,10 +45,15 @@ public class PostService {
   public List<PostListDto> responseListMaker(CursorResult<Post> productList){
     List<PostListDto> searchResponseDtoList=new ArrayList<>();
 
-    List<String> forTestString=new ArrayList<>();
-    forTestString.add(" ");
 
     for(Post post : productList.getValues()){
+      List<String> forTestString=new ArrayList<>();
+      List<PostTag> postTagList=queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
+
+      for(PostTag postTag : postTagList){
+        forTestString.add(postTag.getPostTagName());
+      }
+
         PostListDto postListDto = PostListDto.builder()
             .id(post.getId())
             .thumbnail(post.getPostThumbnail())
