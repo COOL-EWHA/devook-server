@@ -24,7 +24,6 @@ MANIFEST.MF
 _site/
 activemq-data
 bin
-build
 !/**/src/**/bin
 !/**/src/**/build
 build.log
@@ -42,4 +41,11 @@ secrets.yml
 .sts4-cache
 HELP.md
 /src/main/resources/application.properties
+/src/main/resources/application-oauth.properties
 .gitignore
+/build/classes/
+/build/generated/
+/build/reports/
+/build/resources/
+/build/test-results/
+/build/tmp/
