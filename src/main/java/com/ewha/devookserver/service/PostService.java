@@ -27,6 +27,13 @@ public class PostService {
   private final PostRepository postRepository;
 
 
+  public boolean isPostUserExists(String url, String userIdx){
+    if(postRepository.getPostByPostUrlAndUserIdx(url, userIdx)!=null){
+      return true;
+    }
+    return false;
+  }
+
   public List<Post> getTestPage(){
     return postRepository.findWithPagination(Pageable.ofSize(5));
   }

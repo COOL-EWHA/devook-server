@@ -13,6 +13,7 @@ public interface PostRepository extends JpaRepository<Post,Long> {
   boolean existsByPostUrl(String url);
   boolean existsByPostIdx(Long postIdx);
   Post getPostByPostIdx(Long postIdx);
+  Post getPostByPostUrlAndUserIdx(String postUrl, String userIdx);
 
   @Transactional
   void deletePostByPostIdx(Long postIdx);

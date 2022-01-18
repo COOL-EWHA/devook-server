@@ -37,6 +37,8 @@ public class PostController {
       @RequestParam(name="limit")Integer limit,
       @RequestHeader(value="Authorization")String tokenGet) {
 
+    System.out.println(tags);
+
     try {
       String accessToken = tokenGet.split(" ")[1];
 
@@ -77,11 +79,14 @@ public class PostController {
       if(!oauthService.isUserExist(accessToken)){
         return ResponseEntity.status(404).body("");
       }
+      String userIdx=oauthService.getUserIdx(accessToken);
 
-      if(postService.isPostExists(postUserRequestDto.getUrl())){
+
+      if(postService.isPostUserExists(postUserRequestDto.getUrl(), userIdx)){
+        System.out.println("이미 존재하는 글.");
         return ResponseEntity.status(201).body("");
       }
-      String userIdx=oauthService.getUserIdx(accessToken);
+
       PostLabmdaRequestDto postLabmdaRequestDto=new PostLabmdaRequestDto();
       postLabmdaRequestDto.setUrl(postUserRequestDto.getUrl());
 
