@@ -3,6 +3,7 @@ package com.ewha.devookserver.controller;
 import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.domain.post.PostLambdaDto;
 import com.ewha.devookserver.domain.post.PostUserRequestDto;
+import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserService;
@@ -29,14 +30,19 @@ public class PostController {
   private final UserService userService;
   private final PostService postService;
   private final OauthService oauthService;
+  private final PostRepository postRepository;
 
   @GetMapping("/bookmarks")
-  public ResponseEntity<?> getBoardsapi(@RequestParam(name="tags")String tags,
-      @RequestParam(name="cursor")Long cursor,
-      @RequestParam(name="limit")Integer limit,
-      @RequestHeader(value="Authorization")String tokenGet) {
+  public ResponseEntity<?> getBoardsapi(@RequestParam(name = "tags", required = false) String tags,
+      @RequestParam(name = "cursor", required = false) Long cursor,
+      @RequestParam(name = "limit", required = false) Integer limit,
+      @RequestHeader(value = "Authorization") String tokenGet) {
 
     System.out.println(tags);
+
+    if (limit == null) {
+      limit = 10;
+    }
 
     try {
       String accessToken = tokenGet.split(" ")[1];
@@ -51,49 +57,49 @@ public class PostController {
         return ResponseEntity.status(404).body("");
       }
 
-      String userIdx=oauthService.getUserIdx(accessToken);
+      String userIdx = oauthService.getUserIdx(accessToken);
+      if (cursor == null) {
+        cursor = postRepository.findTopByUserIdxOrderByPostIdxDesc(userIdx).getPostIdx()
+            + 1;//사용자의 가장 최근 글 값
+      }
       return ResponseEntity.status(200).body(postService.responseListMaker
           (this.postService.get(cursor, PageRequest.of(0, (int) limit), userIdx))
       );
-    } catch (Exception e){
+    } catch (Exception e) {
       return ResponseEntity.status(404).body("계정오류");
     }
   }
 
   @PostMapping("/bookmarks")
   public ResponseEntity<?> testPost(
-      @RequestHeader(value="Authorization")String tokenGet,
-      HttpServletResponse response, @RequestBody PostUserRequestDto postUserRequestDto)
-  {
-
+      @RequestHeader(value = "Authorization") String tokenGet,
+      HttpServletResponse response, @RequestBody PostUserRequestDto postUserRequestDto) {
 
     System.out.println(postUserRequestDto.getMemo());
 
-    try{
-      System.out.println(tokenGet+"요청");
-      String accessToken=tokenGet.split(" ")[1];
-      if(Objects.equals(accessToken, "undefined")){
+    try {
+      System.out.println(tokenGet + "요청");
+      String accessToken = tokenGet.split(" ")[1];
+      if (Objects.equals(accessToken, "undefined")) {
         return ResponseEntity.status(401).body("");
       }
 
       // 존재하지 않는 유저
-      if(!oauthService.isUserExist(accessToken)){
+      if (!oauthService.isUserExist(accessToken)) {
         return ResponseEntity.status(404).body("");
       }
-      String userIdx=oauthService.getUserIdx(accessToken);
+      String userIdx = oauthService.getUserIdx(accessToken);
 
-
-      if(postService.isPostUserExists(postUserRequestDto.getUrl(), userIdx)){
+      if (postService.isPostUserExists(postUserRequestDto.getUrl(), userIdx)) {
         System.out.println("이미 존재하는 글.");
         return ResponseEntity.status(201).body("");
       }
 
-      PostLabmdaRequestDto postLabmdaRequestDto=new PostLabmdaRequestDto();
+      PostLabmdaRequestDto postLabmdaRequestDto = new PostLabmdaRequestDto();
       postLabmdaRequestDto.setUrl(postUserRequestDto.getUrl());
 
       String url = postLabmdaRequestDto.getUrl();
-      PostLambdaDto postLambdaDto=postService.getPostInfo(postLabmdaRequestDto);
-
+      PostLambdaDto postLambdaDto = postService.getPostInfo(postLabmdaRequestDto);
 
       postService.savePost(
           postUserRequestDto.getMemo(),
@@ -103,7 +109,7 @@ public class PostController {
           postLambdaDto.getImage(), userIdx);
 
       return ResponseEntity.status(201).body("");
-    }catch (Exception e){
+    } catch (Exception e) {
       System.out.println(e);
       return ResponseEntity.status(404).body("");
     }
@@ -112,7 +118,8 @@ public class PostController {
 
   @DeleteMapping("/bookmarks/{bookmarkId}")
   public ResponseEntity<?> deletePost(
-      @PathVariable("bookmarkId")int bookmarkId, @RequestHeader(name="Authorization")String accessTokenGet) {
+      @PathVariable("bookmarkId") int bookmarkId,
+      @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     String accessToken = accessTokenGet.split(" ")[1];
 
@@ -123,10 +130,9 @@ public class PostController {
     if (!oauthService.isUserExist(accessToken)) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }    // 유저 예외처리 완료
-    if(postService.deletePost(bookmarkId, oauthService.getUserIdx(accessToken))){
+    if (postService.deletePost(bookmarkId, oauthService.getUserIdx(accessToken))) {
       return new ResponseEntity<>(HttpStatus.OK);
     }
     return ResponseEntity.status(401).body(" ");
   }
-
 }
