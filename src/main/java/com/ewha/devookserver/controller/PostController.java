@@ -87,7 +87,7 @@ public class PostController {
 
       // 존재하지 않는 유저
       if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(404).body("");
+        return ResponseEntity.status(401).body("");
       }
       String userIdx = oauthService.getUserIdx(accessToken);
 
@@ -112,7 +112,7 @@ public class PostController {
       return ResponseEntity.status(201).body("");
     } catch (Exception e) {
       System.out.println(e);
-      return ResponseEntity.status(404).body("");
+      return ResponseEntity.status(401).body("");
     }
   }
 
