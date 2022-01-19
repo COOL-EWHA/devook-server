@@ -7,6 +7,8 @@ import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +37,13 @@ public class PostController {
   @GetMapping("/bookmarks")
   public ResponseEntity<?> getBoardsapi(@RequestParam(name = "tags", required = false) String tags,
       @RequestParam(name = "cursor", required = false) Long cursor,
-      @RequestParam(name = "limit", required = false) Integer limit,
-      @RequestHeader(value = "Authorization") String tokenGet) {
+      @RequestParam(name="q", required = false)String question,
+      @RequestHeader(value = "Authorization") String tokenGet
+      ) {
 
     System.out.println(tags);
 
-    if (limit == null) {
-      limit = 10;
-    }
+      int limit = 10;
 
     try {
       String accessToken = tokenGet.split(" ")[1];
@@ -134,5 +135,34 @@ public class PostController {
       return new ResponseEntity<>(HttpStatus.OK);
     }
     return ResponseEntity.status(401).body(" ");
+  }
+
+  @GetMapping("/bookmarks/tags")
+  public ResponseEntity<?> getTagList(
+      @RequestHeader(name = "Authorization") String accessTokenGet) {
+
+    try {
+
+      String accessToken = accessTokenGet.split(" ")[1];
+      if (!oauthService.validatieTokenInput(accessToken)) {
+        return ResponseEntity.status(401).body(" ");
+      }
+      System.out.println(oauthService.isUserExist(accessToken));
+      if (!oauthService.isUserExist(accessToken)) {
+        return ResponseEntity.status(401).body(" ");
+      }    // 유저 예외처리 완료
+      String userIdx = oauthService.getUserIdx(accessToken);
+      System.out.println(userIdx);
+      // 1. userIdx와 일치하는 post
+      List<String> finalResponseString = postService.getPostTagList(userIdx);
+
+      // 여기 String 배열 반환
+      return ResponseEntity.status(200).body(finalResponseString);
+
+    }catch(Exception e){
+      System.out.println(e);
+      return ResponseEntity.status(401).body(" ");
+    }
+
   }
 }

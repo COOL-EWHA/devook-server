@@ -41,6 +41,24 @@ public class PostService {
     return postRepository.findWithPagination(Pageable.ofSize(5));
   }
 
+  public List<String> getPostTagList(String userIdx){
+    List<Post> returnPost= postRepository.findAllByUserIdx(userIdx);
+
+    List<String> searchResponseDtoList=new ArrayList<>();
+
+    for(Post post : returnPost){
+      List<PostTag> postTagList=queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
+
+      for(PostTag postTag:postTagList){
+        if(!searchResponseDtoList.contains(postTag.getPostTagName())){
+          searchResponseDtoList.add(postTag.getPostTagName());
+        }
+      }
+    }
+
+    return searchResponseDtoList;
+
+  }
 
   public List<PostListDto> responseListMaker(CursorResult<Post> productList){
     List<PostListDto> searchResponseDtoList=new ArrayList<>();

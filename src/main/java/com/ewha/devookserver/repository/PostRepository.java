@@ -32,4 +32,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
 
   Post findTopByUserIdxOrderByPostIdxDesc(String useridx);
+
+  List<Post> findAllByUserIdx(String userIdx);
 }
