@@ -90,15 +90,15 @@ public class PostService {
     return searchResponseDtoList;
   }
 
-  public CursorResult<Post> get(Long cursorId, Pageable page, String userIdx){
-    final List<Post> boards=getPost(cursorId,page, userIdx);
+  public CursorResult<Post> get(Long cursorId, Pageable page, String userIdx, String question){
+    final List<Post> boards=getPost(cursorId,page, userIdx, question);
     final Long lastIdofList=boards.isEmpty()?
         null:boards.get(boards.size()-1).getId();
 
     return new CursorResult<>(boards, hasNext(lastIdofList));
   }
 
-  public List<Post> getPost(Long id, Pageable page, String userIdx){
+  public List<Post> getPost(Long id, Pageable page, String userIdx, String question){
     return id == null ?
         postRepository.findAllByPostIdx(page, userIdx):
         postRepository.findAllByPostIdxDesc(id, page, userIdx);

@@ -30,7 +30,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
   Boolean existsByPostIdxIsLessThan(Long id);
 
-
   Post findTopByUserIdxOrderByPostIdxDesc(String useridx);
 
   List<Post> findAllByUserIdx(String userIdx);

@@ -64,7 +64,7 @@ public class PostController {
             + 1;//사용자의 가장 최근 글 값
       }
       return ResponseEntity.status(200).body(postService.responseListMaker
-          (this.postService.get(cursor, PageRequest.of(0, (int) limit), userIdx))
+          (this.postService.get(cursor, PageRequest.of(0, (int) limit), userIdx,question))
       );
     } catch (Exception e) {
       return ResponseEntity.status(404).body("계정오류");
