@@ -54,6 +54,11 @@ public class PostService {
         forTestString.add(postTag.getPostTagName());
       }
 
+      if(forTestString.size()==0){
+        forTestString.add("태그1");
+        forTestString.add("태그2");
+      }
+
         PostListDto postListDto = PostListDto.builder()
             .id(post.getId())
             .thumbnail(post.getPostThumbnail())

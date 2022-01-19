@@ -1,13 +1,12 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.domain.post.PostLambdaDto;
 import com.ewha.devookserver.domain.post.PostUserRequestDto;
-import com.ewha.devookserver.service.CursorResult;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserService;
+import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -67,11 +66,13 @@ public class PostController {
       HttpServletResponse response, @RequestBody PostUserRequestDto postUserRequestDto)
   {
 
-    try{
-      String accessToken=tokenGet.split(" ")[1];
 
-      // 로그인 안 한 유저
-      if(accessToken=="undefined"){
+    System.out.println(postUserRequestDto.getMemo());
+
+    try{
+      System.out.println(tokenGet+"요청");
+      String accessToken=tokenGet.split(" ")[1];
+      if(Objects.equals(accessToken, "undefined")){
         return ResponseEntity.status(401).body("");
       }
 
@@ -94,7 +95,6 @@ public class PostController {
       PostLambdaDto postLambdaDto=postService.getPostInfo(postLabmdaRequestDto);
 
 
-
       postService.savePost(
           postUserRequestDto.getMemo(),
           postUserRequestDto.getUrl(),
@@ -105,7 +105,7 @@ public class PostController {
       return ResponseEntity.status(201).body("");
     }catch (Exception e){
       System.out.println(e);
-      return ResponseEntity.status(500).body("");
+      return ResponseEntity.status(404).body("");
     }
   }
 
