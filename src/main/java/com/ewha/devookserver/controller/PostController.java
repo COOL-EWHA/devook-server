@@ -6,6 +6,7 @@ import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.domain.post.PostLambdaDto;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.PostUserRequestDto;
+import com.ewha.devookserver.domain.post.RequestMemoDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -211,7 +213,7 @@ public class PostController {
               .thumbnail(userPost.getPostThumbnail())
               .description(userPost.getPostDescription())
               .tags(tagList)
-              .post_url(userPost.getPostUrl())
+              .url(userPost.getPostUrl())
               .createdAt(dBconvertedTime)
               .memo(userPost.getPostMemo())
               .build();
@@ -224,6 +226,46 @@ public class PostController {
     }catch(Exception e){
       System.out.println(e);
       return ResponseEntity.status(404).body(" ");
+    }
+
+  }
+
+  @PatchMapping("/bookmarks/{bookmarkId}")
+  public ResponseEntity<?> editBookmarkMemo(
+      @PathVariable(name = "bookmarkId")int bookmarkId,
+      @RequestHeader(name="Authorization")String accessTokenGet,
+      @RequestBody RequestMemoDto requestMemoDto){
+
+    String requestMemo = requestMemoDto.getMemo();
+    try {
+      String accessToken = accessTokenGet.split(" ")[1];
+      if (!oauthService.validatieTokenInput(accessToken)) {
+        return ResponseEntity.status(401).body(" ");
+      }
+      System.out.println(oauthService.isUserExist(accessToken));
+      if (!oauthService.isUserExist(accessToken)) {
+        return ResponseEntity.status(401).body(" ");
+      }    // 유저 예외처리 완료
+      String userIdx = oauthService.getUserIdx(accessToken);
+
+
+      if(postRepository.existsByPostIdx((long)bookmarkId))
+      {
+        if(postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx().equals(userIdx)){
+          Post newPost = postRepository.getPostByPostIdx(Long.valueOf(bookmarkId));
+          newPost.setPostMemo(requestMemo);
+          postRepository.save(newPost);
+
+          return ResponseEntity.status(200).body(" ");
+        }
+        return ResponseEntity.status(401).body(" ");
+      }
+      return ResponseEntity.status(401).body(" ");
+
+
+    }catch(Exception e){
+      System.out.println(e);
+      return ResponseEntity.status(401).body(" ");
     }
 
   }
