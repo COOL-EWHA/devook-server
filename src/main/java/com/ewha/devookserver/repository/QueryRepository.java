@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -59,7 +60,7 @@ public class QueryRepository {
   // findAllByPostIdx
   public List<Post> findAllByPostIdxFunction1(Pageable page, String userIdx, String question) {
 
-    if (question == "") {
+    if (question.equals("")||question.equals(null)) {
       System.out.println("비어있으면 그냥 전체 리턴");
 
       return jpaQueryFactory.selectFrom(qPost)
@@ -80,9 +81,8 @@ public class QueryRepository {
   // findAllByPostIdxDesc
   public List<Post> findAllByPostIdxDescFunction2(Long id, Pageable page, String userIdx,
       String question) {
-    System.out.println(question + "????");
 
-    if (question == "") {
+    if (question.equals(null)) {
       System.out.println("비어있으면 그냥 전체 리턴");
       return jpaQueryFactory.selectFrom(qPost)
           .where(qPost.postIdx.lt(id).and(qPost.userIdx.eq(userIdx)))
@@ -110,7 +110,7 @@ public class QueryRepository {
       }
     }
     Collections.sort(filteredPostList);
-    return filteredPostList;
+    return filteredPostList.stream().limit(10).collect(Collectors.toList());
   }
 
   public List<Post> tagFiltering2(List<Long> postIdxList, Long id, String userIdx, String question){
@@ -119,12 +119,13 @@ public class QueryRepository {
     List<Post> filteredPostList = new ArrayList<>();
 
     for (Post post : getList) {
+
       if (postIdxList.contains(post.getPostIdx()) && post.getUserIdx().equals(userIdx)&&post.getPostIdx()<id) {
         filteredPostList.add(post);
       }
     }
     Collections.sort(filteredPostList);
-    return filteredPostList;
+    return filteredPostList.stream().limit(10).collect(Collectors.toList());
   }
 
   /*

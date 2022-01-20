@@ -87,7 +87,7 @@ public class QueryController {
         }
         // 여기 아래부터 시작
         return ResponseEntity.status(200).body(postService.responseListMaker
-            (this.queryService.get(cursor, PageRequest.of(0, (int) limit), userIdx, question,postTagList)));
+            (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question,postTagList)));
       }
 
 
@@ -101,6 +101,7 @@ public class QueryController {
           (this.queryService.get(cursor, PageRequest.of(0, (int) limit), userIdx, question))
       );
     } catch (Exception e) {
+      e.printStackTrace();
       return ResponseEntity.status(401).body("어떤 에러인지 확인"+e);
     }
 
