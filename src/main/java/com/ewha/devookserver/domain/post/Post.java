@@ -61,10 +61,10 @@ public class Post implements Comparable<Post>{
   public int compareTo(Post o) {
 
     if(this.getPostIdx()>o.getPostIdx()){
-      return 1;
+      return -1;
     }
     else if(this.getPostIdx()<o.getPostIdx()){
-      return -1;
+      return 1;
     }else{
       return 0;
     }
