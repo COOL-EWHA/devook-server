@@ -1,14 +1,21 @@
 package com.ewha.devookserver.controller;
 
+import com.ewha.devookserver.domain.post.EachPostResponseDto;
+import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.domain.post.PostLambdaDto;
+import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.PostUserRequestDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserService;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -43,32 +50,32 @@ public class PostController {
 
     System.out.println(tags);
 
-      int limit = 10;
+    int limit = 10;
 
-    try {
-      String accessToken = tokenGet.split(" ")[1];
+      try {
+        String accessToken = tokenGet.split(" ")[1];
 
-      // 로그인 안 한 유저
-      if (accessToken == "undefined") {
-        return ResponseEntity.status(401).body("");
+        // 로그인 안 한 유저
+        if (accessToken == "undefined") {
+          return ResponseEntity.status(401).body("");
+        }
+
+        // 존재하지 않는 유저
+        if (!oauthService.isUserExist(accessToken)) {
+          return ResponseEntity.status(404).body("");
+        }
+
+        String userIdx = oauthService.getUserIdx(accessToken);
+        if (cursor == null) {
+          cursor = postRepository.findTopByUserIdxOrderByPostIdxDesc(userIdx).getPostIdx()
+              + 1;//사용자의 가장 최근 글 값
+        }
+        return ResponseEntity.status(200).body(postService.responseListMaker
+            (this.postService.get(cursor, PageRequest.of(0, (int) limit), userIdx, question))
+        );
+      } catch (Exception e) {
+        return ResponseEntity.status(404).body("계정오류");
       }
-
-      // 존재하지 않는 유저
-      if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(404).body("");
-      }
-
-      String userIdx = oauthService.getUserIdx(accessToken);
-      if (cursor == null) {
-        cursor = postRepository.findTopByUserIdxOrderByPostIdxDesc(userIdx).getPostIdx()
-            + 1;//사용자의 가장 최근 글 값
-      }
-      return ResponseEntity.status(200).body(postService.responseListMaker
-          (this.postService.get(cursor, PageRequest.of(0, (int) limit), userIdx,question))
-      );
-    } catch (Exception e) {
-      return ResponseEntity.status(404).body("계정오류");
-    }
   }
 
   @PostMapping("/bookmarks")
@@ -162,6 +169,61 @@ public class PostController {
     }catch(Exception e){
       System.out.println(e);
       return ResponseEntity.status(401).body(" ");
+    }
+
+  }
+
+  @GetMapping("/bookmarks/{bookmarkId}")
+  public ResponseEntity<?> eachPostResponse(
+      @PathVariable(name = "bookmarkId")int bookmarkId,
+      @RequestHeader(name="Authorization")String accessTokenGet){
+
+    try {
+      String accessToken = accessTokenGet.split(" ")[1];
+      if (!oauthService.validatieTokenInput(accessToken)) {
+        return ResponseEntity.status(401).body(" ");
+      }
+      System.out.println(oauthService.isUserExist(accessToken));
+      if (!oauthService.isUserExist(accessToken)) {
+        return ResponseEntity.status(401).body(" ");
+      }    // 유저 예외처리 완료
+      String userIdx = oauthService.getUserIdx(accessToken);
+
+      if(postRepository.existsByPostIdx((long)bookmarkId))
+      {
+        if(postRepository.getPostByPostIdx((long)bookmarkId).getUserIdx().equals(userIdx)){
+          Post userPost = postRepository.getPostByPostIdx((long)bookmarkId);
+
+
+          List<String> tagList = postService.getEachPostTagList(bookmarkId);
+          if(tagList.size()==0){
+            tagList.add("태그1");
+            tagList.add("태그2");
+          }
+
+          SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+          Date convertedTime= userPost.getCreatedAt();
+          String dBconvertedTime=format1.format(convertedTime);
+
+          EachPostResponseDto eachPostResponseDto=EachPostResponseDto.builder()
+              .id(userPost.getId())
+              .title(userPost.getPostTitle())
+              .thumbnail(userPost.getPostThumbnail())
+              .description(userPost.getPostDescription())
+              .tags(tagList)
+              .post_url(userPost.getPostUrl())
+              .createdAt(dBconvertedTime)
+              .memo(userPost.getPostMemo())
+              .build();
+
+          return ResponseEntity.status(200).body(eachPostResponseDto);
+        }
+        return ResponseEntity.status(404).body("");
+      }
+      return ResponseEntity.status(404).body("");
+    }catch(Exception e){
+      System.out.println(e);
+      return ResponseEntity.status(404).body(" ");
     }
 
   }
