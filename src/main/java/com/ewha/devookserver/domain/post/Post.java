@@ -23,7 +23,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @Entity
 @Table(name= "post")
-public class Post {
+public class Post implements Comparable<Post>{
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -54,5 +54,19 @@ public class Post {
 
   public Long getId() {
     return postIdx;
+  }
+
+  // post 객체 Collection으로 정렬할 때 사용할 함수.
+  @Override
+  public int compareTo(Post o) {
+
+    if(this.getPostIdx()>o.getPostIdx()){
+      return 1;
+    }
+    else if(this.getPostIdx()<o.getPostIdx()){
+      return -1;
+    }else{
+      return 0;
+    }
   }
 }

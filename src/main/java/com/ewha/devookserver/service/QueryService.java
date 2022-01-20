@@ -98,6 +98,32 @@ public class QueryService {
     return new CursorResult<>(boards, hasNext(lastIdofList));
   }
 
+  // 11.21 @ 1:06:05 추가사항
+
+
+  // 현재 새로 짠 함수 전용 get, getPost
+
+  public CursorResult<Post> get(Long cursorId, Pageable page, String userIdx, String question, List<Long> postTaglist){
+    final List<Post> boards=getPost(cursorId,page, userIdx, question, postTaglist);
+    final Long lastIdofList=boards.isEmpty()?
+        null:boards.get(boards.size()-1).getId();
+
+    return new CursorResult<>(boards, hasNext(lastIdofList));
+  }
+
+  public List<Post> getPost(Long id, Pageable page, String userIdx, String question, List<Long> postTagList){
+    return id == null ?
+        queryRepository.tagFiltering(postTagList,userIdx, question):
+        queryRepository.tagFiltering2(postTagList, id, userIdx, question);
+  }
+
+
+
+
+
+
+
+
   public List<Post> getPost(Long id, Pageable page, String userIdx, String question){
     return id == null ?
         queryRepository.findAllByPostIdxFunction1(page, userIdx, question):

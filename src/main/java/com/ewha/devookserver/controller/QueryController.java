@@ -1,12 +1,12 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
+import com.ewha.devookserver.service.TagService;
 import com.ewha.devookserver.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,11 @@ public class QueryController {
   private final QueryRepository queryRepository;
   private final QueryService queryService;
   private final PostRepository postRepository;
+  private final TagService tagService;
 
+
+
+  // 지금 q 때문에 문제 발생중
 
   @GetMapping("/test/dsl")
   public ResponseEntity<?> get_dsl
@@ -39,16 +43,20 @@ public class QueryController {
           @RequestHeader(value = "Authorization") String tokenGet
       ){
 
+    List<String> requiredTagList=new ArrayList<>();
 
-    if(question==""){
-      System.out.println("빈공백");
-    }
-    if(question==" "){
-      System.out.println("한칸띄고");
-    }
-    System.out.println(question);
+    if (tags != null) {
+      StringTokenizer tokens=new StringTokenizer(tags,",");
 
-    System.out.println(tags);
+      while(tokens.hasMoreTokens()){
+        requiredTagList.add(tokens.nextToken());
+      }
+
+      }
+
+
+    System.out.println(requiredTagList);
+
 
     int limit = 10;
 
@@ -59,13 +67,32 @@ public class QueryController {
       if (accessToken == "undefined") {
         return ResponseEntity.status(401).body("");
       }
-
       // 존재하지 않는 유저
       if (!oauthService.isUserExist(accessToken)) {
         return ResponseEntity.status(404).body("");
       }
 
+      // 필터링에 해당하는 post_idx 의 배열 :: postTagList
+      List<Long> postTagList=tagService.makePostTagList(requiredTagList);
+      System.out.println(postTagList);
+
       String userIdx = oauthService.getUserIdx(accessToken);
+
+      // 11.21 @ 1:03:31 수정사항
+
+      if(!postTagList.isEmpty()){
+        if (cursor == null) {
+          cursor = postRepository.findTopByUserIdxOrderByPostIdxDesc(userIdx).getPostIdx()
+              + 1;//사용자의 가장 최근 글 값
+        }
+        // 여기 아래부터 시작
+        return ResponseEntity.status(200).body(postService.responseListMaker
+            (this.queryService.get(cursor, PageRequest.of(0, (int) limit), userIdx, question,postTagList)));
+      }
+
+
+
+
       if (cursor == null) {
         cursor = postRepository.findTopByUserIdxOrderByPostIdxDesc(userIdx).getPostIdx()
             + 1;//사용자의 가장 최근 글 값

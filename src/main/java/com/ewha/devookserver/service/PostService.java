@@ -37,9 +37,24 @@ public class PostService {
     return false;
   }
 
+
+
   public List<Post> getTestPage(){
     return postRepository.findWithPagination(Pageable.ofSize(5));
   }
+
+
+  public List<String> getEachPostTagList(int id){
+    List<PostTag> postTagList=queryRepository.findAllTagsByPost(id);
+    List<String> searchResponseDtoList=new ArrayList<>();
+
+    for(PostTag postTag:postTagList){
+      searchResponseDtoList.add(postTag.getPostTagName());
+    }
+
+    return searchResponseDtoList;
+  }
+
 
   public List<String> getPostTagList(String userIdx){
     List<Post> returnPost= postRepository.findAllByUserIdx(userIdx);
