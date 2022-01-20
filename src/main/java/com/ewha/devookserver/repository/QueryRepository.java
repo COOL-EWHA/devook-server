@@ -7,6 +7,7 @@ import com.ewha.devookserver.domain.post.QPostTag;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -75,6 +76,7 @@ public class QueryRepository {
                     .or(qPost.postDescription.contains(question)
                     ))))
         .orderBy(qPost.postIdx.desc())
+        .limit(10)
         .fetch();
   }
 
@@ -83,10 +85,10 @@ public class QueryRepository {
       String question) {
 
     if (question.equals(null)) {
-      System.out.println("비어있으면 그냥 전체 리턴");
       return jpaQueryFactory.selectFrom(qPost)
           .where(qPost.postIdx.lt(id).and(qPost.userIdx.eq(userIdx)))
           .orderBy(qPost.postIdx.desc())
+          .limit(10)
           .fetch();
     }
     return jpaQueryFactory.selectFrom(qPost)
@@ -95,6 +97,7 @@ public class QueryRepository {
                 qPost.postTitle.contains(question).or(qPost.postDescription.contains(question)
                 ))))
         .orderBy(qPost.postIdx.desc())
+        .limit(10)
         .fetch();
   }
 
@@ -110,6 +113,7 @@ public class QueryRepository {
       }
     }
     Collections.sort(filteredPostList);
+    System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
     return filteredPostList.stream().limit(10).collect(Collectors.toList());
   }
 
@@ -125,6 +129,7 @@ public class QueryRepository {
       }
     }
     Collections.sort(filteredPostList);
+    System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
     return filteredPostList.stream().limit(10).collect(Collectors.toList());
   }
 

@@ -43,6 +43,7 @@ public class PostController {
   private final OauthService oauthService;
   private final PostRepository postRepository;
 
+  /*
   @GetMapping("/bookmarks")
   public ResponseEntity<?> getBoardsapi(@RequestParam(name = "tags", required = false) String tags,
       @RequestParam(name = "cursor", required = false) Long cursor,
@@ -79,6 +80,7 @@ public class PostController {
         return ResponseEntity.status(404).body("계정오류");
       }
   }
+   */
 
   @PostMapping("/bookmarks")
   public ResponseEntity<?> testPost(
