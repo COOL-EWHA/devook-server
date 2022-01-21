@@ -111,15 +111,19 @@ public class QueryRepository {
           .orderBy(qPost.postIdx.desc())
           .fetch();
     }
-    return jpaQueryFactory.selectFrom(qPost)
-        .where(qPost.userIdx.eq(userIdx)
-            .and((
-                qPost.postTitle.contains(question)
-                    .or(qPost.postDescription.contains(question)
-                    ))))
-        .orderBy(qPost.postIdx.desc())
-        .limit(10)
-        .fetch();
+    System.out.println("태그가 없을때, question이 주어진 경우+fucntion1");
+
+    List<Post> getList=postRepository.findAll();
+    List<Post> filteredPostList = new ArrayList<>();
+
+    for(Post post : getList){
+      if(post.getUserIdx().equals(userIdx)){
+        filteredPostList.add(post);
+      }
+    }
+    Collections.sort(filteredPostList);
+    filteredPostList=searchEngine(filteredPostList, question);
+    return filteredPostList.stream().limit(10).collect(Collectors.toList());
   }
 
   // findAllByPostIdxDesc
@@ -133,14 +137,18 @@ public class QueryRepository {
           .limit(10)
           .fetch();
     }
-    return jpaQueryFactory.selectFrom(qPost)
-        .where(qPost.postIdx.lt(id).and(qPost.userIdx.eq(userIdx))
-            .and((
-                qPost.postTitle.contains(question).or(qPost.postDescription.contains(question)
-                ))))
-        .orderBy(qPost.postIdx.desc())
-        .limit(10)
-        .fetch();
+    System.out.println("태그가 없을때, question이 주어진 경우+function2");
+    List<Post> getList=postRepository.findAll();
+    List<Post> filteredPostList = new ArrayList<>();
+
+    for(Post post : getList){
+      if(post.getUserIdx().equals(userIdx)&&post.getPostIdx()<id){
+        filteredPostList.add(post);
+      }
+    }
+    Collections.sort(filteredPostList);
+    filteredPostList=searchEngine(filteredPostList, question);
+    return filteredPostList.stream().limit(10).collect(Collectors.toList());
   }
 
   // 태그 리스트 필터링하는 함수
