@@ -123,6 +123,9 @@ public class QueryController {
     if(question==null){
       question="";
     }
+
+
+
     List<String> requiredTagList=new ArrayList<>();
 
     if (tags != null) {
@@ -161,11 +164,10 @@ public class QueryController {
               + 1;//사용자의 가장 최근 글 값
         }
 
-        System.out.println(tags);
-        System.out.println(tags.equals(null));
-        System.out.println(tags.equals(""));
 
-      if(tags==null||tags.equals("")){
+
+
+      if(tags==null){
           // 여기 아래부터 시작
           return ResponseEntity.status(200).body(postService.responseListMaker
               (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question)));
