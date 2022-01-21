@@ -1,6 +1,7 @@
 package com.ewha.devookserver.config.auth;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Random;
 
@@ -11,12 +12,27 @@ import io.jsonwebtoken.*;
 
 @Component
 public class JwtTokenProvider {
+
+    /*
     @Value("${jwt.access-token.expire-length:10000}")
     private long accessTokenValidityInMilliseconds;
     @Value("${jwt.refresh-token.expire-length:10000}")
     private long refreshTokenValidityInMilliseconds;
     @Value("${jwt.token.secret-key:secret-key}")
     private String secretKey;
+     */
+
+    // private long accessTokenValidityInMilliseconds=1000 * 60 * 60 * 2;
+
+
+    // 테스트용으로 1분으로 설정해보자
+    private long accessTokenValidityInMilliseconds=1000 * 60 * 60 * 2;
+
+    private long refreshTokenValidityInMilliseconds=1000 * 60 * 60 * 24 * 14;
+
+    @Value("${jwt.token.secret-key:secret-key}")
+    private String secretKey;
+
 
     public String createAccessToken(String payload) {
         return createToken(payload, accessTokenValidityInMilliseconds);
@@ -57,6 +73,18 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public boolean validateCheckWeekToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+
+            Date currentDate = new Date();
+            Date WeekFromCurrentDate = new Date(currentDate.getTime() + Duration.ofDays(7).toMillis());
+            return !claims.getBody().getExpiration().before(WeekFromCurrentDate);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

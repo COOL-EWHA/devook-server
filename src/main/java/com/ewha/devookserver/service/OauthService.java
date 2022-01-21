@@ -49,14 +49,13 @@ public class OauthService {
         Member willChangeMember = memberRepository.findMemberById(member.getId());
 
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(member.getId()));
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        String refreshToken = member.getRefreshToken();
 
-
-        // 여기 이 아래 updateRefreshToken이 문제
-        willChangeMember.updateRefreshToken(refreshToken);
-
-
-        memberRepository.save(willChangeMember);
+        if(jwtTokenProvider.validateCheckWeekToken(member.getRefreshToken())){
+            refreshToken = jwtTokenProvider.createRefreshToken();
+            willChangeMember.updateRefreshToken(refreshToken);
+            memberRepository.save(willChangeMember);
+        }
         return RefreshDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

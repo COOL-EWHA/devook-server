@@ -1,5 +1,6 @@
 package com.ewha.devookserver.controller;
 
+import com.ewha.devookserver.config.auth.JwtTokenProvider;
 import com.ewha.devookserver.config.auth.LoginResponse;
 import com.ewha.devookserver.config.auth.Member;
 import com.ewha.devookserver.repository.MemberRepository;
@@ -26,6 +27,7 @@ public class OauthRestController {
     private final OauthService oauthService;
     private final UserService userService;
     private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     @PostMapping("/auth/logout")
