@@ -120,9 +120,10 @@ public class QueryController {
           @RequestHeader(value = "Authorization") String tokenGet
       ){
 
-    if(question==null){
-      question="";
-    }
+
+    if(cursor==null) System.out.println("cursornull");
+    if(tags==null) System.out.println("tagsnull");
+    if(question==null) System.out.println("questionnull");
 
 
 

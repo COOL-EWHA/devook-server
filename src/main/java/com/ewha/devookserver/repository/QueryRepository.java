@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
 @Repository
@@ -26,6 +27,47 @@ public class QueryRepository {
 
   private final JPAQueryFactory jpaQueryFactory;
   private final PostRepository postRepository;
+
+
+
+  public List<Post> searchEngine(List<Post> postList, String question) {
+    System.out.println("searchEngine for  "+question);
+    List<Post> searchResult = new ArrayList<>();
+
+    for (Post post : postList) {
+
+      if (post.getPostTitle().contains(question) || post.getPostDescription().contains(question)) {
+        System.out.println(post.getPostIdx());
+        if(post.getPostTitle().contains(question)){
+          System.out.println("title에서 일치"+question);
+        }
+        if(post.getPostDescription().contains(question)){
+          System.out.println("description에서 일치"+question);
+        }
+        searchResult.add(post);
+        continue;
+      }
+
+      List<PostTag> postTagList = findAllTagsByPost(post.getPostIdx().intValue());
+
+      for (PostTag postTag : postTagList) {
+        if (postTag.getPostTagName().equals(question)) {
+          System.out.println(postTag.getPost_postIdx()+"태그에서 일치");
+          searchResult.add(post);
+          break;
+        }
+      }
+    }
+
+    List<Long> exampleResult=new ArrayList<>();
+    for(Post post:searchResult){
+      exampleResult.add(post.getPostIdx());
+    }
+    System.out.println(exampleResult);
+
+
+    return searchResult;
+  }
 
 
 
@@ -61,7 +103,7 @@ public class QueryRepository {
   // findAllByPostIdx
   public List<Post> findAllByPostIdxFunction1(Pageable page, String userIdx, String question) {
 
-    if (question.equals("")||question.equals(null)) {
+    if (question==null) {
       System.out.println("비어있으면 그냥 전체 리턴");
 
       return jpaQueryFactory.selectFrom(qPost)
@@ -84,7 +126,7 @@ public class QueryRepository {
   public List<Post> findAllByPostIdxDescFunction2(Long id, Pageable page, String userIdx,
       String question) {
 
-    if (question.equals(null)) {
+    if (question==null) {
       return jpaQueryFactory.selectFrom(qPost)
           .where(qPost.postIdx.lt(id).and(qPost.userIdx.eq(userIdx)))
           .orderBy(qPost.postIdx.desc())
@@ -112,6 +154,11 @@ public class QueryRepository {
         filteredPostList.add(post);
       }
     }
+
+    if(question!=null){
+      filteredPostList=searchEngine(filteredPostList, question);
+    }
+
     Collections.sort(filteredPostList);
     System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
     return filteredPostList.stream().limit(10).collect(Collectors.toList());
@@ -123,24 +170,16 @@ public class QueryRepository {
     List<Post> filteredPostList = new ArrayList<>();
 
     for (Post post : getList) {
-
       if (postIdxList.contains(post.getPostIdx()) && post.getUserIdx().equals(userIdx)&&post.getPostIdx()<id) {
         filteredPostList.add(post);
       }
     }
+
+    if(question!=null){
+      filteredPostList=searchEngine(filteredPostList, question);
+    }
+
     Collections.sort(filteredPostList);
-    System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
     return filteredPostList.stream().limit(10).collect(Collectors.toList());
   }
-
-  /*
-  public List<Post> tagFilteringFunction2(List<Post> getList, List<Long> postIdxList, Long id,
-      String userIdx) {
-
-    List<Post> filteredPostList = new ArrayList<>();
-
-
-  }
-
-   */
 }
