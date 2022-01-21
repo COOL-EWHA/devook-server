@@ -49,6 +49,9 @@ public class OauthRestController {
             if(!oauthService.isUserExist(accessToken)){
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+            String userIdx = oauthService.getUserIdx(accessToken);
+            oauthService.deleteUserRefreshToken(Long.valueOf(userIdx));
+
 
             ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
                 .sameSite("None")

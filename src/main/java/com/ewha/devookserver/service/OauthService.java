@@ -69,6 +69,13 @@ public class OauthService {
         return exampleResult;
     }
 
+    public void deleteUserRefreshToken(Long userIdx){
+        Member deletedMember = memberRepository.findMemberById(userIdx);
+        deletedMember.setRefreshToken("");
+        memberRepository.save(deletedMember);
+
+    }
+
 
     public boolean isUserExist(String accessToken){
         String exampleResult=jwtTokenProvider.getPayload(accessToken);

@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import lombok.Setter;
 
+@Setter
 @Getter
 @Entity
 public class Member {
