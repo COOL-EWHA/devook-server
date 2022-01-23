@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -36,12 +37,12 @@ public class QueryRepository {
 
     for (Post post : postList) {
 
-      if (post.getPostTitle().contains(question) || post.getPostDescription().contains(question)) {
+      if (post.getPostTitle().toLowerCase().contains(question.toLowerCase()) || post.getPostDescription().toLowerCase().contains(question.toLowerCase())) {
         System.out.println(post.getPostIdx());
         if(post.getPostTitle().contains(question)){
           System.out.println("title에서 일치"+question);
         }
-        if(post.getPostDescription().contains(question)){
+        if(post.getPostDescription().toLowerCase().contains(question.toLowerCase())){
           System.out.println("description에서 일치"+question);
         }
         searchResult.add(post);
@@ -51,7 +52,7 @@ public class QueryRepository {
       List<PostTag> postTagList = findAllTagsByPost(post.getPostIdx().intValue());
 
       for (PostTag postTag : postTagList) {
-        if (postTag.getPostTagName().equals(question)) {
+        if (postTag.getPostTagName().toLowerCase().equals(question.toLowerCase())) {
           System.out.println(postTag.getPost_postIdx()+"태그에서 일치");
           searchResult.add(post);
           break;
