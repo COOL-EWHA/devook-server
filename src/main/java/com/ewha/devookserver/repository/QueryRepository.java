@@ -4,17 +4,20 @@ import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.QPost;
 import com.ewha.devookserver.domain.post.QPostTag;
+import com.ewha.devookserver.service.RefrenceDto;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -190,5 +193,43 @@ public class QueryRepository {
 
     Collections.sort(filteredPostList);
     return filteredPostList.stream().limit(10).collect(Collectors.toList());
+  }
+
+
+
+
+
+  public List<Post> recommendPost1(Pageable page, List<RefrenceDto> refrenceDtos){
+
+    System.out.println("recommendPost1");
+    List<Post> resultList=new ArrayList<>();
+    Collections.sort(refrenceDtos);
+
+
+    for(RefrenceDto refrenceDto:refrenceDtos){
+      resultList.add(refrenceDto.getPost());
+    }
+
+    // post 만 뽑았음
+
+    // sort 가 지금 잘 안먹힌다.
+    return resultList.stream().limit(10).collect(Collectors.toList());
+  }
+
+  public List<Post> recommendPost2(Long id, Pageable page, List<RefrenceDto> refrenceDtos){
+    System.out.println("recommendPost2");
+
+    List<Post> resultList=new ArrayList<>();
+
+    Collections.sort(refrenceDtos);
+
+    for(RefrenceDto refrenceDto:refrenceDtos){
+      if(refrenceDto.getPost().getPostIdx()<id){
+        resultList.add(refrenceDto.getPost());
+      }
+    }
+
+
+    return resultList.stream().limit(10).collect(Collectors.toList());
   }
 }

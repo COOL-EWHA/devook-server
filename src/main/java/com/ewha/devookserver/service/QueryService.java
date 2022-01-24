@@ -111,6 +111,16 @@ public class QueryService {
     return new CursorResult<>(boards, hasNext(lastIdofList));
   }
 
+  // 1.25 05:59 추가
+  public CursorResult<Post> get(Long cursorId, Pageable page, List<RefrenceDto> requestDtoList){
+    final List<Post> boards=getPost(cursorId,page, requestDtoList);
+    final Long lastIdofList=boards.isEmpty()?
+        null:boards.get(boards.size()-1).getId();
+
+    return new CursorResult<>(boards, hasNext(lastIdofList));
+  }
+
+
   public List<Post> getPost(Long id, Pageable page, String userIdx, String question, List<Long> postTagList){
     return id == null ?
         queryRepository.tagFiltering(postTagList,userIdx, question):
@@ -119,15 +129,18 @@ public class QueryService {
 
 
 
-
-
-
-
-
   public List<Post> getPost(Long id, Pageable page, String userIdx, String question){
     return id == null ?
         queryRepository.findAllByPostIdxFunction1(page, userIdx, question):
         queryRepository.findAllByPostIdxDescFunction2(id, page, userIdx, question);
+  }
+
+
+
+  public List<Post> getPost(Long id, Pageable page,List<RefrenceDto> requestDtoList){
+    return id == null ?
+        queryRepository.recommendPost1(page, requestDtoList):
+        queryRepository.recommendPost2(id, page, requestDtoList);
   }
 
   public Boolean hasNext(Long id) {
