@@ -160,10 +160,15 @@ public class QueryController {
 
       // 11.21 @ 1:03:31 수정사항
 
-        if (cursor == null) {
+      if (cursor == null) {
+        try{
           cursor = postRepository.findTopByUserIdxOrderByPostIdxDesc(userIdx).getPostIdx()
               + 1;//사용자의 가장 최근 글 값
+        }catch (Exception e){
+          cursor= Long.valueOf(1);
         }
+
+      }
 
 
 
