@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class PostUserRequestDto {
-  public String id;
+  public String postId;
   public String url;
   public String memo;
 }
