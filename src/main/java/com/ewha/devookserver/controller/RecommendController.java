@@ -1,9 +1,9 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.domain.dto.PostListDto;
-import com.ewha.devookserver.domain.post.EachPostResponseDto;
+import com.ewha.devookserver.domain.dto.PostBookmarkRequestDto;
 import com.ewha.devookserver.domain.post.EachPostResponseDtoForList;
 import com.ewha.devookserver.domain.post.Post;
+import com.ewha.devookserver.domain.post.PostBookmarkGetDto;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
@@ -106,7 +106,7 @@ public class RecommendController {
       List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
 
-      List<PostListDto> listDtos=postService.responseListMaker
+      List<PostBookmarkRequestDto> listDtos=postService.responseBookmarkListMaker
           (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question, postTagList,
               true, requiredTagList, limit.intValue()));
 
@@ -127,13 +127,13 @@ if(tags==null){
 
   // 이제 각 post 당 refrence 를 알았으니, 이거 역순으로 정렬해서 리턴해주면 된다.
 
-  List<PostListDto> listDtos= postService.responseListMaker(
+  List<PostBookmarkRequestDto> listDtos= postService.responseBookmarkListMaker(
       this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
           userIdx));
-  List<PostListDto> resultArrayList=new ArrayList<>();
+  List<PostBookmarkRequestDto> resultArrayList=new ArrayList<>();
 
 
-  for(PostListDto postListDto:listDtos){
+  for(PostBookmarkRequestDto postListDto:listDtos){
     if(postListDto.getId()!=bookmarkId&&postListDto.getId()!=postId){
       resultArrayList.add(postListDto);
     }
@@ -145,116 +145,6 @@ if(tags==null){
 
     return null;
   }
-
-
-
-  /*
-
-  // 유저 추천글 목록 전체 GET
-  @GetMapping("/posts")
-  public ResponseEntity<?> userList
-      (@RequestParam(name = "tags", required = false) String tags,
-          @RequestParam(name = "cursor", required = false) Long cursor,
-          @RequestParam(name="limit",required = false)Long limit,
-          @RequestHeader(value = "Authorization") String tokenGet
-      ){
-    if(limit==null){
-      limit= Long.valueOf(10);
-    }
-
-    if(cursor==null) System.out.println("cursornull");
-    if(tags==null) System.out.println("tagsnull");
-
-    List<String> requiredTagList=new ArrayList<>();
-
-    if (tags != null) {
-      StringTokenizer tokens=new StringTokenizer(tags,",");
-
-      while(tokens.hasMoreTokens()){
-        requiredTagList.add(tokens.nextToken());
-      }
-
-    }
-    System.out.println(requiredTagList);
-
-    try {
-      String accessToken = tokenGet.split(" ")[1];
-
-      // 로그인 안 한 유저
-      if (accessToken == "undefined") {
-        return ResponseEntity.status(401).body("");
-      }
-      // 존재하지 않는 유저
-      if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(404).body("");
-      }
-
-      String userIdx = oauthService.getUserIdx(accessToken);
-
-      // 필터링에 해당하는 post_idx 의 배열 :: postTagList
-      List<Long> postTagList=tagService.makePostTagList(requiredTagList);
-      System.out.println(postTagList);
-
-      // 11.21 @ 1:03:31 수정사항
-
-      if (cursor == null) {
-        try{
-          cursor = Long.valueOf(100000);
-        }catch (Exception e){
-          cursor= Long.valueOf(100000);
-        }
-      }
-
-
-      if(tags==null){
-        // 여기 아래부터 시작
-        return ResponseEntity.status(200).body(postService.responseListMaker
-            (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, limit)));
-      }
-
-      // 여기 아래부터 시작
-      return ResponseEntity.status(200).body(postService.responseListMaker
-          (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, limit)));
-
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      return ResponseEntity.status(401).body("어떤 에러인지 확인"+e);
-    }
-
-  }
-
-
-
-
-
-
-
- List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
-      if (postIdxList.contains(post.getPostIdx()) && !post.getUserIdx().equals(userIdx)) {
-       // filteredPostList.add(post);
-        for(PostTag postTag:eachPostTagList){
-          for(String string:requiredTagList){
-            if(postTag.getPostTagName().equals(string)){
-              count++;
-            }
-          }
-        }
-
-        RefrenceDto refrenceDto=new RefrenceDto();
-        refrenceDto.setPost(post);
-        refrenceDto.setRefrence(count);
-        resultArray.add(refrenceDto);
-
-
-      }
-    }
-    Collections.sort(resultArray);
-
-
-
-
-   */
 
 
   @GetMapping("/posts/tags")
@@ -316,13 +206,14 @@ if(tags==null){
           Date convertedTime= userPost.getCreatedAt();
           String dBconvertedTime=format1.format(convertedTime);
 
-          EachPostResponseDtoForList eachPostResponseDto=EachPostResponseDtoForList.builder()
+          PostBookmarkGetDto eachPostResponseDto=PostBookmarkGetDto.builder()
               .id(userPost.getId())
               .title(userPost.getPostTitle())
               .thumbnail(userPost.getPostThumbnail())
               .description(userPost.getPostDescription())
               .tags(tagList)
               .url(userPost.getPostUrl())
+              .isBookmarked(true) // 이후 수정
               .build();
 
           return ResponseEntity.status(200).body(eachPostResponseDto);
