@@ -112,8 +112,8 @@ public class QueryService {
   }
 
   // 1.25 05:59 추가
-  public CursorResult<Post> get(Long cursorId, Pageable page, List<RefrenceDto> requestDtoList){
-    final List<Post> boards=getPost(cursorId,page, requestDtoList);
+  public CursorResult<Post> get(Long cursorId, Pageable page, List<RefrenceDto> requestDtoList, int limit, String userIdx){
+    final List<Post> boards=getPost(cursorId,page, requestDtoList, limit, userIdx);
     final Long lastIdofList=boards.isEmpty()?
         null:boards.get(boards.size()-1).getId();
 
@@ -137,10 +137,10 @@ public class QueryService {
 
 
 
-  public List<Post> getPost(Long id, Pageable page,List<RefrenceDto> requestDtoList){
+  public List<Post> getPost(Long id, Pageable page,List<RefrenceDto> requestDtoList, int limit, String userIdx){
     return id == null ?
-        queryRepository.recommendPost1(page, requestDtoList):
-        queryRepository.recommendPost2(id, page, requestDtoList);
+        queryRepository.recommendPost1(page, requestDtoList, limit, userIdx):
+        queryRepository.recommendPost2(id, page, requestDtoList, limit, userIdx);
   }
 
   public Boolean hasNext(Long id) {

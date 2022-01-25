@@ -143,7 +143,15 @@ public class OauthRestController {
         try {
 
             if (Objects.equals(refreshTokenGet, "REFRESH_TOKEN=")) {
-                return ResponseEntity.status(400).body("");
+                ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
+                    .sameSite("None")
+                    .secure(true)
+                    .httpOnly(true)
+                    .path("/")
+                    .build();
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+                return ResponseEntity.status(404).body("빈리프레쉬");
             }
 
             String accessToken = refreshTokenGet.split("=")[1];
@@ -151,7 +159,17 @@ public class OauthRestController {
             boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
 
             if (!isTokenExists) {
-                return ResponseEntity.status(404).body("");
+                ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
+                    .sameSite("None")
+                    .secure(true)
+                    .httpOnly(true)
+                    .path("/")
+                    .build();
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+
+
+                return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
             } else {
                 Member member = userService.returnRefreshTokenMember(accessToken);
 
@@ -174,9 +192,17 @@ public class OauthRestController {
             }
 
         }catch (Exception e){
-            System.out.println(e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" ");
+            ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
+                .sameSite("None")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
+            System.out.println("오류");
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" ");
         }
     }
 

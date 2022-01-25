@@ -12,7 +12,9 @@ import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.RefrenceDto;
 import com.ewha.devookserver.service.TagService;
 import com.ewha.devookserver.service.UserService;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +38,25 @@ public class RecommendController {
   private final TagService tagService;
 
 
+
   @GetMapping("/posts")
   public ResponseEntity<?> bookMarkLists(
       @RequestParam(name = "postId", required = false)Long postId,
+      @RequestParam(name="bookmarkId", required = false)Long bookmarkId,
       @RequestParam(name="cursor", required = false)Long cursor,
       @RequestParam(name="limit",required = false)Long limit,
       @RequestHeader(name="Authorization")String accessTokenGet){
 
-    limit=Long.valueOf(10);
+    if(limit==null){
+      limit= Long.valueOf(10);
+    }
+
+    if(bookmarkId==null){
+      bookmarkId=postId;
+    }
+    if(postId==null){
+      postId=bookmarkId;
+    }
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
@@ -66,13 +79,11 @@ public class RecommendController {
 
     if (cursor == null) {
       try{
-        cursor = Long.valueOf(1000);
+        cursor = Long.valueOf(100000);
       }catch (Exception e){
-        cursor= Long.valueOf(1000);
+        cursor= Long.valueOf(100000);
       }
     }
-
-
 
     List<RefrenceDto> refrenceDtos=recommendService.calculateReference(postTagList);
 
@@ -80,10 +91,88 @@ public class RecommendController {
 
 
     return ResponseEntity.status(200).body(
-        postService.responseListMaker(this.queryService.get(cursor, PageRequest.of(0,10), refrenceDtos))
-    );
+        postService.responseListMaker(this.queryService.get(cursor, PageRequest.of(0,10), refrenceDtos, limit.intValue(), userIdx)));
   }
 
 
+  /*
+
+  // 유저 추천글 목록 전체 GET
+  @GetMapping("/posts")
+  public ResponseEntity<?> userList
+      (@RequestParam(name = "tags", required = false) String tags,
+          @RequestParam(name = "cursor", required = false) Long cursor,
+          @RequestParam(name="limit",required = false)Long limit,
+          @RequestHeader(value = "Authorization") String tokenGet
+      ){
+    if(limit==null){
+      limit= Long.valueOf(10);
+    }
+
+    if(cursor==null) System.out.println("cursornull");
+    if(tags==null) System.out.println("tagsnull");
+
+    List<String> requiredTagList=new ArrayList<>();
+
+    if (tags != null) {
+      StringTokenizer tokens=new StringTokenizer(tags,",");
+
+      while(tokens.hasMoreTokens()){
+        requiredTagList.add(tokens.nextToken());
+      }
+
+    }
+    System.out.println(requiredTagList);
+
+    try {
+      String accessToken = tokenGet.split(" ")[1];
+
+      // 로그인 안 한 유저
+      if (accessToken == "undefined") {
+        return ResponseEntity.status(401).body("");
+      }
+      // 존재하지 않는 유저
+      if (!oauthService.isUserExist(accessToken)) {
+        return ResponseEntity.status(404).body("");
+      }
+
+      String userIdx = oauthService.getUserIdx(accessToken);
+
+      // 필터링에 해당하는 post_idx 의 배열 :: postTagList
+      List<Long> postTagList=tagService.makePostTagList(requiredTagList);
+      System.out.println(postTagList);
+
+      // 11.21 @ 1:03:31 수정사항
+
+      if (cursor == null) {
+        try{
+          cursor = Long.valueOf(100000);
+        }catch (Exception e){
+          cursor= Long.valueOf(100000);
+        }
+      }
+
+
+      if(tags==null){
+        // 여기 아래부터 시작
+        return ResponseEntity.status(200).body(postService.responseListMaker
+            (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, limit)));
+      }
+
+      // 여기 아래부터 시작
+      return ResponseEntity.status(200).body(postService.responseListMaker
+          (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, limit)));
+
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return ResponseEntity.status(401).body("어떤 에러인지 확인"+e);
+    }
+
+  }
+
+
+
+   */
 
 }

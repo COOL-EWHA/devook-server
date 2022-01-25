@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -199,7 +200,7 @@ public class QueryRepository {
 
 
 
-  public List<Post> recommendPost1(Pageable page, List<RefrenceDto> refrenceDtos){
+  public List<Post> recommendPost1(Pageable page, List<RefrenceDto> refrenceDtos, int limit, String userIdx){
 
     System.out.println("recommendPost1");
     List<Post> resultList=new ArrayList<>();
@@ -207,16 +208,18 @@ public class QueryRepository {
 
 
     for(RefrenceDto refrenceDto:refrenceDtos){
-      resultList.add(refrenceDto.getPost());
+      if(!Objects.equals(refrenceDto.getPost().getUserIdx(), userIdx)){
+        resultList.add(refrenceDto.getPost());
+      }
     }
 
     // post 만 뽑았음
 
     // sort 가 지금 잘 안먹힌다.
-    return resultList.stream().limit(10).collect(Collectors.toList());
+    return resultList.stream().limit(limit).collect(Collectors.toList());
   }
 
-  public List<Post> recommendPost2(Long id, Pageable page, List<RefrenceDto> refrenceDtos){
+  public List<Post> recommendPost2(Long id, Pageable page, List<RefrenceDto> refrenceDtos, int limit, String userIdx){
     System.out.println("recommendPost2");
 
     List<Post> resultList=new ArrayList<>();
@@ -224,12 +227,13 @@ public class QueryRepository {
     Collections.sort(refrenceDtos);
 
     for(RefrenceDto refrenceDto:refrenceDtos){
-      if(refrenceDto.getPost().getPostIdx()<id){
+      if(refrenceDto.getPost().getPostIdx()<id&& !Objects.equals(refrenceDto.getPost().getUserIdx(),
+          userIdx)){
         resultList.add(refrenceDto.getPost());
       }
     }
 
 
-    return resultList.stream().limit(10).collect(Collectors.toList());
+    return resultList.stream().limit(limit).collect(Collectors.toList());
   }
 }
