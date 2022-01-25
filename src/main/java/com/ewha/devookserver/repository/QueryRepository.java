@@ -4,6 +4,7 @@ import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.QPost;
 import com.ewha.devookserver.domain.post.QPostTag;
+import com.ewha.devookserver.service.QueryService;
 import com.ewha.devookserver.service.RefrenceDto;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -32,6 +33,7 @@ public class QueryRepository {
 
   private final JPAQueryFactory jpaQueryFactory;
   private final PostRepository postRepository;
+  private final TagRepository tagRepository;
 
 
 
@@ -188,6 +190,9 @@ public class QueryRepository {
       }
     }
 
+
+
+
     if(question!=null){
       filteredPostList=searchEngine(filteredPostList, question);
     }
@@ -236,4 +241,100 @@ public class QueryRepository {
 
     return resultList.stream().limit(limit).collect(Collectors.toList());
   }
-}
+
+  // 태그 리스트 필터링하는 함수
+  public List<Post> tagFilteringRecommendUser1(List<Long> postIdxList, String userIdx, String question, boolean isUser, List<String> requiredTagList, int limit) {
+
+    System.out.println("들어왔다.");
+    List<Post> getList = postRepository.findAll();
+    List<Post> filteredPostList = new ArrayList<>();
+    List<RefrenceDto> resultArray=new ArrayList<>();
+
+    int count;
+
+    for (Post post : getList) {
+      count=0;
+
+      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+      if (postIdxList.contains(post.getPostIdx()) && !post.getUserIdx().equals(userIdx)) {
+       // filteredPostList.add(post);
+        for(PostTag postTag:eachPostTagList){
+          for(String string:requiredTagList){
+            if(postTag.getPostTagName().equals(string)){
+              count++;
+            }
+          }
+        }
+
+        RefrenceDto refrenceDto=new RefrenceDto();
+        refrenceDto.setPost(post);
+        refrenceDto.setRefrence(count);
+        resultArray.add(refrenceDto);
+
+
+      }
+    }
+    Collections.sort(resultArray);
+
+    if(question!=null){
+      filteredPostList=searchEngine(filteredPostList, question);
+    }
+
+    System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
+    return filteredPostList.stream().limit(10).collect(Collectors.toList());
+  }
+
+  public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx, String question, boolean isUser, List<String> requiredTagList, int limit) {
+    System.out.println("들어왔다22.");
+
+    List<Post> getList = postRepository.findAll();
+    List<Post> filteredPostList = new ArrayList<>();
+    List<RefrenceDto> resultArray=new ArrayList<>();
+
+    int count;
+    for (Post post : getList) {
+      count=0;
+
+      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+      if (postIdxList.contains(post.getPostIdx()) && !post.getUserIdx().equals(userIdx)
+          && post.getPostIdx() < id) {
+        //filteredPostList.add(post);
+
+
+        for(PostTag postTag:eachPostTagList){
+          for(String string:requiredTagList){
+            if(postTag.getPostTagName().equals(string)){
+              count++;
+            }
+          }
+        }
+
+        RefrenceDto refrenceDto=new RefrenceDto();
+        refrenceDto.setPost(post);
+        refrenceDto.setRefrence(count);
+        resultArray.add(refrenceDto);
+
+      }
+    }
+    Collections.sort(resultArray);
+
+    for(RefrenceDto refrenceDto:resultArray){
+      filteredPostList.add(refrenceDto.getPost());
+    }
+
+    /*
+    if(question!=null){
+      filteredPostList=searchEngine(filteredPostList, question);
+    }
+
+     */
+
+    if(question!=null){
+      filteredPostList=searchEngine(filteredPostList, question);
+    }
+
+    return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+
+  }
+
+  }

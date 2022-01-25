@@ -1,5 +1,6 @@
 package com.ewha.devookserver.service;
 
+import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
@@ -16,7 +17,6 @@ public class TagService {
   private final TagRepository tagRepository;
   private final QueryRepository queryRepository;
   private final PostRepository postRepository;
-
 
 
 
@@ -40,5 +40,7 @@ public class TagService {
     }
     return postIdxList;
   }
+
+
 
 }

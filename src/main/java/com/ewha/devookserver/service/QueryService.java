@@ -98,6 +98,8 @@ public class QueryService {
     return new CursorResult<>(boards, hasNext(lastIdofList));
   }
 
+
+
   // 11.21 @ 1:06:05 추가사항
 
 
@@ -110,6 +112,16 @@ public class QueryService {
 
     return new CursorResult<>(boards, hasNext(lastIdofList));
   }
+
+
+  public CursorResult<Post> get(Long cursorId, Pageable page, String userIdx, String question, List<Long> postTaglist, boolean isRecommend, List<String> postTagList, int limit){
+    final List<Post> boards=getPost(cursorId,page, userIdx, question, postTaglist, isRecommend, postTagList, limit);
+    final Long lastIdofList=boards.isEmpty()?
+        null:boards.get(boards.size()-1).getId();
+
+    return new CursorResult<>(boards, hasNext(lastIdofList));
+  }
+
 
   // 1.25 05:59 추가
   public CursorResult<Post> get(Long cursorId, Pageable page, List<RefrenceDto> requestDtoList, int limit, String userIdx){
@@ -142,6 +154,13 @@ public class QueryService {
         queryRepository.recommendPost1(page, requestDtoList, limit, userIdx):
         queryRepository.recommendPost2(id, page, requestDtoList, limit, userIdx);
   }
+
+  public List<Post> getPost(Long id, Pageable page, String userIdx, String question, List<Long> postTagList, boolean isRecommend, List<String> requiredList, int limit){
+    return id == null ?
+        queryRepository.tagFilteringRecommendUser1(postTagList,userIdx, question,isRecommend, requiredList, limit):
+        queryRepository.tagFilteringRecommendUser2(postTagList, id, userIdx, question, isRecommend, requiredList, limit);
+  }
+
 
   public Boolean hasNext(Long id) {
     if (id == null) return false;

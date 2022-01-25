@@ -153,6 +153,8 @@ public class QueryController {
       }
 
       String userIdx = oauthService.getUserIdx(accessToken);
+//---- 여기까지 일치.
+
 
       // 필터링에 해당하는 post_idx 의 배열 :: postTagList
       List<Long> postTagList=tagService.makePostTagList(requiredTagList);

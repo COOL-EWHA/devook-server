@@ -75,6 +75,25 @@ public class PostService {
 
   }
 
+  public List<String> getPostTagList(){
+    List<Post> returnPost= postRepository.findAll();
+
+    List<String> searchResponseDtoList=new ArrayList<>();
+
+    for(Post post : returnPost){
+      List<PostTag> postTagList=queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
+
+      for(PostTag postTag:postTagList){
+        if(!searchResponseDtoList.contains(postTag.getPostTagName())){
+          searchResponseDtoList.add(postTag.getPostTagName());
+        }
+      }
+    }
+
+    return searchResponseDtoList;
+
+  }
+
   public List<PostListDto> responseListMaker(CursorResult<Post> productList){
     List<PostListDto> searchResponseDtoList=new ArrayList<>();
 
