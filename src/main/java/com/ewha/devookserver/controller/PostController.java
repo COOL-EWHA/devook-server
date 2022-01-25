@@ -46,45 +46,6 @@ public class PostController {
   private final PostRepository postRepository;
   private final UserBookmarkRepository userBookmarkRepository;
 
-  /*
-  @GetMapping("/bookmarks")
-  public ResponseEntity<?> getBoardsapi(@RequestParam(name = "tags", required = false) String tags,
-      @RequestParam(name = "cursor", required = false) Long cursor,
-      @RequestParam(name="q", required = false)String question,
-      @RequestHeader(value = "Authorization") String tokenGet
-      ) {
-
-    System.out.println(tags);
-
-    int limit = 10;
-
-      try {
-        String accessToken = tokenGet.split(" ")[1];
-
-        // 로그인 안 한 유저
-        if (accessToken == "undefined") {
-          return ResponseEntity.status(401).body("");
-        }
-
-        // 존재하지 않는 유저
-        if (!oauthService.isUserExist(accessToken)) {
-          return ResponseEntity.status(404).body("");
-        }
-
-        String userIdx = oauthService.getUserIdx(accessToken);
-        if (cursor == null) {
-          cursor = postRepository.findTopByUserIdxOrderByPostIdxDesc(userIdx).getPostIdx()
-              + 1;//사용자의 가장 최근 글 값
-        }
-        return ResponseEntity.status(200).body(postService.responseListMaker
-            (this.postService.get(cursor, PageRequest.of(0, (int) limit), userIdx, question))
-        );
-      } catch (Exception e) {
-        return ResponseEntity.status(404).body("계정오류");
-      }
-  }
-   */
-
   @PostMapping("/bookmarks")
   public ResponseEntity<?> testPost(
       @RequestHeader(value = "Authorization") String tokenGet,
@@ -106,20 +67,26 @@ public class PostController {
       }
       String userIdx = oauthService.getUserIdx(accessToken);
 
+
+      // 만약 ID 값이 정확히 존재한다면. (null 값으로 판별)
       if(postUserRequestDto.getPostId()!=null){
         Long postIdx= Long.valueOf(postUserRequestDto.getPostId());
         if(postRepository.existsByPostIdx(postIdx)){
+          if(userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(Long.valueOf(postUserRequestDto.getPostId()), Long.valueOf(userIdx))!=null){
 
-          if(postService.isPostUserExists(postUserRequestDto.getPostId(), userIdx)){
-            System.out.println("이미 존재하는 글.");
-            return ResponseEntity.status(201).body("3");
+            if(postRepository.existsByPostIdxAndUserIdx(Long.valueOf(postUserRequestDto.getPostId()), userIdx)){
+              System.out.println("이미 유저가 등록한 post, 따로 북마크 되지는 않음"); // 일단 이렇게 처리하고, 나중에 고려
+              return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
+            }
+            System.out.println("이미 등록된 북마크.");
+            return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
           }
           else{
             Post post = postRepository.getPostByPostIdx(postIdx);
             post.setUserIdx(userIdx);
             postService.savePostBookmark(Long.valueOf(userIdx), postIdx);
           }
-          return ResponseEntity.status(201).body("생성완료!");
+          return ResponseEntity.status(201).body("북마크 새로 생성완료!");
 
         }
       }
@@ -145,7 +112,7 @@ public class PostController {
       return ResponseEntity.status(201).body("4");
     } catch (Exception e) {
       System.out.println(e);
-      return ResponseEntity.status(401).body("5");
+      return ResponseEntity.status(500).body("5");
     }
   }
 
