@@ -2,15 +2,18 @@ package com.ewha.devookserver.service;
 
 import com.ewha.devookserver.domain.dto.PostListDto;
 import com.ewha.devookserver.domain.post.PostTag;
+import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.domain.post.PostLambdaDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
+import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +31,7 @@ public class PostService {
   private final MemberRepository memberRepository;
   private final PostRepository postRepository;
   private final QueryRepository queryRepository;
+  private final UserBookmarkRepository userBookmarkRepository;
 
 
   public boolean isPostUserExists(String url, String userIdx){
@@ -173,7 +177,15 @@ public class PostService {
 
     postRepository.save(post);
   }
+  public void savePostBookmark(Long user_userIdx, Long post_postIdx){
 
+    UserBookmark userBookmark=UserBookmark.builder()
+            .post_postIdx(post_postIdx)
+                .user_userIdx(user_userIdx)
+                    .build();
+
+    userBookmarkRepository.save(userBookmark);
+  }
   public boolean isPostExists(String url){
     return postRepository.existsByPostUrl(url);
   }

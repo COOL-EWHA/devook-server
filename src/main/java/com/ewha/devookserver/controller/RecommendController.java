@@ -1,5 +1,6 @@
 package com.ewha.devookserver.controller;
 
+import com.ewha.devookserver.domain.dto.PostListDto;
 import com.ewha.devookserver.domain.post.EachPostResponseDto;
 import com.ewha.devookserver.domain.post.EachPostResponseDtoForList;
 import com.ewha.devookserver.domain.post.Post;
@@ -53,6 +54,7 @@ public class RecommendController {
       @RequestParam(name = "tags", required = false) String tags,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
+    System.out.println(accessTokenGet);
     List<String> requiredTagList = new ArrayList<>();
 
     if (tags != null) {
@@ -81,6 +83,12 @@ public class RecommendController {
       }
     }
 
+
+    try {
+      String accessToken = accessTokenGet.split(" ")[1];
+    }catch (Exception e){
+      return ResponseEntity.status(401).body("accessToken 빈 값 ");
+    }
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
       return ResponseEntity.status(401).body("1");
@@ -97,9 +105,13 @@ public class RecommendController {
 
       List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
-      return ResponseEntity.status(200).body(postService.responseListMaker
+
+      List<PostListDto> listDtos=postService.responseListMaker
           (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question, postTagList,
-              true, requiredTagList, limit.intValue())));
+              true, requiredTagList, limit.intValue()));
+
+      return ResponseEntity.status(200).body(
+          (listDtos));
     }
 
     System.out.println("태그말고 원래대로~");
@@ -115,10 +127,20 @@ if(tags==null){
 
   // 이제 각 post 당 refrence 를 알았으니, 이거 역순으로 정렬해서 리턴해주면 된다.
 
-  return ResponseEntity.status(200).body(
-      postService.responseListMaker(
-          this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
-              userIdx)));
+  List<PostListDto> listDtos= postService.responseListMaker(
+      this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
+          userIdx));
+  List<PostListDto> resultArrayList=new ArrayList<>();
+
+
+  for(PostListDto postListDto:listDtos){
+    if(postListDto.getId()!=bookmarkId&&postListDto.getId()!=postId){
+      resultArrayList.add(postListDto);
+    }
+  }
+
+  return ResponseEntity.status(200).body(resultArrayList
+     );
 }
 
     return null;

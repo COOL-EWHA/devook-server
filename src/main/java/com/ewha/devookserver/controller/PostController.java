@@ -7,7 +7,9 @@ import com.ewha.devookserver.domain.post.PostLambdaDto;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.PostUserRequestDto;
 import com.ewha.devookserver.domain.post.RequestMemoDto;
+import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.PostRepository;
+import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserService;
@@ -42,6 +44,7 @@ public class PostController {
   private final PostService postService;
   private final OauthService oauthService;
   private final PostRepository postRepository;
+  private final UserBookmarkRepository userBookmarkRepository;
 
   /*
   @GetMapping("/bookmarks")
@@ -88,19 +91,38 @@ public class PostController {
       HttpServletResponse response, @RequestBody PostUserRequestDto postUserRequestDto) {
 
     System.out.println(postUserRequestDto.getMemo());
+    System.out.println(postUserRequestDto.getPostId());
 
     try {
       System.out.println(tokenGet + "요청");
       String accessToken = tokenGet.split(" ")[1];
       if (Objects.equals(accessToken, "undefined")) {
-        return ResponseEntity.status(401).body("");
+        return ResponseEntity.status(401).body("1");
       }
 
       // 존재하지 않는 유저
       if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(401).body("");
+        return ResponseEntity.status(401).body("2");
       }
       String userIdx = oauthService.getUserIdx(accessToken);
+
+      if(postUserRequestDto.getPostId()!=null){
+        Long postIdx= Long.valueOf(postUserRequestDto.getPostId());
+        if(postRepository.existsByPostIdx(postIdx)){
+
+          if(postService.isPostUserExists(postUserRequestDto.getPostId(), userIdx)){
+            System.out.println("이미 존재하는 글.");
+            return ResponseEntity.status(201).body("3");
+          }
+          else{
+            Post post = postRepository.getPostByPostIdx(postIdx);
+            post.setUserIdx(userIdx);
+            postService.savePostBookmark(Long.valueOf(userIdx), postIdx);
+          }
+          return ResponseEntity.status(201).body("생성완료!");
+
+        }
+      }
 
       if (postService.isPostUserExists(postUserRequestDto.getUrl(), userIdx)) {
         System.out.println("이미 존재하는 글.");
@@ -120,10 +142,10 @@ public class PostController {
           postLambdaDto.getTitle(),
           postLambdaDto.getImage(), userIdx);
 
-      return ResponseEntity.status(201).body("");
+      return ResponseEntity.status(201).body("4");
     } catch (Exception e) {
       System.out.println(e);
-      return ResponseEntity.status(401).body("");
+      return ResponseEntity.status(401).body("5");
     }
   }
 
@@ -255,8 +277,12 @@ public class PostController {
       {
         if(postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx().equals(userIdx)){
           Post newPost = postRepository.getPostByPostIdx(Long.valueOf(bookmarkId));
-          newPost.setPostMemo(requestMemo);
-          postRepository.save(newPost);
+          UserBookmark userBookmark=new UserBookmark();
+          userBookmark.setUser_userIdx(Long.valueOf(userIdx));
+          userBookmark.setPost_postIdx((long)bookmarkId);
+          userBookmarkRepository.save(userBookmark);
+
+
 
           return ResponseEntity.status(200).body(" ");
         }
