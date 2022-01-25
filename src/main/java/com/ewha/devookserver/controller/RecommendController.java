@@ -106,10 +106,6 @@ public class RecommendController {
 
 if(tags==null){
 
-    if (!recommendService.isPostByUser(postId, userIdx)) {
-      return ResponseEntity.status(401).body("해당유저글이 아닐 때 오류 401오류리턴(메모삭제하기)");
-
-  }
 
   Post post = postRepository.getPostByPostIdx(postId);
   List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
@@ -124,8 +120,8 @@ if(tags==null){
           this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
               userIdx)));
 }
-    return ResponseEntity.status(401).body("오류");
 
+    return null;
   }
 
 
