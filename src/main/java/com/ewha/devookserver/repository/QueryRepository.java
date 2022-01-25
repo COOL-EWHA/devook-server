@@ -4,8 +4,11 @@ import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.QPost;
 import com.ewha.devookserver.domain.post.QPostTag;
+import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
+import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.RefrenceDto;
+import com.ewha.devookserver.service.UserRecommService;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ public class QueryRepository {
   private final JPAQueryFactory jpaQueryFactory;
   private final PostRepository postRepository;
   private final TagRepository tagRepository;
+  private final UserRecommService userRecommService;
 
 
 
@@ -251,6 +255,53 @@ public class QueryRepository {
     List<RefrenceDto> resultArray=new ArrayList<>();
 
     int count;
+    if(requiredTagList.isEmpty()){
+      requiredTagList=userRecommService.getPostTagList(userIdx);
+      for (Post post : getList) {
+        count=0;
+
+        List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+        if (!post.getUserIdx().equals(userIdx)
+            ) {
+          //filteredPostList.add(post);
+
+
+          for(PostTag postTag:eachPostTagList){
+            for(String string:requiredTagList){
+              if(postTag.getPostTagName().equals(string)){
+                count++;
+              }
+            }
+          }
+
+          RefrenceDto refrenceDto=new RefrenceDto();
+          refrenceDto.setPost(post);
+          refrenceDto.setRefrence(count);
+          resultArray.add(refrenceDto);
+
+        }
+      }
+      Collections.sort(resultArray);
+
+      for(RefrenceDto refrenceDto:resultArray){
+        filteredPostList.add(refrenceDto.getPost());
+      }
+
+    /*
+    if(question!=null){
+      filteredPostList=searchEngine(filteredPostList, question);
+    }
+
+     */
+
+      if(question!=null){
+        filteredPostList=searchEngine(filteredPostList, question);
+      }
+
+      return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+
+    }
+
 
     for (Post post : getList) {
       count=0;
@@ -284,14 +335,74 @@ public class QueryRepository {
     return filteredPostList.stream().limit(10).collect(Collectors.toList());
   }
 
+
+
+
+
+
   public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx, String question, boolean isUser, List<String> requiredTagList, int limit) {
     System.out.println("들어왔다22.");
+
+
 
     List<Post> getList = postRepository.findAll();
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray=new ArrayList<>();
 
     int count;
+
+
+    if(requiredTagList.isEmpty()){
+      requiredTagList=userRecommService.getPostTagList(userIdx);
+      for (Post post : getList) {
+        count=0;
+
+        List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+        if (!post.getUserIdx().equals(userIdx)
+            && post.getPostIdx() < id) {
+          //filteredPostList.add(post);
+
+
+          for(PostTag postTag:eachPostTagList){
+            for(String string:requiredTagList){
+              if(postTag.getPostTagName().equals(string)){
+                count++;
+              }
+            }
+          }
+
+          RefrenceDto refrenceDto=new RefrenceDto();
+          refrenceDto.setPost(post);
+          refrenceDto.setRefrence(count);
+          resultArray.add(refrenceDto);
+
+        }
+      }
+      Collections.sort(resultArray);
+
+      for(RefrenceDto refrenceDto:resultArray){
+        filteredPostList.add(refrenceDto.getPost());
+      }
+
+    /*
+    if(question!=null){
+      filteredPostList=searchEngine(filteredPostList, question);
+    }
+
+     */
+
+      if(question!=null){
+        filteredPostList=searchEngine(filteredPostList, question);
+      }
+
+      return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+
+    }
+
+
+
+
+
     for (Post post : getList) {
       count=0;
 

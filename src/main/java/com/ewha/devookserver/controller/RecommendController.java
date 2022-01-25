@@ -83,17 +83,18 @@ public class RecommendController {
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
-      return ResponseEntity.status(401).body(" ");
+      return ResponseEntity.status(401).body("1");
     }
     System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
-      return ResponseEntity.status(401).body(" ");
+      return ResponseEntity.status(401).body("2");
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
 
     //유저 추천글 전체 목록 GET (분기)
-    if (tags != null) {
+    if (bookmarkId==null&&postId==null) {
       System.out.println("태그로 들어가서 검색!");
+
       List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
       return ResponseEntity.status(200).body(postService.responseListMaker
@@ -103,23 +104,30 @@ public class RecommendController {
 
     System.out.println("태그말고 원래대로~");
 
+if(tags==null){
+
     if (!recommendService.isPostByUser(postId, userIdx)) {
       return ResponseEntity.status(401).body("해당유저글이 아닐 때 오류 401오류리턴(메모삭제하기)");
-    }
 
-    Post post = postRepository.getPostByPostIdx(postId);
-    List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
-    // 해당 글이 가진 태그 리스트 검색
-
-    List<RefrenceDto> refrenceDtos = recommendService.calculateReference(postTagList);
-
-    // 이제 각 post 당 refrence 를 알았으니, 이거 역순으로 정렬해서 리턴해주면 된다.
-
-    return ResponseEntity.status(200).body(
-        postService.responseListMaker(
-            this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
-                userIdx)));
   }
+
+  Post post = postRepository.getPostByPostIdx(postId);
+  List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+  // 해당 글이 가진 태그 리스트 검색
+
+  List<RefrenceDto> refrenceDtos = recommendService.calculateReference(postTagList);
+
+  // 이제 각 post 당 refrence 를 알았으니, 이거 역순으로 정렬해서 리턴해주면 된다.
+
+  return ResponseEntity.status(200).body(
+      postService.responseListMaker(
+          this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
+              userIdx)));
+}
+    return ResponseEntity.status(401).body("오류");
+
+  }
+
 
 
   /*
@@ -197,6 +205,34 @@ public class RecommendController {
     }
 
   }
+
+
+
+
+
+
+
+ List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+      if (postIdxList.contains(post.getPostIdx()) && !post.getUserIdx().equals(userIdx)) {
+       // filteredPostList.add(post);
+        for(PostTag postTag:eachPostTagList){
+          for(String string:requiredTagList){
+            if(postTag.getPostTagName().equals(string)){
+              count++;
+            }
+          }
+        }
+
+        RefrenceDto refrenceDto=new RefrenceDto();
+        refrenceDto.setPost(post);
+        refrenceDto.setRefrence(count);
+        resultArray.add(refrenceDto);
+
+
+      }
+    }
+    Collections.sort(resultArray);
+
 
 
 
