@@ -71,6 +71,40 @@ public class RecommendService {
     return resultArray;
   }
 
+  public List<RefrenceDto> calculateReferenceOfPost(List<PostTag> postTagList){
+
+    List<Post> allPost=postRepository.findAll();
+    List<RefrenceDto> resultArray=new ArrayList<>();
+    int count;
+
+    for(Post post:allPost){
+      count=0;
+      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+
+      for(PostTag postTag:eachPostTagList){
+        for(PostTag postTag1:postTagList){
+          if(postTag.getPostTagName().equals(postTag1.getPostTagName())){
+            count+=3;
+          }
+          if(post.getPostTitle().contains(postTag1.getPostTagName())){
+            count+=2;
+          }
+          if(post.getPostDescription().contains(postTag1.getPostTagName())){
+            count++;
+          }
+        }
+      }
+      RefrenceDto refrenceDto=new RefrenceDto();
+      refrenceDto.setPost(post);
+      refrenceDto.setRefrence(count);
+
+      resultArray.add(refrenceDto);
+    }
+    return resultArray;
+  }
+
+
+
 
   //이제 reference 순으로 배열을 정리하고, cursor에 따라 리턴해주면 됨.
 

@@ -59,22 +59,30 @@ public class RecommendController {
 
     if (tags != null) {
       StringTokenizer tokens = new StringTokenizer(tags, ",");
-
       while (tokens.hasMoreTokens()) {
         requiredTagList.add(tokens.nextToken());
       }
-
     }
     if (limit == null) {
       limit = Long.valueOf(10);
     }
 
+    int isBookmarkInput=1;
+    int isPostInput=1;
+
     if (bookmarkId == null) {
       bookmarkId = postId;
+      isBookmarkInput=0;
     }
     if (postId == null) {
       postId = bookmarkId;
+      isPostInput=0;
     }
+
+
+    // nullpoint error 처리
+
+
     if (cursor == null) {
       try {
         cursor = Long.valueOf(100000);
@@ -118,12 +126,21 @@ public class RecommendController {
 
 if(tags==null){
 
-
   Post post = postRepository.getPostByPostIdx(postId);
   List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
   // 해당 글이 가진 태그 리스트 검색
 
-  List<RefrenceDto> refrenceDtos = recommendService.calculateReference(postTagList);
+  List<RefrenceDto> refrenceDtos;
+
+  //북마크 아이디는 그대로 함수 사용(calculateRefrence)
+  if(isBookmarkInput!=0){
+    System.out.println("북마크로 이동");
+    refrenceDtos = recommendService.calculateReference(postTagList);
+  }else{
+    System.out.println("post로 이동");
+
+    refrenceDtos = recommendService.calculateReferenceOfPost(postTagList);
+  }
 
   // 이제 각 post 당 refrence 를 알았으니, 이거 역순으로 정렬해서 리턴해주면 된다.
 
