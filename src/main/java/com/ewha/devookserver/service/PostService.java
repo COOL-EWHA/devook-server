@@ -33,6 +33,7 @@ public class PostService {
   private final PostRepository postRepository;
   private final QueryRepository queryRepository;
   private final UserBookmarkRepository userBookmarkRepository;
+  private final RecommendService recommendService;
 
 
   public boolean isPostUserExists(String url, String userIdx){
@@ -129,7 +130,7 @@ public class PostService {
     return searchResponseDtoList;
   }
 
-  public List<PostBookmarkRequestDto> responseBookmarkListMaker(CursorResult<Post> productList){
+  public List<PostBookmarkRequestDto> responseBookmarkListMaker(CursorResult<Post> productList, String userIdx){
     List<PostBookmarkRequestDto> searchResponseDtoList=new ArrayList<>();
 
 
@@ -146,6 +147,10 @@ public class PostService {
         forTestString.add("태그2");
       }
 
+      // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
+      boolean getIsBookmarked=recommendService.checkIsBookmarked((long)post.getId(),userIdx);
+      System.out.println(getIsBookmarked);
+
       PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
           .id(post.getId())
           .thumbnail(post.getPostThumbnail())
@@ -153,7 +158,7 @@ public class PostService {
           .title(post.getPostTitle())
           .tags(forTestString)
           .url(post.getPostUrl())
-          .isBookmarked(true) // 여기 수정! (일단 기본값으로)
+          .isBookmarked(getIsBookmarked) // 여기 수정! (일단 기본값으로)
           .build();
       searchResponseDtoList.add(postListDto);
     }

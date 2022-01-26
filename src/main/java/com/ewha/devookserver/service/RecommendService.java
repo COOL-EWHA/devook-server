@@ -4,6 +4,7 @@ import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.TagRepository;
+import com.ewha.devookserver.repository.UserBookmarkRepository;
 import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,20 @@ import org.springframework.stereotype.Service;
 public class RecommendService {
   private final PostRepository postRepository;
   private final TagRepository tagRepository;
+  private final UserBookmarkRepository userBookmarkRepository;
+
+
+  // 해당 글이 bookmarked 된 글인지 Boolean 리턴
+
+  public boolean checkIsBookmarked(Long postId, String userIdx){
+
+    if(userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(postId, Long.valueOf(userIdx))!=null){
+      System.out.println("ok");
+      return true;
+    }
+    System.out.println("존재 하지 않음." + postId+"" +userIdx);
+    return false;
+  }
 
 
   public boolean isPostByUser(Long postId, String userIdx){

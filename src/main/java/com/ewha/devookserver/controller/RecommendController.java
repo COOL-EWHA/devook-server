@@ -108,7 +108,7 @@ public class RecommendController {
 
       List<PostBookmarkRequestDto> listDtos=postService.responseBookmarkListMaker
           (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question, postTagList,
-              true, requiredTagList, limit.intValue()));
+              true, requiredTagList, limit.intValue()), userIdx);
 
       return ResponseEntity.status(200).body(
           (listDtos));
@@ -129,7 +129,7 @@ if(tags==null){
 
   List<PostBookmarkRequestDto> listDtos= postService.responseBookmarkListMaker(
       this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
-          userIdx));
+          userIdx), userIdx);
   List<PostBookmarkRequestDto> resultArrayList=new ArrayList<>();
 
 
@@ -206,6 +206,8 @@ if(tags==null){
           Date convertedTime= userPost.getCreatedAt();
           String dBconvertedTime=format1.format(convertedTime);
 
+          boolean getIsBookmarked=recommendService.checkIsBookmarked((long)bookmarkId, userIdx);
+
           PostBookmarkGetDto eachPostResponseDto=PostBookmarkGetDto.builder()
               .id(userPost.getId())
               .title(userPost.getPostTitle())
@@ -213,7 +215,7 @@ if(tags==null){
               .description(userPost.getPostDescription())
               .tags(tagList)
               .url(userPost.getPostUrl())
-              .isBookmarked(true) // 이후 수정
+              .isBookmarked(getIsBookmarked) // 이후 수정
               .build();
 
           return ResponseEntity.status(200).body(eachPostResponseDto);
