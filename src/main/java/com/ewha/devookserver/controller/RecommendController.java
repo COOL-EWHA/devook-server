@@ -85,7 +85,7 @@ public class RecommendController {
 
     if (cursor == null) {
       try {
-        cursor = Long.valueOf(100000);
+        cursor = Long.valueOf(100000); // 임의 값 -> 10L 로 수정할지 결정하기
       } catch (Exception e) {
         cursor = Long.valueOf(100000);
       }

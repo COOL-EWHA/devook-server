@@ -89,6 +89,9 @@ public class PostController {
           return ResponseEntity.status(201).body("북마크 새로 생성완료!");
 
         }
+        // postIdx 에 해당하는 post가 POST table에 존재하지 않을 때
+        return ResponseEntity.status(401).body("입력한 postId가 post table에 존재하지 않음");
+
       }
 
       if (postService.isPostUserExists(postUserRequestDto.getUrl(), userIdx)) {
