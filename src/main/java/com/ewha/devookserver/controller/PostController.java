@@ -74,7 +74,8 @@ public class PostController {
         if(postRepository.existsByPostIdx(postIdx)){
           if(userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(Long.valueOf(postUserRequestDto.getPostId()), Long.valueOf(userIdx))!=null){
 
-            if(postRepository.existsByPostIdxAndUserIdx(Long.valueOf(postUserRequestDto.getPostId()), userIdx)){
+            if(postRepository.existsByPostIdxAndUserIdx(Long.valueOf(postUserRequestDto.getPostId()),
+                userIdx)){
               System.out.println("이미 유저가 등록한 post, 따로 북마크 되지는 않음"); // 일단 이렇게 처리하고, 나중에 고려
               return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
             }
@@ -120,6 +121,7 @@ public class PostController {
   }
 
 
+
   @DeleteMapping("/bookmarks/{bookmarkId}")
   public ResponseEntity<?> deletePost(
       @PathVariable("bookmarkId") int bookmarkId,
@@ -140,6 +142,12 @@ public class PostController {
     return ResponseEntity.status(401).body(" ");
   }
 
+
+
+
+  // TODO :: 북마크 시킨 글도 등록한 글처럼 tags, bookmark 로 처리해야 함
+
+
   @GetMapping("/bookmarks/tags")
   public ResponseEntity<?> getTagList(
       @RequestHeader(name = "Authorization") String accessTokenGet) {
@@ -157,6 +165,8 @@ public class PostController {
       String userIdx = oauthService.getUserIdx(accessToken);
       System.out.println(userIdx);
       // 1. userIdx와 일치하는 post
+
+
       List<String> finalResponseString = postService.getPostTagList(userIdx);
 
       // 여기 String 배열 반환
@@ -187,34 +197,31 @@ public class PostController {
 
       if(postRepository.existsByPostIdx((long)bookmarkId))
       {
-        if(postRepository.getPostByPostIdx((long)bookmarkId).getUserIdx().equals(userIdx)){
-          Post userPost = postRepository.getPostByPostIdx((long)bookmarkId);
+        Post userPost = postRepository.getPostByPostIdx((long)bookmarkId);
 
 
-          List<String> tagList = postService.getEachPostTagList(bookmarkId);
-          if(tagList.size()==0){
-            tagList.add("태그1");
-            tagList.add("태그2");
-          }
-
-          SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-          Date convertedTime= userPost.getCreatedAt();
-          String dBconvertedTime=format1.format(convertedTime);
-
-          EachPostResponseDto eachPostResponseDto=EachPostResponseDto.builder()
-              .id(userPost.getId())
-              .title(userPost.getPostTitle())
-              .thumbnail(userPost.getPostThumbnail())
-              .description(userPost.getPostDescription())
-              .tags(tagList)
-              .url(userPost.getPostUrl())
-              .createdAt(dBconvertedTime)
-              .memo(userPost.getPostMemo())
-              .build();
-
-          return ResponseEntity.status(200).body(eachPostResponseDto);
+        List<String> tagList = postService.getEachPostTagList(bookmarkId);
+        if(tagList.size()==0){
+          tagList.add("태그1");
+          tagList.add("태그2");
         }
-        return ResponseEntity.status(404).body("");
+
+        SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+        Date convertedTime= userPost.getCreatedAt();
+        String dBconvertedTime=format1.format(convertedTime);
+
+        EachPostResponseDto eachPostResponseDto=EachPostResponseDto.builder()
+            .id(userPost.getId())
+            .title(userPost.getPostTitle())
+            .thumbnail(userPost.getPostThumbnail())
+            .description(userPost.getPostDescription())
+            .tags(tagList)
+            .url(userPost.getPostUrl())
+            .createdAt(dBconvertedTime)
+            .memo(userPost.getPostMemo())
+            .build();
+
+        return ResponseEntity.status(200).body(eachPostResponseDto);
       }
       return ResponseEntity.status(404).body("");
     }catch(Exception e){
