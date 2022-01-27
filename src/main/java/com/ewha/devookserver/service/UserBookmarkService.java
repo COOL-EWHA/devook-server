@@ -1,7 +1,7 @@
 package com.ewha.devookserver.service;
 
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.domain.user.UserBookmark;
+import com.ewha.devookserver.domain.post.UserBookmark;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import java.util.ArrayList;
@@ -18,44 +18,7 @@ public class UserBookmarkService {
 
 
   // 사용자의 idx 값 넣으면, 그 사용자가 직접 등록한 'post' table에 중복되지 않는 userBookmark table 에 존재하는 post 글들을 리턴해주고 싶다.
-/*
-  public List<Post> bookmarkExcludeUserPost(Long userIdx){
 
-    List<Long> postUserBookmarkList=new ArrayList<>();
-    List<Post> finalResultList=new ArrayList<>();
-
-    List<UserBookmark> userBookmarkList=userBookmarkRepository.findAllByUser_userIdx(userIdx);
-
-    for(UserBookmark userBookmark:userBookmarkList){
-      postUserBookmarkList.add(userBookmark.getPost_postIdx());
-    }
-
-    // 이제 사용자의 post table에서 검색해보고, 제외하기
-
-    List<Post> postList=postRepository.findAllByUserIdx(String.valueOf(userIdx));
-
-    System.out.println("user가 직접 등록한 post");
-    for(Post post:postList){
-      System.out.println(post.getPostIdx()+"번");
-    }
-
-    for(Post post:postList){
-      if(!postUserBookmarkList.contains(post.getPostIdx())){
-        finalResultList.add(post);
-      }
-    }
-
-
-    System.out.println("최종리턴");
-    for(Post post:finalResultList){
-      System.out.println(post.getPostIdx()+"번");
-    }
-
-
-    return finalResultList;
-  }
-
- */
   public List<Post> bookmarkExcludeUserPosts(Long userIdx) {
 
     List<Post> postUserBookmarkList = new ArrayList<>();

@@ -1,7 +1,7 @@
 package com.ewha.devookserver.controller;
 
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.domain.user.UserBookmark;
+import com.ewha.devookserver.domain.post.UserBookmark;
 import com.ewha.devookserver.dto.post.EachPostResponseDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.dto.post.PostLambdaDto;
@@ -132,8 +132,6 @@ public class PostController {
     }
     return ResponseEntity.status(401).body(" ");
   }
-
-  // TODO :: 북마크 시킨 글도 등록한 글처럼 tags, bookmark 로 처리해야 함
 
 
   @GetMapping("/bookmarks/tags")

@@ -1,4 +1,4 @@
-package com.ewha.devookserver.domain.user;
+package com.ewha.devookserver.domain.post;
 
 import java.sql.Timestamp;
 import javax.persistence.Entity;
@@ -24,15 +24,18 @@ public class UserBookmark {
   private Long userBookmarkIdx;
   private Long user_userIdx;
   private Long post_postIdx;
+  private String memo;
+
   @CreationTimestamp
   private Timestamp createdAt;
 
   @Builder
-  public UserBookmark(Long userBookmarkIdx, Long user_userIdx, Long post_postIdx,
+  public UserBookmark(Long userBookmarkIdx, Long user_userIdx, Long post_postIdx, String memo,
       Timestamp createdAt) {
     this.userBookmarkIdx = userBookmarkIdx;
     this.user_userIdx = user_userIdx;
     this.post_postIdx = post_postIdx;
+    this.memo=memo;
     this.createdAt = createdAt;
   }
 

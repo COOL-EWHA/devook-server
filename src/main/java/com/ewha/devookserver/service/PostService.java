@@ -3,7 +3,7 @@ package com.ewha.devookserver.service;
 import com.ewha.devookserver.domain.post.CursorResult;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
-import com.ewha.devookserver.domain.user.UserBookmark;
+import com.ewha.devookserver.domain.post.UserBookmark;
 import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.dto.post.PostLambdaDto;
