@@ -2,9 +2,11 @@ package com.ewha.devookserver.service;
 
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
+import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.TagRepository;
+import com.ewha.devookserver.repository.UserBookmarkRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ public class TagService {
   private final TagRepository tagRepository;
   private final QueryRepository queryRepository;
   private final PostRepository postRepository;
+  private final UserBookmarkRepository userBookmarkRepository;
 
 
 
@@ -27,7 +30,6 @@ public class TagService {
   public List<Long> makePostTagList(List<String> tagList){
 
     List<Long> postIdxList=new ArrayList<>();
-
     for(String tagInput:tagList){
 
       List<PostTag> postTagList = tagRepository.findAllByPostTagName(tagInput);
@@ -38,6 +40,7 @@ public class TagService {
         }
       }
     }
+
     return postIdxList;
   }
 

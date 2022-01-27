@@ -3,6 +3,7 @@ package com.ewha.devookserver.service;
 import com.ewha.devookserver.domain.dto.PostBookmarkRequestDto;
 import com.ewha.devookserver.domain.dto.PostListDto;
 import com.ewha.devookserver.domain.post.PostTag;
+import com.ewha.devookserver.domain.user.User;
 import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.domain.post.Post;
@@ -65,6 +66,15 @@ public class PostService {
   public List<String> getPostTagList(String userIdx){
     List<Post> returnPost= postRepository.findAllByUserIdx(userIdx);
 
+    List<UserBookmark> addBookmark= userBookmarkRepository.findAllByUser_userIdx(Long.valueOf(userIdx));
+
+    for(UserBookmark userBookmark:addBookmark){
+      returnPost.add(      postRepository.getPostByPostIdx(userBookmark.getPost_postIdx())
+      );
+    }
+
+
+
     List<String> searchResponseDtoList=new ArrayList<>();
 
     for(Post post : returnPost){
@@ -78,8 +88,9 @@ public class PostService {
     }
 
     return searchResponseDtoList;
-
   }
+
+
 
   public List<String> getPostTagList(){
     List<Post> returnPost= postRepository.findAll();
