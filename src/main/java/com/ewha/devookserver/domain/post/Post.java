@@ -5,9 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-
-import javax.persistence.*;
-
+import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,8 +19,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name= "post")
-public class Post implements Comparable<Post>{
+@Table(name = "post")
+public class Post implements Comparable<Post> {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -42,13 +40,14 @@ public class Post implements Comparable<Post>{
   private Timestamp updatedAt;
 
   @Builder
-  public Post(String postTitle, String postThumbnail, String postDescription, String postUrl, String postMemo, String userIdx){
-    this.postTitle=postTitle;
-    this.postThumbnail=postThumbnail;
-    this.postDescription=postDescription;
-    this.postUrl=postUrl;
-    this.postMemo=postMemo;
-    this.userIdx=userIdx;
+  public Post(String postTitle, String postThumbnail, String postDescription, String postUrl,
+      String postMemo, String userIdx) {
+    this.postTitle = postTitle;
+    this.postThumbnail = postThumbnail;
+    this.postDescription = postDescription;
+    this.postUrl = postUrl;
+    this.postMemo = postMemo;
+    this.userIdx = userIdx;
   }
 
   public Long getId() {
@@ -59,12 +58,11 @@ public class Post implements Comparable<Post>{
   @Override
   public int compareTo(Post o) {
 
-    if(this.getPostIdx()>o.getPostIdx()||this.getCreatedAt().after(o.getCreatedAt())){
+    if (this.getPostIdx() > o.getPostIdx() || this.getCreatedAt().after(o.getCreatedAt())) {
       return -1;
-    }
-    else if(this.getPostIdx()<o.getPostIdx()){
+    } else if (this.getPostIdx() < o.getPostIdx()) {
       return 1;
-    }else{
+    } else {
       return 0;
     }
   }

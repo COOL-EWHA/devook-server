@@ -11,9 +11,11 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 public class UserRecommRepository {
+
+  private final JPAQueryFactory jpaQueryFactory;
   QPost qPost = new QPost("m");
   QPostTag qPostTag = new QPostTag("p");
-  private final JPAQueryFactory jpaQueryFactory;
+
   public List<PostTag> findAllTagsByPost(int post_postIdx) {
 
     return jpaQueryFactory.selectFrom(qPostTag)

@@ -1,12 +1,12 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.dto.post.EachPostResponseDto;
 import com.ewha.devookserver.domain.post.Post;
+import com.ewha.devookserver.domain.user.UserBookmark;
+import com.ewha.devookserver.dto.post.EachPostResponseDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.dto.post.PostLambdaDto;
 import com.ewha.devookserver.dto.post.PostUserRequestDto;
 import com.ewha.devookserver.dto.post.RequestMemoDto;
-import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.ewha.devookserver.service.OauthService;
@@ -59,22 +59,22 @@ public class PostController {
       }
       String userIdx = oauthService.getUserIdx(accessToken);
 
-
       // 만약 ID 값이 정확히 존재한다면. (null 값으로 판별)
-      if(postUserRequestDto.getPostId()!=null){
-        Long postIdx= Long.valueOf(postUserRequestDto.getPostId());
-        if(postRepository.existsByPostIdx(postIdx)){
-          if(userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(Long.valueOf(postUserRequestDto.getPostId()), Long.valueOf(userIdx))!=null){
+      if (postUserRequestDto.getPostId() != null) {
+        Long postIdx = Long.valueOf(postUserRequestDto.getPostId());
+        if (postRepository.existsByPostIdx(postIdx)) {
+          if (userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(
+              Long.valueOf(postUserRequestDto.getPostId()), Long.valueOf(userIdx)) != null) {
 
-            if(postRepository.existsByPostIdxAndUserIdx(Long.valueOf(postUserRequestDto.getPostId()),
-                userIdx)){
+            if (postRepository.existsByPostIdxAndUserIdx(
+                Long.valueOf(postUserRequestDto.getPostId()),
+                userIdx)) {
               System.out.println("이미 유저가 등록한 post, 따로 북마크 되지는 않음"); // 일단 이렇게 처리하고, 나중에 고려
               return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
             }
             System.out.println("이미 등록된 북마크.");
             return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
-          }
-          else{
+          } else {
             Post post = postRepository.getPostByPostIdx(postIdx);
             post.setUserIdx(userIdx);
             postService.savePostBookmark(Long.valueOf(userIdx), postIdx);
@@ -113,7 +113,6 @@ public class PostController {
   }
 
 
-
   @DeleteMapping("/bookmarks/{bookmarkId}")
   public ResponseEntity<?> deletePost(
       @PathVariable("bookmarkId") int bookmarkId,
@@ -133,9 +132,6 @@ public class PostController {
     }
     return ResponseEntity.status(401).body(" ");
   }
-
-
-
 
   // TODO :: 북마크 시킨 글도 등록한 글처럼 tags, bookmark 로 처리해야 함
 
@@ -158,13 +154,12 @@ public class PostController {
       System.out.println(userIdx);
       // 1. userIdx와 일치하는 post
 
-
       List<String> finalResponseString = postService.getPostTagList(userIdx);
 
       // 여기 String 배열 반환
       return ResponseEntity.status(200).body(finalResponseString);
 
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println(e);
       return ResponseEntity.status(401).body(" ");
     }
@@ -173,8 +168,8 @@ public class PostController {
 
   @GetMapping("/bookmarks/{bookmarkId}")
   public ResponseEntity<?> eachPostResponse(
-      @PathVariable(name = "bookmarkId")int bookmarkId,
-      @RequestHeader(name="Authorization")String accessTokenGet){
+      @PathVariable(name = "bookmarkId") int bookmarkId,
+      @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     try {
       String accessToken = accessTokenGet.split(" ")[1];
@@ -187,22 +182,20 @@ public class PostController {
       }    // 유저 예외처리 완료
       String userIdx = oauthService.getUserIdx(accessToken);
 
-      if(postRepository.existsByPostIdx((long)bookmarkId))
-      {
-        Post userPost = postRepository.getPostByPostIdx((long)bookmarkId);
-
+      if (postRepository.existsByPostIdx((long) bookmarkId)) {
+        Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);
 
         List<String> tagList = postService.getEachPostTagList(bookmarkId);
-        if(tagList.size()==0){
+        if (tagList.size() == 0) {
           tagList.add("태그1");
           tagList.add("태그2");
         }
 
-        SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-        Date convertedTime= userPost.getCreatedAt();
-        String dBconvertedTime=format1.format(convertedTime);
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date convertedTime = userPost.getCreatedAt();
+        String dBconvertedTime = format1.format(convertedTime);
 
-        EachPostResponseDto eachPostResponseDto=EachPostResponseDto.builder()
+        EachPostResponseDto eachPostResponseDto = EachPostResponseDto.builder()
             .id(userPost.getId())
             .title(userPost.getPostTitle())
             .thumbnail(userPost.getPostThumbnail())
@@ -216,7 +209,7 @@ public class PostController {
         return ResponseEntity.status(200).body(eachPostResponseDto);
       }
       return ResponseEntity.status(404).body("");
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println(e);
       return ResponseEntity.status(404).body(" ");
     }
@@ -225,9 +218,9 @@ public class PostController {
 
   @PatchMapping("/bookmarks/{bookmarkId}")
   public ResponseEntity<?> editBookmarkMemo(
-      @PathVariable(name = "bookmarkId")int bookmarkId,
-      @RequestHeader(name="Authorization")String accessTokenGet,
-      @RequestBody RequestMemoDto requestMemoDto){
+      @PathVariable(name = "bookmarkId") int bookmarkId,
+      @RequestHeader(name = "Authorization") String accessTokenGet,
+      @RequestBody RequestMemoDto requestMemoDto) {
 
     String requestMemo = requestMemoDto.getMemo();
     try {
@@ -241,17 +234,14 @@ public class PostController {
       }    // 유저 예외처리 완료
       String userIdx = oauthService.getUserIdx(accessToken);
 
-
-      if(postRepository.existsByPostIdx((long)bookmarkId))
-      {
-        if(postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx().equals(userIdx)){
+      if (postRepository.existsByPostIdx((long) bookmarkId)) {
+        if (postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx()
+            .equals(userIdx)) {
           Post newPost = postRepository.getPostByPostIdx(Long.valueOf(bookmarkId));
-          UserBookmark userBookmark=new UserBookmark();
+          UserBookmark userBookmark = new UserBookmark();
           userBookmark.setUser_userIdx(Long.valueOf(userIdx));
-          userBookmark.setPost_postIdx((long)bookmarkId);
+          userBookmark.setPost_postIdx((long) bookmarkId);
           userBookmarkRepository.save(userBookmark);
-
-
 
           return ResponseEntity.status(200).body(" ");
         }
@@ -260,7 +250,7 @@ public class PostController {
       return ResponseEntity.status(401).body(" ");
 
 
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println(e);
       return ResponseEntity.status(401).body(" ");
     }

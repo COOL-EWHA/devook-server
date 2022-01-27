@@ -16,8 +16,9 @@ import org.hibernate.annotations.CreationTimestamp;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name= "userBookmark")
+@Table(name = "userBookmark")
 public class UserBookmark {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userBookmarkIdx;
@@ -27,11 +28,12 @@ public class UserBookmark {
   private Timestamp createdAt;
 
   @Builder
-  public UserBookmark(Long userBookmarkIdx, Long user_userIdx, Long post_postIdx, Timestamp createdAt){
-    this.userBookmarkIdx=userBookmarkIdx;
-    this.user_userIdx=user_userIdx;
-    this.post_postIdx=post_postIdx;
-    this.createdAt=createdAt;
+  public UserBookmark(Long userBookmarkIdx, Long user_userIdx, Long post_postIdx,
+      Timestamp createdAt) {
+    this.userBookmarkIdx = userBookmarkIdx;
+    this.user_userIdx = user_userIdx;
+    this.post_postIdx = post_postIdx;
+    this.createdAt = createdAt;
   }
 
 }

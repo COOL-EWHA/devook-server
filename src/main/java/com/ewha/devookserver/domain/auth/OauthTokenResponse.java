@@ -8,18 +8,19 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class OauthTokenResponse {
-    @JsonProperty("access_token")
-    private String accessToken;
 
-    private String scope;
+  @JsonProperty("access_token")
+  private String accessToken;
 
-    @JsonProperty("token_type")
-    private String tokenType;
+  private String scope;
 
-    @Builder
-    public OauthTokenResponse(String accessToken, String scope, String tokenType) {
-        this.accessToken = accessToken;
-        this.scope = scope;
-        this.tokenType = tokenType;
-    }
+  @JsonProperty("token_type")
+  private String tokenType;
+
+  @Builder
+  public OauthTokenResponse(String accessToken, String scope, String tokenType) {
+    this.accessToken = accessToken;
+    this.scope = scope;
+    this.tokenType = tokenType;
+  }
 }

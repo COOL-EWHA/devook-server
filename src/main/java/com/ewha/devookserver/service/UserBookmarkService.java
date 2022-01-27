@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class UserBookmarkService {
+
   private final UserBookmarkRepository userBookmarkRepository;
   private final PostRepository postRepository;
 
@@ -55,75 +56,64 @@ public class UserBookmarkService {
   }
 
  */
-  public List<Post> bookmarkExcludeUserPosts(Long userIdx){
+  public List<Post> bookmarkExcludeUserPosts(Long userIdx) {
 
-    List<Post> postUserBookmarkList=new ArrayList<>();
-    List<Post> finalResultList=new ArrayList<>();
+    List<Post> postUserBookmarkList = new ArrayList<>();
+    List<Post> finalResultList = new ArrayList<>();
 
-    List<UserBookmark> userBookmarkList=userBookmarkRepository.findAllByUser_userIdx(userIdx);
-
+    List<UserBookmark> userBookmarkList = userBookmarkRepository.findAllByUser_userIdx(userIdx);
 
     // 북마크로 등록한 글들의 post를 가져온다.
-    for(UserBookmark userBookmark:userBookmarkList){
-      Post post=postRepository.getPostByPostIdx(userBookmark.getPost_postIdx());
+    for (UserBookmark userBookmark : userBookmarkList) {
+      Post post = postRepository.getPostByPostIdx(userBookmark.getPost_postIdx());
       post.setCreatedAt(userBookmark.getCreatedAt());
       postUserBookmarkList.add(post);
     }
 
     // 이제 사용자의 post table에서 검색해보고, 제외하기
 
-    List<Post> postList=postRepository.findAllByUserIdx(String.valueOf(userIdx));
+    List<Post> postList = postRepository.findAllByUserIdx(String.valueOf(userIdx));
 
     System.out.println("user가 직접 등록한 post");
-    for(Post post:postList){
-      System.out.println(post.getPostIdx()+"번");
+    for (Post post : postList) {
+      System.out.println(post.getPostIdx() + "번");
     }
 
-
-
-    for(Post post:postList){
+    for (Post post : postList) {
       finalResultList.add(post);
     }
 
     // 이 아래 문이 안먹는다.
-    for(Post post:postUserBookmarkList){
-      if(finalResultList.contains(post)){
-        System.out.println(post.getPostIdx()+post.getPostTitle());
+    for (Post post : postUserBookmarkList) {
+      if (finalResultList.contains(post)) {
+        System.out.println(post.getPostIdx() + post.getPostTitle());
         finalResultList.add(post);
       }
     }
 
+    int count = 0;
 
-    int count=0;
+    for (Post post : postUserBookmarkList) {
+      count = 0;
+      for (Post posts : finalResultList) {
 
-    for(Post post:postUserBookmarkList){
-      count=0;
-      for(Post posts:finalResultList){
-
-        if(post.getPostIdx()==posts.getPostIdx()){
+        if (post.getPostIdx() == posts.getPostIdx()) {
           count++;
         }
 
       }
-      if(count==0){
+      if (count == 0) {
         finalResultList.add(post);
       }
     }
 
-
-
     System.out.println("최종리턴");
-    for(Post post:finalResultList){
-      System.out.println(post.getPostIdx()+"번");
+    for (Post post : finalResultList) {
+      System.out.println(post.getPostIdx() + "번");
     }
-
 
     return finalResultList;
   }
-
-
-
-
 
 
 }

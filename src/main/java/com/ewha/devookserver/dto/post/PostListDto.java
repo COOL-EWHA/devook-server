@@ -18,12 +18,13 @@ public class PostListDto {
 
 
   @Builder
-  public PostListDto(Long id, String title, String thumbnail, String description, List<String> tags, String url){
-    this.id=id;
-    this.title=title;
-    this.thumbnail=thumbnail;
-    this.description=description;
-    this.tags=tags;
-    this.url=url;
+  public PostListDto(Long id, String title, String thumbnail, String description, List<String> tags,
+      String url) {
+    this.id = id;
+    this.title = title;
+    this.thumbnail = thumbnail;
+    this.description = description;
+    this.tags = tags;
+    this.url = url;
   }
 }

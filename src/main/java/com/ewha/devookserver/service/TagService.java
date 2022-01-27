@@ -20,20 +20,16 @@ public class TagService {
   private final UserBookmarkRepository userBookmarkRepository;
 
 
-
-
-
-
   // 해당 태그를 가지고 있는 모든 리스트 목록을 반환하는 함수.
-  public List<Long> makePostTagList(List<String> tagList){
+  public List<Long> makePostTagList(List<String> tagList) {
 
-    List<Long> postIdxList=new ArrayList<>();
-    for(String tagInput:tagList){
+    List<Long> postIdxList = new ArrayList<>();
+    for (String tagInput : tagList) {
 
       List<PostTag> postTagList = tagRepository.findAllByPostTagName(tagInput);
 
-      for(PostTag postTag:postTagList){
-        if(!postIdxList.contains(postTag.getPost_postIdx())){
+      for (PostTag postTag : postTagList) {
+        if (!postIdxList.contains(postTag.getPost_postIdx())) {
           postIdxList.add(postTag.getPost_postIdx().longValue());
         }
       }
@@ -41,7 +37,6 @@ public class TagService {
 
     return postIdxList;
   }
-
 
 
 }

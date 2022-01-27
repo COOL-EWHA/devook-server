@@ -8,5 +8,6 @@ import lombok.Setter;
 @Getter
 @RequiredArgsConstructor
 public class PostLabmdaRequestDto {
+
   private String url;
 }

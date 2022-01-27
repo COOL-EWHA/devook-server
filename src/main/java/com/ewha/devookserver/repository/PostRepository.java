@@ -9,11 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post,Long> {
+public interface PostRepository extends JpaRepository<Post, Long> {
+
   boolean existsByPostUrl(String url);
+
   boolean existsByPostIdx(Long postIdx);
+
   boolean existsByPostIdxAndUserIdx(Long postIdx, String userIdx);
+
   Post getPostByPostIdx(Long postIdx);
+
   Post getPostByPostUrlAndUserIdx(String postUrl, String userIdx);
 
   @Transactional

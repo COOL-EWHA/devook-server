@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name= "postTag")
+@Table(name = "postTag")
 public class PostTag {
 
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long postTagIdx;
   private String postTagName;
   private Integer post_postIdx;

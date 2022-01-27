@@ -3,6 +3,7 @@ package com.ewha.devookserver.domain.post;
 import java.util.List;
 
 public class CursorResult<T> {
+
   private List<T> values;
   private Boolean hasNext;
 

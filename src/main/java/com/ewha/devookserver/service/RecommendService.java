@@ -14,30 +14,31 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class RecommendService {
+
   private final PostRepository postRepository;
   private final TagRepository tagRepository;
   private final UserBookmarkRepository userBookmarkRepository;
 
-
   // 해당 글이 bookmarked 된 글인지 Boolean 리턴
 
-  public boolean checkIsBookmarked(Long postId, String userIdx){
+  public boolean checkIsBookmarked(Long postId, String userIdx) {
 
-    if(userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(postId, Long.valueOf(userIdx))!=null){
+    if (userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(postId, Long.valueOf(userIdx))
+        != null) {
       System.out.println("ok");
       return true;
     }
-    System.out.println("존재 하지 않음." + postId+"" +userIdx);
+    System.out.println("존재 하지 않음." + postId + "" + userIdx);
     return false;
   }
 
 
-  public boolean isPostByUser(Long postId, String userIdx){
-    if(!postRepository.existsByPostIdx(postId)){
+  public boolean isPostByUser(Long postId, String userIdx) {
+    if (!postRepository.existsByPostIdx(postId)) {
       System.out.println("존재안함!!");
       return false;
     }
-    if(postRepository.getPostByPostIdx(postId).getUserIdx().equals(userIdx)){
+    if (postRepository.getPostByPostIdx(postId).getUserIdx().equals(userIdx)) {
       System.out.println("존재!!");
 
       return true;
@@ -45,24 +46,26 @@ public class RecommendService {
 
     return false;
   }
-  public List<RefrenceDto> calculateReference(List<PostTag> postTagList){
 
-    List<Post> allPost=postRepository.findAll();
-    List<RefrenceDto> resultArray=new ArrayList<>();
+  public List<RefrenceDto> calculateReference(List<PostTag> postTagList) {
+
+    List<Post> allPost = postRepository.findAll();
+    List<RefrenceDto> resultArray = new ArrayList<>();
     int count;
 
-    for(Post post:allPost){
-      count=0;
-      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+    for (Post post : allPost) {
+      count = 0;
+      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
+          post.getPostIdx().intValue());
 
-      for(PostTag postTag:eachPostTagList){
-        for(PostTag postTag1:postTagList){
-          if(postTag.getPostTagName().equals(postTag1.getPostTagName())){
+      for (PostTag postTag : eachPostTagList) {
+        for (PostTag postTag1 : postTagList) {
+          if (postTag.getPostTagName().equals(postTag1.getPostTagName())) {
             count++;
           }
         }
       }
-      RefrenceDto refrenceDto=new RefrenceDto();
+      RefrenceDto refrenceDto = new RefrenceDto();
       refrenceDto.setPost(post);
       refrenceDto.setRefrence(count);
 
@@ -71,30 +74,31 @@ public class RecommendService {
     return resultArray;
   }
 
-  public List<RefrenceDto> calculateReferenceOfPost(List<PostTag> postTagList){
+  public List<RefrenceDto> calculateReferenceOfPost(List<PostTag> postTagList) {
 
-    List<Post> allPost=postRepository.findAll();
-    List<RefrenceDto> resultArray=new ArrayList<>();
+    List<Post> allPost = postRepository.findAll();
+    List<RefrenceDto> resultArray = new ArrayList<>();
     int count;
 
-    for(Post post:allPost){
-      count=0;
-      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+    for (Post post : allPost) {
+      count = 0;
+      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
+          post.getPostIdx().intValue());
 
-      for(PostTag postTag:eachPostTagList){
-        for(PostTag postTag1:postTagList){
-          if(postTag.getPostTagName().equals(postTag1.getPostTagName())){
-            count+=3;
+      for (PostTag postTag : eachPostTagList) {
+        for (PostTag postTag1 : postTagList) {
+          if (postTag.getPostTagName().equals(postTag1.getPostTagName())) {
+            count += 3;
           }
-          if(post.getPostTitle().contains(postTag1.getPostTagName())){
-            count+=2;
+          if (post.getPostTitle().contains(postTag1.getPostTagName())) {
+            count += 2;
           }
-          if(post.getPostDescription().contains(postTag1.getPostTagName())){
+          if (post.getPostDescription().contains(postTag1.getPostTagName())) {
             count++;
           }
         }
       }
-      RefrenceDto refrenceDto=new RefrenceDto();
+      RefrenceDto refrenceDto = new RefrenceDto();
       refrenceDto.setPost(post);
       refrenceDto.setRefrence(count);
 

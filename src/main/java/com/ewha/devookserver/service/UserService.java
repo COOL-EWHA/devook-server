@@ -8,43 +8,40 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-    private final MemberRepository memberRepository;
 
-    public Member findMemberInfo(Long id){
-        return memberRepository.findMemberById(id);
-    }
+  private final MemberRepository memberRepository;
 
-    public boolean isUserExists(Long id){
-        return memberRepository.existsById(id);
-    }
+  public Member findMemberInfo(Long id) {
+    return memberRepository.findMemberById(id);
+  }
 
-    public void deleteMember(Long id){
-        memberRepository.deleteMemberById(id);
-    }
+  public boolean isUserExists(Long id) {
+    return memberRepository.existsById(id);
+  }
 
-    public boolean checkRightRefreshToken(String refreshToken){
-        if(memberRepository.findMemberByRefreshToken(refreshToken)==null)return false;
-        return true;
-    }
+  public void deleteMember(Long id) {
+    memberRepository.deleteMemberById(id);
+  }
 
-    public Member returnRefreshTokenMember(String refreshToken){
-        System.out.println(refreshToken);
-        return memberRepository.findMemberByRefreshToken(refreshToken);
-    }
+  public boolean checkRightRefreshToken(String refreshToken) {
+      return memberRepository.findMemberByRefreshToken(refreshToken) != null;
+  }
 
-    public boolean isMemberExistByEmail(String email){
-        if(memberRepository.existsMemberByEmail(email)){
-            return true;
-        }
-        else return false;
-    }
+  public Member returnRefreshTokenMember(String refreshToken) {
+    System.out.println(refreshToken);
+    return memberRepository.findMemberByRefreshToken(refreshToken);
+  }
 
-    public Member returnEmailUSer(String email){
-        return memberRepository.findMemberByEmail(email);
-    }
+  public boolean isMemberExistByEmail(String email) {
+      return memberRepository.existsMemberByEmail(email);
+  }
 
-    public Member ifGoogleUser(String email){
-        return memberRepository.returnGoogleMemberByEmail(email, "google");
-    }
+  public Member returnEmailUSer(String email) {
+    return memberRepository.findMemberByEmail(email);
+  }
+
+  public Member ifGoogleUser(String email) {
+    return memberRepository.returnGoogleMemberByEmail(email, "google");
+  }
 
 }

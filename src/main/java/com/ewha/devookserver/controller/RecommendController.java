@@ -1,9 +1,10 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.dto.post.PostBookmarkGetDto;
 import com.ewha.devookserver.domain.post.PostTag;
+import com.ewha.devookserver.domain.post.RefrenceDto;
+import com.ewha.devookserver.dto.post.PostBookmarkGetDto;
+import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.TagRepository;
@@ -11,7 +12,6 @@ import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
 import com.ewha.devookserver.service.RecommendService;
-import com.ewha.devookserver.domain.post.RefrenceDto;
 import com.ewha.devookserver.service.TagService;
 import com.ewha.devookserver.service.UserService;
 import java.text.SimpleDateFormat;
@@ -66,21 +66,19 @@ public class RecommendController {
       limit = Long.valueOf(10);
     }
 
-    int isBookmarkInput=1;
-    int isPostInput=1;
+    int isBookmarkInput = 1;
+    int isPostInput = 1;
 
     if (bookmarkId == null) {
       bookmarkId = postId;
-      isBookmarkInput=0;
+      isBookmarkInput = 0;
     }
     if (postId == null) {
       postId = bookmarkId;
-      isPostInput=0;
+      isPostInput = 0;
     }
 
-
     // nullpoint error 처리
-
 
     if (cursor == null) {
       try {
@@ -90,10 +88,9 @@ public class RecommendController {
       }
     }
 
-
     try {
       String accessToken = accessTokenGet.split(" ")[1];
-    }catch (Exception e){
+    } catch (Exception e) {
       return ResponseEntity.status(401).body("accessToken 빈 값 ");
     }
     String accessToken = accessTokenGet.split(" ")[1];
@@ -107,13 +104,12 @@ public class RecommendController {
     String userIdx = oauthService.getUserIdx(accessToken);
 
     //유저 추천글 전체 목록 GET (분기)
-    if (bookmarkId==null&&postId==null) {
+    if (bookmarkId == null && postId == null) {
       System.out.println("태그로 들어가서 검색!");
 
       List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
-
-      List<PostBookmarkRequestDto> listDtos=postService.responseBookmarkListMaker
+      List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMaker
           (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question, postTagList,
               true, requiredTagList, limit.intValue()), userIdx);
 
@@ -123,41 +119,40 @@ public class RecommendController {
 
     System.out.println("태그말고 원래대로~");
 
-if(tags==null){
+    if (tags == null) {
 
-  Post post = postRepository.getPostByPostIdx(postId);
-  List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
-  // 해당 글이 가진 태그 리스트 검색
+      Post post = postRepository.getPostByPostIdx(postId);
+      List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(post.getPostIdx().intValue());
+      // 해당 글이 가진 태그 리스트 검색
 
-  List<RefrenceDto> refrenceDtos;
+      List<RefrenceDto> refrenceDtos;
 
-  //북마크 아이디는 그대로 함수 사용(calculateRefrence)
-  if(isBookmarkInput!=0){
-    System.out.println("북마크로 이동");
-    refrenceDtos = recommendService.calculateReference(postTagList);
-  }else{
-    System.out.println("post로 이동");
+      //북마크 아이디는 그대로 함수 사용(calculateRefrence)
+      if (isBookmarkInput != 0) {
+        System.out.println("북마크로 이동");
+        refrenceDtos = recommendService.calculateReference(postTagList);
+      } else {
+        System.out.println("post로 이동");
 
-    refrenceDtos = recommendService.calculateReferenceOfPost(postTagList);
-  }
+        refrenceDtos = recommendService.calculateReferenceOfPost(postTagList);
+      }
 
-  // 이제 각 post 당 refrence 를 알았으니, 이거 역순으로 정렬해서 리턴해주면 된다.
+      // 이제 각 post 당 refrence 를 알았으니, 이거 역순으로 정렬해서 리턴해주면 된다.
 
-  List<PostBookmarkRequestDto> listDtos= postService.responseBookmarkListMaker(
-      this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
-          userIdx), userIdx);
-  List<PostBookmarkRequestDto> resultArrayList=new ArrayList<>();
+      List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMaker(
+          this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
+              userIdx), userIdx);
+      List<PostBookmarkRequestDto> resultArrayList = new ArrayList<>();
 
+      for (PostBookmarkRequestDto postListDto : listDtos) {
+        if (postListDto.getId() != bookmarkId && postListDto.getId() != postId) {
+          resultArrayList.add(postListDto);
+        }
+      }
 
-  for(PostBookmarkRequestDto postListDto:listDtos){
-    if(postListDto.getId()!=bookmarkId&&postListDto.getId()!=postId){
-      resultArrayList.add(postListDto);
+      return ResponseEntity.status(200).body(resultArrayList
+      );
     }
-  }
-
-  return ResponseEntity.status(200).body(resultArrayList
-     );
-}
 
     return null;
   }
@@ -193,8 +188,8 @@ if(tags==null){
 
   @GetMapping("/posts/{postId}")
   public ResponseEntity<?> eachPostResponse(
-      @PathVariable(name = "postId")int bookmarkId,
-      @RequestHeader(name="Authorization")String accessTokenGet){
+      @PathVariable(name = "postId") int bookmarkId,
+      @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     try {
       String accessToken = accessTokenGet.split(" ")[1];
@@ -207,37 +202,35 @@ if(tags==null){
       }    // 유저 예외처리 완료
       String userIdx = oauthService.getUserIdx(accessToken);
 
-      if(postRepository.existsByPostIdx((long)bookmarkId))
-      {
-          Post userPost = postRepository.getPostByPostIdx((long)bookmarkId);
+      if (postRepository.existsByPostIdx((long) bookmarkId)) {
+        Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);
 
-
-          List<String> tagList = postService.getEachPostTagList(bookmarkId);
-          if(tagList.size()==0){
-            tagList.add("태그1");
-            tagList.add("태그2");
-          }
-
-          SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-          Date convertedTime= userPost.getCreatedAt();
-          String dBconvertedTime=format1.format(convertedTime);
-
-          boolean getIsBookmarked=recommendService.checkIsBookmarked((long)bookmarkId, userIdx);
-
-          PostBookmarkGetDto eachPostResponseDto=PostBookmarkGetDto.builder()
-              .id(userPost.getId())
-              .title(userPost.getPostTitle())
-              .thumbnail(userPost.getPostThumbnail())
-              .description(userPost.getPostDescription())
-              .tags(tagList)
-              .url(userPost.getPostUrl())
-              .isBookmarked(getIsBookmarked) // 이후 수정
-              .build();
-
-          return ResponseEntity.status(200).body(eachPostResponseDto);
+        List<String> tagList = postService.getEachPostTagList(bookmarkId);
+        if (tagList.size() == 0) {
+          tagList.add("태그1");
+          tagList.add("태그2");
         }
-        return ResponseEntity.status(404).body("");
-      } catch (Exception ex) {
+
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date convertedTime = userPost.getCreatedAt();
+        String dBconvertedTime = format1.format(convertedTime);
+
+        boolean getIsBookmarked = recommendService.checkIsBookmarked((long) bookmarkId, userIdx);
+
+        PostBookmarkGetDto eachPostResponseDto = PostBookmarkGetDto.builder()
+            .id(userPost.getId())
+            .title(userPost.getPostTitle())
+            .thumbnail(userPost.getPostThumbnail())
+            .description(userPost.getPostDescription())
+            .tags(tagList)
+            .url(userPost.getPostUrl())
+            .isBookmarked(getIsBookmarked) // 이후 수정
+            .build();
+
+        return ResponseEntity.status(200).body(eachPostResponseDto);
+      }
+      return ResponseEntity.status(404).body("");
+    } catch (Exception ex) {
       ex.printStackTrace();
       return ResponseEntity.status(404).body("");
     }

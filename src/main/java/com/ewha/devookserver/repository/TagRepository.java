@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TagRepository  extends JpaRepository<PostTag, Long> {
-  public List<PostTag> findAllByPostTagName(String postTagName);
+public interface TagRepository extends JpaRepository<PostTag, Long> {
+
+  List<PostTag> findAllByPostTagName(String postTagName);
 
   @Query("select p from PostTag p where p.post_postIdx=?1")
-  public List<PostTag> findAllByPost_postIdx(int postIdx);
+  List<PostTag> findAllByPost_postIdx(int postIdx);
 }

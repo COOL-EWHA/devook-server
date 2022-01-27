@@ -1,7 +1,5 @@
 package com.ewha.devookserver.dto.post;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,14 +18,15 @@ public class EachPostResponseDto {
 
 
   @Builder
-  public EachPostResponseDto(Long id, String title, String thumbnail, String description, List<String> tags, String url, String createdAt, String memo){
-    this.id=id;
-    this.title=title;
-    this.thumbnail=thumbnail;
-    this.description=description;
-    this.tags=tags;
-    this.url=url;
-    this.createdAt=createdAt;
-    this.memo=memo;
+  public EachPostResponseDto(Long id, String title, String thumbnail, String description,
+      List<String> tags, String url, String createdAt, String memo) {
+    this.id = id;
+    this.title = title;
+    this.thumbnail = thumbnail;
+    this.description = description;
+    this.tags = tags;
+    this.url = url;
+    this.createdAt = createdAt;
+    this.memo = memo;
   }
 }

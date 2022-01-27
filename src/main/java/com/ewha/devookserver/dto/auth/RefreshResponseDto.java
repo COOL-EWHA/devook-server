@@ -5,12 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class RefreshResponseDto {
-    public String accessToken;
-    public String refreshToken;
 
-    @Builder
-    public RefreshResponseDto(String accessToken, String refreshToken){
-        this.accessToken=accessToken;
-        this.refreshToken=refreshToken;
-    }
+  public String accessToken;
+  public String refreshToken;
+
+  @Builder
+  public RefreshResponseDto(String accessToken, String refreshToken) {
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+  }
 }

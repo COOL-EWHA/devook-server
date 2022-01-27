@@ -35,23 +35,26 @@ public class QueryController {
   public ResponseEntity<?> get_dsl
       (@RequestParam(name = "tags", required = false) String tags,
           @RequestParam(name = "cursor", required = false) Long cursor,
-          @RequestParam(name="q", required = false)String question,
+          @RequestParam(name = "q", required = false) String question,
           @RequestHeader(value = "Authorization") String tokenGet
-      ){
+      ) {
 
+    if (cursor == null) {
+      System.out.println("cursornull");
+    }
+    if (tags == null) {
+      System.out.println("tagsnull");
+    }
+    if (question == null) {
+      System.out.println("questionnull");
+    }
 
-    if(cursor==null) System.out.println("cursornull");
-    if(tags==null) System.out.println("tagsnull");
-    if(question==null) System.out.println("questionnull");
-
-
-
-    List<String> requiredTagList=new ArrayList<>();
+    List<String> requiredTagList = new ArrayList<>();
 
     if (tags != null) {
-      StringTokenizer tokens=new StringTokenizer(tags,",");
+      StringTokenizer tokens = new StringTokenizer(tags, ",");
 
-      while(tokens.hasMoreTokens()){
+      while (tokens.hasMoreTokens()) {
         requiredTagList.add(tokens.nextToken());
       }
 
@@ -74,43 +77,41 @@ public class QueryController {
       String userIdx = oauthService.getUserIdx(accessToken);
 //---- 여기까지 일치.
 
-
       // 필터링에 해당하는 post_idx 의 배열 :: postTagList
-      List<Long> postTagList=tagService.makePostTagList(requiredTagList);
+      List<Long> postTagList = tagService.makePostTagList(requiredTagList);
       System.out.println(postTagList);
 
       // 11.21 @ 1:03:31 수정사항
 
       if (cursor == null) {
-        try{
-         cursor=1000000L;//사용자의 가장 최근 글 값
-        }catch (Exception e){
-          cursor= Long.valueOf(1);
+        try {
+          cursor = 1000000L;//사용자의 가장 최근 글 값
+        } catch (Exception e) {
+          cursor = Long.valueOf(1);
         }
 
       }
 
-      if(tags==null){
-          // 여기 아래부터 시작
+      if (tags == null) {
+        // 여기 아래부터 시작
         System.out.println("tags==null");
 
-          return ResponseEntity.status(200).body(postService.responseListMaker
-              (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question)));
-        }
+        return ResponseEntity.status(200).body(postService.responseListMaker
+            (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question)));
+      }
       System.out.println("tags!=null");
 
-        // 여기 아래부터 시작
-        return ResponseEntity.status(200).body(postService.responseListMaker
-            (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question,postTagList)));
+      // 여기 아래부터 시작
+      return ResponseEntity.status(200).body(postService.responseListMaker
+          (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question, postTagList)));
 
 
     } catch (Exception e) {
       e.printStackTrace();
-      return ResponseEntity.status(401).body("어떤 에러인지 확인"+e);
+      return ResponseEntity.status(401).body("어떤 에러인지 확인" + e);
     }
 
   }
-
 
 
 }
