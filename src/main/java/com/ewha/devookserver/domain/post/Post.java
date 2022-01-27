@@ -5,7 +5,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 
 import javax.persistence.*;
 

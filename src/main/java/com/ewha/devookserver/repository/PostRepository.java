@@ -1,8 +1,6 @@
 package com.ewha.devookserver.repository;
 
 import com.ewha.devookserver.domain.post.Post;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.sql.Timestamp;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Pageable;

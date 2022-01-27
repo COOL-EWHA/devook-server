@@ -1,8 +1,6 @@
 package com.ewha.devookserver.service;
 
-import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
-import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.TagRepository;

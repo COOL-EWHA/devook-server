@@ -1,9 +1,8 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.domain.dto.PostBookmarkRequestDto;
-import com.ewha.devookserver.domain.post.EachPostResponseDtoForList;
+import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.domain.post.PostBookmarkGetDto;
+import com.ewha.devookserver.dto.post.PostBookmarkGetDto;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
@@ -12,7 +11,7 @@ import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
 import com.ewha.devookserver.service.RecommendService;
-import com.ewha.devookserver.service.RefrenceDto;
+import com.ewha.devookserver.domain.post.RefrenceDto;
 import com.ewha.devookserver.service.TagService;
 import com.ewha.devookserver.service.UserService;
 import java.text.SimpleDateFormat;

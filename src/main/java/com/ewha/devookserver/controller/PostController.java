@@ -1,28 +1,22 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.domain.post.EachPostResponseDto;
+import com.ewha.devookserver.dto.post.EachPostResponseDto;
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
-import com.ewha.devookserver.domain.post.PostLambdaDto;
-import com.ewha.devookserver.domain.post.PostTag;
-import com.ewha.devookserver.domain.post.PostUserRequestDto;
-import com.ewha.devookserver.domain.post.RequestMemoDto;
+import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
+import com.ewha.devookserver.dto.post.PostLambdaDto;
+import com.ewha.devookserver.dto.post.PostUserRequestDto;
+import com.ewha.devookserver.dto.post.RequestMemoDto;
 import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
-import com.ewha.devookserver.service.UserService;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -40,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PostController {
 
-  private final UserService userService;
   private final PostService postService;
   private final OauthService oauthService;
   private final PostRepository postRepository;

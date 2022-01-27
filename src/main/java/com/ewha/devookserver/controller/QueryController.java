@@ -1,6 +1,5 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.service.OauthService;

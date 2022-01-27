@@ -2,10 +2,10 @@ package com.ewha.devookserver.service;
 
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
+import com.ewha.devookserver.domain.post.RefrenceDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.TagRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

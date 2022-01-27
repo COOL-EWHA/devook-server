@@ -1,16 +1,19 @@
 package com.ewha.devookserver.controller;
 
-import com.ewha.devookserver.config.auth.JwtTokenProvider;
-import com.ewha.devookserver.config.auth.LoginResponse;
-import com.ewha.devookserver.config.auth.Member;
+import com.ewha.devookserver.domain.auth.JwtTokenProvider;
+import com.ewha.devookserver.domain.auth.LoginResponse;
+import com.ewha.devookserver.domain.user.Member;
+import com.ewha.devookserver.dto.auth.LoginFinalResponseDto;
+import com.ewha.devookserver.dto.auth.RefreshDto;
+import com.ewha.devookserver.dto.auth.RefreshResponseDto;
+import com.ewha.devookserver.dto.auth.RevisedCookieDto;
+import com.ewha.devookserver.dto.auth.TestLoginDto;
+import com.ewha.devookserver.dto.auth.TokenRequestDto;
+import com.ewha.devookserver.dto.auth.UserInfoResponseDto;
 import com.ewha.devookserver.repository.MemberRepository;
-import com.ewha.devookserver.domain.dto.*;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.UserService;
 import java.util.Objects;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

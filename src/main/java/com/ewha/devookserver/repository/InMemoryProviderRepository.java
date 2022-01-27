@@ -1,6 +1,6 @@
 package com.ewha.devookserver.repository;
 
-import com.ewha.devookserver.config.auth.OauthProvider;
+import com.ewha.devookserver.domain.auth.OauthProvider;
 import java.util.HashMap;
 import java.util.Map;
 

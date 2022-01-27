@@ -1,11 +1,13 @@
 package com.ewha.devookserver.service;
 
-import com.ewha.devookserver.domain.dto.PostListDto;
+import com.ewha.devookserver.domain.post.CursorResult;
+import com.ewha.devookserver.domain.post.RefrenceDto;
+import com.ewha.devookserver.dto.post.PostListDto;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
-import com.ewha.devookserver.domain.post.PostLambdaDto;
+import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
+import com.ewha.devookserver.dto.post.PostLambdaDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;

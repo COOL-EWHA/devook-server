@@ -1,6 +1,6 @@
 package com.ewha.devookserver.repository;
 
-import com.ewha.devookserver.config.auth.Member;
+import com.ewha.devookserver.domain.user.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

@@ -4,7 +4,6 @@ import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.repository.PostRepository;
-import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.UserRecommRepository;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,13 @@
 package com.ewha.devookserver.service;
 
-import com.ewha.devookserver.config.auth.*;
-import com.ewha.devookserver.domain.dto.RefreshDto;
+import com.ewha.devookserver.domain.auth.JwtTokenProvider;
+import com.ewha.devookserver.domain.auth.LoginResponse;
+import com.ewha.devookserver.domain.auth.OauthAttributes;
+import com.ewha.devookserver.domain.auth.OauthProvider;
+import com.ewha.devookserver.domain.auth.OauthTokenResponse;
+import com.ewha.devookserver.domain.auth.UserProfile;
+import com.ewha.devookserver.domain.user.Member;
+import com.ewha.devookserver.dto.auth.RefreshDto;
 import com.ewha.devookserver.repository.InMemoryProviderRepository;
 import com.ewha.devookserver.repository.MemberRepository;
 import org.springframework.core.ParameterizedTypeReference;

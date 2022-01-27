@@ -1,11 +1,9 @@
 package com.ewha.devookserver.service;
 
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.domain.user.User;
 import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
-import java.awt.SystemTray;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -1,21 +1,20 @@
 package com.ewha.devookserver.service;
 
-import com.ewha.devookserver.domain.dto.PostBookmarkRequestDto;
-import com.ewha.devookserver.domain.dto.PostListDto;
+import com.ewha.devookserver.domain.post.CursorResult;
+import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
+import com.ewha.devookserver.dto.post.PostListDto;
 import com.ewha.devookserver.domain.post.PostTag;
-import com.ewha.devookserver.domain.user.User;
 import com.ewha.devookserver.domain.user.UserBookmark;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.domain.post.PostLabmdaRequestDto;
-import com.ewha.devookserver.domain.post.PostLambdaDto;
+import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
+import com.ewha.devookserver.dto.post.PostLambdaDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

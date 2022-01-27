@@ -1,6 +1,6 @@
 package com.ewha.devookserver.service;
 
-import com.ewha.devookserver.config.auth.Member;
+import com.ewha.devookserver.domain.user.Member;
 import com.ewha.devookserver.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
