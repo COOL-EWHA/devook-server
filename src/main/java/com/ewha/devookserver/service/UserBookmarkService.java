@@ -68,6 +68,7 @@ public class UserBookmarkService {
     // 북마크로 등록한 글들의 post를 가져온다.
     for(UserBookmark userBookmark:userBookmarkList){
       Post post=postRepository.getPostByPostIdx(userBookmark.getPost_postIdx());
+      post.setCreatedAt(userBookmark.getCreatedAt());
       postUserBookmarkList.add(post);
     }
 

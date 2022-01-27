@@ -60,7 +60,7 @@ public class Post implements Comparable<Post>{
   @Override
   public int compareTo(Post o) {
 
-    if(this.getPostIdx()>o.getPostIdx()){
+    if(this.getPostIdx()>o.getPostIdx()||this.getCreatedAt().after(o.getCreatedAt())){
       return -1;
     }
     else if(this.getPostIdx()<o.getPostIdx()){
