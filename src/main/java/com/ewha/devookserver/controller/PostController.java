@@ -1,7 +1,6 @@
 package com.ewha.devookserver.controller;
 
 import com.ewha.devookserver.domain.post.Post;
-import com.ewha.devookserver.domain.post.UserBookmark;
 import com.ewha.devookserver.dto.post.EachPostResponseDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.dto.post.PostLambdaDto;
@@ -231,19 +230,16 @@ public class PostController {
         return ResponseEntity.status(401).body(" ");
       }    // 유저 예외처리 완료
       String userIdx = oauthService.getUserIdx(accessToken);
-
       if (postRepository.existsByPostIdx((long) bookmarkId)) {
         if (postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx()
             .equals(userIdx)) {
+
           Post newPost = postRepository.getPostByPostIdx(Long.valueOf(bookmarkId));
-          UserBookmark userBookmark = new UserBookmark();
-          userBookmark.setUser_userIdx(Long.valueOf(userIdx));
-          userBookmark.setPost_postIdx((long) bookmarkId);
-          userBookmarkRepository.save(userBookmark);
+          newPost.setPostMemo(requestMemo);
+          postRepository.save(newPost);
 
           return ResponseEntity.status(200).body(" ");
         }
-        return ResponseEntity.status(401).body(" ");
       }
       return ResponseEntity.status(401).body(" ");
 
