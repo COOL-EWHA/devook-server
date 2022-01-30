@@ -24,7 +24,7 @@ public class UserService {
   }
 
   public boolean checkRightRefreshToken(String refreshToken) {
-      return memberRepository.findMemberByRefreshToken(refreshToken) != null;
+    return memberRepository.findMemberByRefreshToken(refreshToken) != null;
   }
 
   public Member returnRefreshTokenMember(String refreshToken) {
@@ -33,7 +33,7 @@ public class UserService {
   }
 
   public boolean isMemberExistByEmail(String email) {
-      return memberRepository.existsMemberByEmail(email);
+    return memberRepository.existsMemberByEmail(email);
   }
 
   public Member returnEmailUSer(String email) {

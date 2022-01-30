@@ -100,7 +100,7 @@ public class OauthService {
     // 이미 존재하는 유저인지 확인 (회원가입 or 로그인)
     boolean existUser = memberRepository.existsMemberByOauthId(userProfile.getOauthId());
 
-      String refreshToken = jwtTokenProvider.createRefreshToken();
+    String refreshToken = jwtTokenProvider.createRefreshToken();
     Member member = saveOrUpdate(userProfile, refreshToken);
     String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(member.getId()));
 

@@ -3,6 +3,7 @@ package com.ewha.devookserver.domain.post;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.sql.Timestamp;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,12 +13,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 
 
 @Setter
 @Getter
 @NoArgsConstructor
+@DynamicInsert
 @Entity
 @Table(name = "post")
 public class Post implements Comparable<Post> {
@@ -32,6 +35,9 @@ public class Post implements Comparable<Post> {
   private String postUrl;
   private String postMemo;
   private String userIdx;
+
+  @Column(columnDefinition = "boolean default false")
+  private Boolean isRead;
 
   @CreationTimestamp
   private Timestamp createdAt;
