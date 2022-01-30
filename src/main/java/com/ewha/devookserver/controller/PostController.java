@@ -1,5 +1,6 @@
 package com.ewha.devookserver.controller;
 
+import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.dto.post.EachPostResponseDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
@@ -8,12 +9,16 @@ import com.ewha.devookserver.dto.post.PostUserRequestDto;
 import com.ewha.devookserver.dto.post.RequestMemoDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
+import com.ewha.devookserver.service.NotificationService;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,6 +41,7 @@ public class PostController {
   private final OauthService oauthService;
   private final PostRepository postRepository;
   private final UserBookmarkRepository userBookmarkRepository;
+  private final NotificationService notificationService;
 
   @PostMapping("/bookmarks")
   public ResponseEntity<?> testPost(
@@ -163,6 +169,8 @@ public class PostController {
 
   }
 
+
+/*
   @GetMapping("/bookmarks/{bookmarkId}")
   public ResponseEntity<?> eachPostResponse(
       @PathVariable(name = "bookmarkId") int bookmarkId,
@@ -213,13 +221,14 @@ public class PostController {
 
   }
 
-  @PatchMapping("/bookmarks/{bookmarkId}")
-  public ResponseEntity<?> editBookmarkMemo(
-      @PathVariable(name = "bookmarkId") int bookmarkId,
-      @RequestHeader(name = "Authorization") String accessTokenGet,
-      @RequestBody RequestMemoDto requestMemoDto) {
+ */
 
-    String requestMemo = requestMemoDto.getMemo();
+  // 개별 북마크 글 조회 GET
+  @GetMapping("/bookmarks/{bookmarkId}")
+  public ResponseEntity<?> eachPostResponse(
+      @PathVariable(name = "bookmarkId") int bookmarkId,
+      @RequestHeader(name = "Authorization") String accessTokenGet) {
+
     try {
       String accessToken = accessTokenGet.split(" ")[1];
       if (!oauthService.validatieTokenInput(accessToken)) {
@@ -229,6 +238,72 @@ public class PostController {
       if (!oauthService.isUserExist(accessToken)) {
         return ResponseEntity.status(401).body(" ");
       }    // 유저 예외처리 완료
+      String userIdx = oauthService.getUserIdx(accessToken);
+
+      if (postRepository.existsByPostIdx((long) bookmarkId)) {
+        Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);
+
+        List<String> tagList = postService.getEachPostTagList(bookmarkId);
+        if (tagList.size() == 0) {
+          tagList.add("태그1");
+          tagList.add("태그2");
+        }
+
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date convertedTime = userPost.getCreatedAt();
+        String dBconvertedTime = format1.format(convertedTime);
+
+        LocalDateTime dueDate = null;
+        Optional<Notification> notification=notificationService.returnDueDate((long)bookmarkId,Long.valueOf(userIdx),true);
+        if(!notification.isEmpty()){
+          dueDate=notification.get().getDueDate();
+        }
+
+        EachPostResponseDto eachPostResponseDto = EachPostResponseDto.builder()
+            .id(userPost.getId())
+            .title(userPost.getPostTitle())
+            .thumbnail(userPost.getPostThumbnail())
+            .description(userPost.getPostDescription())
+            .tags(tagList)
+            .url(userPost.getPostUrl())
+            .createdAt(dBconvertedTime)
+            .memo(userPost.getPostMemo())
+            .isRead(userPost.getIsRead()) //isRead, dueDate 추가
+            .dueDate(dueDate)
+            .build();
+
+        return ResponseEntity.status(200).body(eachPostResponseDto);
+      }
+      return ResponseEntity.status(404).body("");
+    } catch (Exception e) {
+      System.out.println(e);
+      return ResponseEntity.status(404).body(" ");
+    }
+
+  }
+
+  @PatchMapping("/bookmarks/{bookmarkId}")
+  public ResponseEntity<?> editBookmarkMemo(
+      @PathVariable(name = "bookmarkId") int bookmarkId,
+      @RequestHeader(name = "Authorization") String accessTokenGet,
+      @RequestBody RequestMemoDto requestMemoDto) {
+
+    String requestMemo = requestMemoDto.getMemo();
+    Date requestDueDate = requestMemoDto.getDueDate();
+    Boolean isRead = requestMemoDto.getIsRead();
+
+    try {
+      String accessToken = accessTokenGet.split(" ")[1];
+      if (!oauthService.validatieTokenInput(accessToken)) {
+        return ResponseEntity.status(401).body(" ");
+      }
+      System.out.println(oauthService.isUserExist(accessToken));
+      if (!oauthService.isUserExist(accessToken)) {
+        return ResponseEntity.status(401).body(" ");
+      }    // 유저 예외처리 완료
+
+      // 이제 post 관련한 method 짜기.
+
       String userIdx = oauthService.getUserIdx(accessToken);
       if (postRepository.existsByPostIdx((long) bookmarkId)) {
         if (postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx()
