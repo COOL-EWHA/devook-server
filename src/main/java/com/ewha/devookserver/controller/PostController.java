@@ -2,6 +2,7 @@ package com.ewha.devookserver.controller;
 
 import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.domain.post.Post;
+import com.ewha.devookserver.domain.post.UserBookmark;
 import com.ewha.devookserver.dto.post.EachPostResponseDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.dto.post.PostLambdaDto;
@@ -82,7 +83,8 @@ public class PostController {
           } else {
             Post post = postRepository.getPostByPostIdx(postIdx);
             post.setUserIdx(userIdx);
-            postService.savePostBookmark(Long.valueOf(userIdx), postIdx);
+            postService.savePostBookmark(Long.valueOf(userIdx), postIdx,
+                postUserRequestDto.getMemo());
           }
           return ResponseEntity.status(201).body("북마크 새로 생성완료!");
 
@@ -311,11 +313,31 @@ public class PostController {
 
           Post newPost = postRepository.getPostByPostIdx(Long.valueOf(bookmarkId));
           newPost.setPostMemo(requestMemo);
+          newPost.setIsRead(isRead);
+
+          // notification 에도 저장
+
+
+
           postRepository.save(newPost);
 
           return ResponseEntity.status(200).body(" ");
         }
       }
+
+      // post에 없으면, bookmark 에서 다시 조회.
+      if(userBookmarkRepository.existsByPost_postIdxAndUser_userIdx((long)bookmarkId,Long.valueOf(userIdx))!=null){
+        UserBookmark userBookmark=userBookmarkRepository.existsByPost_postIdxAndUser_userIdx((long)bookmarkId,Long.valueOf(userIdx));
+
+        userBookmark.setMemo(requestMemo);
+        userBookmark.setIsRead(isRead);
+
+        // notification 에도 저장
+
+        userBookmarkRepository.save(userBookmark);
+
+      }
+
       return ResponseEntity.status(401).body(" ");
 
 

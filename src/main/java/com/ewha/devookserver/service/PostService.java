@@ -214,11 +214,12 @@ public class PostService {
     postRepository.save(post);
   }
 
-  public void savePostBookmark(Long user_userIdx, Long post_postIdx) {
+  public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
 
     UserBookmark userBookmark = UserBookmark.builder()
         .post_postIdx(post_postIdx)
         .user_userIdx(user_userIdx)
+        .memo(memo)
         .build();
 
     userBookmarkRepository.save(userBookmark);
