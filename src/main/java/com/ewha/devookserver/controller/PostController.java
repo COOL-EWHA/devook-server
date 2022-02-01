@@ -297,11 +297,11 @@ public class PostController {
     try {
       String accessToken = accessTokenGet.split(" ")[1];
       if (!oauthService.validatieTokenInput(accessToken)) {
-        return ResponseEntity.status(401).body(" ");
+        return ResponseEntity.status(401).body("1");
       }
       System.out.println(oauthService.isUserExist(accessToken));
       if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(401).body(" ");
+        return ResponseEntity.status(401).body(" 2");
       }    // 유저 예외처리 완료
 
       // 이제 post 관련한 method 짜기.
@@ -318,16 +318,15 @@ public class PostController {
           // notification 에도 저장
 
 
-
           postRepository.save(newPost);
 
           return ResponseEntity.status(200).body(" ");
         }
       }
 
-      // post에 없으면, bookmark 에서 다시 조회.
-      if(userBookmarkRepository.existsByPost_postIdxAndUser_userIdx((long)bookmarkId,Long.valueOf(userIdx))!=null){
-        UserBookmark userBookmark=userBookmarkRepository.existsByPost_postIdxAndUser_userIdx((long)bookmarkId,Long.valueOf(userIdx));
+      if(!userBookmarkRepository.findByPost_postIdxAndUser_userIdx((long)bookmarkId, Long.valueOf(userIdx)).equals(null)){
+
+        UserBookmark userBookmark=userBookmarkRepository.findByPost_postIdxAndUser_userIdx((long)bookmarkId,Long.valueOf(userIdx));
 
         userBookmark.setMemo(requestMemo);
         userBookmark.setIsRead(isRead);
@@ -335,15 +334,19 @@ public class PostController {
         // notification 에도 저장
 
         userBookmarkRepository.save(userBookmark);
+        return ResponseEntity.status(200).body(" ");
 
       }
 
-      return ResponseEntity.status(401).body(" ");
+      System.out.println(userIdx+"  "+bookmarkId);
+
+
+      return ResponseEntity.status(401).body(" 3");
 
 
     } catch (Exception e) {
       System.out.println(e);
-      return ResponseEntity.status(401).body(" ");
+      return ResponseEntity.status(401).body(" 4");
     }
 
   }
