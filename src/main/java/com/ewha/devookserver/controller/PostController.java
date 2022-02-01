@@ -243,38 +243,88 @@ public class PostController {
       String userIdx = oauthService.getUserIdx(accessToken);
 
       if (postRepository.existsByPostIdx((long) bookmarkId)) {
+
+        // case 1 postRepository의 해당 userPost가 useridex와 일치할때
+        // case 2 그렇지 않을때
+
+
         Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);
 
-        List<String> tagList = postService.getEachPostTagList(bookmarkId);
-        if (tagList.size() == 0) {
-          tagList.add("태그1");
-          tagList.add("태그2");
+
+        // case1
+        if (userPost.getUserIdx().equals(userIdx)) {
+
+          List<String> tagList = postService.getEachPostTagList(bookmarkId);
+          if (tagList.size() == 0) {
+            tagList.add("태그1");
+            tagList.add("태그2");
+          }
+
+          SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          Date convertedTime = userPost.getCreatedAt();
+          String dBconvertedTime = format1.format(convertedTime);
+
+          LocalDateTime dueDate = null;
+          Optional<Notification> notification = notificationService.returnDueDate((long) bookmarkId,
+              Long.valueOf(userIdx), true);
+          if (!notification.isEmpty()) {
+            dueDate = notification.get().getDueDate();
+          }
+
+          EachPostResponseDto eachPostResponseDto = EachPostResponseDto.builder()
+              .id(userPost.getId())
+              .title(userPost.getPostTitle())
+              .thumbnail(userPost.getPostThumbnail())
+              .description(userPost.getPostDescription())
+              .tags(tagList)
+              .url(userPost.getPostUrl())
+              .createdAt(dBconvertedTime)
+              .memo(userPost.getPostMemo())
+              .isRead(userPost.getIsRead()) //isRead, dueDate 추가
+              .dueDate(dueDate)
+              .build();
+
+          return ResponseEntity.status(200).body(eachPostResponseDto);
+        }else{ //case2
+
+          UserBookmark userBookmark=userBookmarkRepository.findByPost_postIdxAndUser_userIdx(userPost.getPostIdx(), Long.valueOf(userIdx));
+
+          List<String> tagList = postService.getEachPostTagList(bookmarkId);
+          if (tagList.size() == 0) {
+            tagList.add("태그1");
+            tagList.add("태그2");
+          }
+
+          SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          Date convertedTime = userBookmark.getCreatedAt();
+          String dBconvertedTime = format1.format(convertedTime);
+
+          LocalDateTime dueDate = null;
+          Optional<Notification> notification = notificationService.returnDueDate((long) bookmarkId,
+              Long.valueOf(userIdx), true);
+          if (!notification.isEmpty()) {
+            dueDate = notification.get().getDueDate();
+          }
+
+          EachPostResponseDto eachPostResponseDto = EachPostResponseDto.builder()
+              .id(userPost.getId())
+              .title(userPost.getPostTitle())
+              .thumbnail(userPost.getPostThumbnail())
+              .description(userPost.getPostDescription())
+              .tags(tagList)
+              .url(userPost.getPostUrl())
+              .createdAt(dBconvertedTime)
+              .memo(userBookmark.getMemo())
+              .isRead(userBookmark.getIsRead()) //isRead, dueDate 추가
+              .dueDate(dueDate)
+              .build();
+
+          return ResponseEntity.status(200).body(eachPostResponseDto);
+
+
+
         }
 
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date convertedTime = userPost.getCreatedAt();
-        String dBconvertedTime = format1.format(convertedTime);
-
-        LocalDateTime dueDate = null;
-        Optional<Notification> notification=notificationService.returnDueDate((long)bookmarkId,Long.valueOf(userIdx),true);
-        if(!notification.isEmpty()){
-          dueDate=notification.get().getDueDate();
-        }
-
-        EachPostResponseDto eachPostResponseDto = EachPostResponseDto.builder()
-            .id(userPost.getId())
-            .title(userPost.getPostTitle())
-            .thumbnail(userPost.getPostThumbnail())
-            .description(userPost.getPostDescription())
-            .tags(tagList)
-            .url(userPost.getPostUrl())
-            .createdAt(dBconvertedTime)
-            .memo(userPost.getPostMemo())
-            .isRead(userPost.getIsRead()) //isRead, dueDate 추가
-            .dueDate(dueDate)
-            .build();
-
-        return ResponseEntity.status(200).body(eachPostResponseDto);
       }
       return ResponseEntity.status(404).body("");
     } catch (Exception e) {
