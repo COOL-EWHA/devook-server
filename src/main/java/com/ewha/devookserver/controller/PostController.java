@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -143,6 +144,7 @@ public class PostController {
 
   @GetMapping("/bookmarks/tags")
   public ResponseEntity<?> getTagList(
+      @RequestParam(name = "isBookmarkRead")Boolean isBookmarkRead,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     try {
@@ -159,7 +161,7 @@ public class PostController {
       System.out.println(userIdx);
       // 1. userIdx와 일치하는 post
 
-      List<String> finalResponseString = postService.getPostTagList(userIdx);
+      List<String> finalResponseString = postService.getPostTagList(userIdx, isBookmarkRead);
 
       // 여기 String 배열 반환
       return ResponseEntity.status(200).body(finalResponseString);
@@ -172,58 +174,6 @@ public class PostController {
   }
 
 
-/*
-  @GetMapping("/bookmarks/{bookmarkId}")
-  public ResponseEntity<?> eachPostResponse(
-      @PathVariable(name = "bookmarkId") int bookmarkId,
-      @RequestHeader(name = "Authorization") String accessTokenGet) {
-
-    try {
-      String accessToken = accessTokenGet.split(" ")[1];
-      if (!oauthService.validatieTokenInput(accessToken)) {
-        return ResponseEntity.status(401).body(" ");
-      }
-      System.out.println(oauthService.isUserExist(accessToken));
-      if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(401).body(" ");
-      }    // 유저 예외처리 완료
-      String userIdx = oauthService.getUserIdx(accessToken);
-
-      if (postRepository.existsByPostIdx((long) bookmarkId)) {
-        Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);
-
-        List<String> tagList = postService.getEachPostTagList(bookmarkId);
-        if (tagList.size() == 0) {
-          tagList.add("태그1");
-          tagList.add("태그2");
-        }
-
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date convertedTime = userPost.getCreatedAt();
-        String dBconvertedTime = format1.format(convertedTime);
-
-        EachPostResponseDto eachPostResponseDto = EachPostResponseDto.builder()
-            .id(userPost.getId())
-            .title(userPost.getPostTitle())
-            .thumbnail(userPost.getPostThumbnail())
-            .description(userPost.getPostDescription())
-            .tags(tagList)
-            .url(userPost.getPostUrl())
-            .createdAt(dBconvertedTime)
-            .memo(userPost.getPostMemo())
-            .build();
-
-        return ResponseEntity.status(200).body(eachPostResponseDto);
-      }
-      return ResponseEntity.status(404).body("");
-    } catch (Exception e) {
-      System.out.println(e);
-      return ResponseEntity.status(404).body(" ");
-    }
-
-  }
-
- */
 
   // 개별 북마크 글 조회 GET
   @GetMapping("/bookmarks/{bookmarkId}")
@@ -315,7 +265,7 @@ public class PostController {
               .url(userPost.getPostUrl())
               .createdAt(dBconvertedTime)
               .memo(userBookmark.getMemo())
-              .isRead(userBookmark.getIsRead()) //isRead, dueDate 추가
+              .isRead(userBookmark.getIsRead())
               .dueDate(dueDate)
               .build();
 
