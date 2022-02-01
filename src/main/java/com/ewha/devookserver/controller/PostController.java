@@ -144,7 +144,7 @@ public class PostController {
 
   @GetMapping("/bookmarks/tags")
   public ResponseEntity<?> getTagList(
-      @RequestParam(name = "isBookmarkRead")Boolean isBookmarkRead,
+      @RequestParam(name = "isBookmarkRead", required = false)Boolean isBookmarkRead,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     try {

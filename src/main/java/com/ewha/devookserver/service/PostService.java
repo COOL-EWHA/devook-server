@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -140,8 +141,9 @@ public class PostService {
 
   }
 
-  public List<PostListDto> responseListMaker(CursorResult<Post> productList) {
+  public List<PostListDto> responseListMaker(CursorResult<Post> productList, Boolean isRead) {
     List<PostListDto> searchResponseDtoList = new ArrayList<>();
+    List<PostListDto> isReadReturnDtoList=new ArrayList<>();
 
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
@@ -163,10 +165,21 @@ public class PostService {
           .title(post.getPostTitle())
           .tags(forTestString)
           .url(post.getPostUrl())
+          .isRead(post.getIsRead())
+          .dueDate(null)
           .build();
       searchResponseDtoList.add(postListDto);
     }
-    return searchResponseDtoList;
+    if(isRead==null){
+      return searchResponseDtoList.stream().limit(10).collect(Collectors.toList());
+    }
+    for(PostListDto postListDto:searchResponseDtoList){
+      if(postListDto.getIsRead().booleanValue()==isRead){
+        isReadReturnDtoList.add(postListDto);
+      }
+    }
+
+    return isReadReturnDtoList.stream().limit(10).collect(Collectors.toList());
   }
 
   public List<PostBookmarkRequestDto> responseBookmarkListMaker(CursorResult<Post> productList,

@@ -107,7 +107,7 @@ public class QueryRepository {
 
     Collections.sort(filteredPostList);
     filteredPostList = searchEngine(filteredPostList, question);
-    return filteredPostList.stream().limit(10).collect(Collectors.toList());
+    return filteredPostList.stream().collect(Collectors.toList());
   }
 
   // findAllByPostIdxDesc
@@ -125,7 +125,7 @@ public class QueryRepository {
         }
       }
       Collections.sort(returnList);
-      return returnList.stream().limit(10).collect(Collectors.toList());
+      return returnList.stream().collect(Collectors.toList());
 
     }
     System.out.println("태그가 없을때, question이 주어진 경우+function2");
@@ -142,7 +142,7 @@ public class QueryRepository {
 
     Collections.sort(filteredPostList);
     filteredPostList = searchEngine(filteredPostList, question);
-    return filteredPostList.stream().limit(10).collect(Collectors.toList());
+    return filteredPostList.stream().collect(Collectors.toList());
   }
 
   // 태그 리스트 필터링하는 함수
@@ -163,7 +163,7 @@ public class QueryRepository {
 
     Collections.sort(filteredPostList);
     System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
-    return filteredPostList.stream().limit(10).collect(Collectors.toList());
+    return filteredPostList.stream().collect(Collectors.toList());
   }
 
   public List<Post> tagFiltering2(List<Long> postIdxList, Long id, String userIdx,
@@ -183,7 +183,7 @@ public class QueryRepository {
     }
 
     Collections.sort(filteredPostList);
-    return filteredPostList.stream().limit(10).collect(Collectors.toList());
+    return filteredPostList.stream().collect(Collectors.toList());
   }
 
 
@@ -301,7 +301,7 @@ public class QueryRepository {
     }
 
     System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
-    return filteredPostList.stream().limit(10).collect(Collectors.toList());
+    return filteredPostList.stream().collect(Collectors.toList());
   }
 
   public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx,
