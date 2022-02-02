@@ -13,6 +13,7 @@ import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.ewha.devookserver.service.NotificationService;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
+import com.ewha.devookserver.service.UserBookmarkService;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -44,6 +45,7 @@ public class PostController {
   private final PostRepository postRepository;
   private final UserBookmarkRepository userBookmarkRepository;
   private final NotificationService notificationService;
+  private final UserBookmarkService userBookmarkService;
 
   @PostMapping("/bookmarks")
   public ResponseEntity<?> testPost(
@@ -138,7 +140,10 @@ public class PostController {
     if (postService.deletePost(bookmarkId, oauthService.getUserIdx(accessToken))) {
       return new ResponseEntity<>(HttpStatus.OK);
     }
-    return ResponseEntity.status(401).body(" ");
+    if(userBookmarkService.deleteBookmark(bookmarkId, oauthService.getUserIdx(accessToken))){
+      return new ResponseEntity<>(HttpStatus.OK);
+    }
+    return ResponseEntity.status(401).body("둘다 해당하지 않음");
   }
 
 

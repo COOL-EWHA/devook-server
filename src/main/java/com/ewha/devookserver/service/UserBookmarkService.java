@@ -6,6 +6,7 @@ import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,20 @@ public class UserBookmarkService {
 
   private final UserBookmarkRepository userBookmarkRepository;
   private final PostRepository postRepository;
+
+
+  public boolean deleteBookmark(int postIdx, String userIdx) {
+    if(userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx((long)postIdx, Long.valueOf(userIdx))){
+
+      UserBookmark userBookmark=userBookmarkRepository.findByPost_postIdxAndUser_userIdx((long)postIdx, Long.valueOf(userIdx));
+
+      userBookmarkRepository.delete(userBookmark);
+      return true;
+    }else{
+      return false;
+    }
+  }
+
 
 
   // 사용자의 idx 값 넣으면, 그 사용자가 직접 등록한 'post' table에 중복되지 않는 userBookmark table 에 존재하는 post 글들을 리턴해주고 싶다.
@@ -28,7 +43,7 @@ public class UserBookmarkService {
 
     // 북마크로 등록한 글들의 post를 가져온다.
     for (UserBookmark userBookmark : userBookmarkList) {
-      Post post = postRepository.getPostByPostIdx(userBookmark.getPost_postIdx());
+      Post post = postRepository.getPostByPostIdx(userBookmark.getPostIdx());
       post.setCreatedAt(userBookmark.getCreatedAt());
       postUserBookmarkList.add(post);
     }

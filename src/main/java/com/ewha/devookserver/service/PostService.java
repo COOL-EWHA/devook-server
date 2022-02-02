@@ -68,7 +68,7 @@ public class PostService {
         Long.valueOf(userIdx));
 
     for (UserBookmark userBookmark : addBookmark) {
-      returnPost.add(postRepository.getPostByPostIdx(userBookmark.getPost_postIdx())
+      returnPost.add(postRepository.getPostByPostIdx(userBookmark.getPostIdx())
       );
     }
 
@@ -103,7 +103,7 @@ public class PostService {
         Long.valueOf(userIdx));
 
     for (UserBookmark userBookmark : addBookmark) {
-      returnPost.add(postRepository.getPostByPostIdx(userBookmark.getPost_postIdx())
+      returnPost.add(postRepository.getPostByPostIdx(userBookmark.getPostIdx())
       );
     }
 
@@ -268,8 +268,8 @@ public class PostService {
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
 
     UserBookmark userBookmark = UserBookmark.builder()
-        .post_postIdx(post_postIdx)
-        .user_userIdx(user_userIdx)
+        .postIdx(post_postIdx)
+        .userIdx(user_userIdx)
         .memo(memo)
         .build();
 
