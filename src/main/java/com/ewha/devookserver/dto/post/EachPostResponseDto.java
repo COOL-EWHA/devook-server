@@ -21,12 +21,12 @@ public class EachPostResponseDto {
   private final String memo;
 
   private final Boolean isRead;
-  private final LocalDateTime dueDate;
+  private final String dueDate;
 
 
   @Builder
   public EachPostResponseDto(Long id, String title, String thumbnail, String description,
-      List<String> tags, String url, String createdAt, String memo, Boolean isRead, LocalDateTime dueDate) {
+      List<String> tags, String url, String createdAt, String memo, Boolean isRead, String dueDate) {
     this.id = id;
     this.title = title;
     this.thumbnail = thumbnail;

@@ -43,4 +43,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   Post getTopByCreatedAtIsNotNull();
 
   List<Post> findAllByUserIdx(String userIdx);
+
+  Post findByPostIdxAndUserIdx(Long postIdx, String userIdx);
 }

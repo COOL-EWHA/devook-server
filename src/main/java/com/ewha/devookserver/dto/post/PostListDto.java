@@ -19,12 +19,12 @@ public class PostListDto {
   private final List<String> tags;
   private final String url;
   private final Boolean isRead;
-  private final LocalDate dueDate;
+  private final String dueDate;
 
 
   @Builder
   public PostListDto(Long id, String title, String thumbnail, String description, List<String> tags,
-      String url, Boolean isRead, LocalDate dueDate) {
+      String url, Boolean isRead, String dueDate) {
     this.id = id;
     this.title = title;
     this.thumbnail = thumbnail;

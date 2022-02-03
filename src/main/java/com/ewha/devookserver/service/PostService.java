@@ -1,6 +1,7 @@
 package com.ewha.devookserver.service;
 
 import com.ewha.devookserver.domain.post.CursorResult;
+import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.UserBookmark;
@@ -9,13 +10,17 @@ import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.dto.post.PostLambdaDto;
 import com.ewha.devookserver.dto.post.PostListDto;
 import com.ewha.devookserver.repository.MemberRepository;
+import com.ewha.devookserver.repository.NotificationRepository;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,6 +41,8 @@ public class PostService {
   private final QueryRepository queryRepository;
   private final UserBookmarkRepository userBookmarkRepository;
   private final RecommendService recommendService;
+  private final NotificationRepository notificationRepository;
+  private final NotificationService notificationService;
   WebClient webClient = WebClient.create(
       "https://sy54a2wnyl.execute-api.ap-northeast-2.amazonaws.com/test");
 
@@ -149,6 +156,16 @@ public class PostService {
       List<String> forTestString = new ArrayList<>();
       List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
 
+      Notification notification=notificationService.returnDueDate(post.getPostIdx(),Long.valueOf(post.getUserIdx()),true);
+
+      SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+
+      String convertedDueDate = null;
+      if(notification!=null) {
+        convertedDueDate = format2.format(notification.getDueDate());
+      }
+
+
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
       }
@@ -166,7 +183,7 @@ public class PostService {
           .tags(forTestString)
           .url(post.getPostUrl())
           .isRead(post.getIsRead())
-          .dueDate(null)
+          .dueDate(convertedDueDate)
           .build();
       searchResponseDtoList.add(postListDto);
     }
@@ -266,6 +283,15 @@ public class PostService {
   }
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
+
+    if(postRepository.existsByPostIdxAndUserIdx(post_postIdx, String.valueOf(user_userIdx))){
+      Post post=postRepository.findByPostIdxAndUserIdx(post_postIdx, String.valueOf(user_userIdx));
+      Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+      post.setCreatedAt(timestamp);
+      postRepository.save(post);
+      return;
+    }
+
 
     UserBookmark userBookmark = UserBookmark.builder()
         .postIdx(post_postIdx)

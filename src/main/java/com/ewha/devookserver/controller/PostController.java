@@ -17,6 +17,7 @@ import com.ewha.devookserver.service.UserBookmarkService;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -186,14 +187,13 @@ public class PostController {
       @PathVariable(name = "bookmarkId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
-    try {
       String accessToken = accessTokenGet.split(" ")[1];
       if (!oauthService.validatieTokenInput(accessToken)) {
-        return ResponseEntity.status(401).body(" ");
+        return ResponseEntity.status(401).body("1");
       }
       System.out.println(oauthService.isUserExist(accessToken));
       if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(401).body(" ");
+        return ResponseEntity.status(401).body(" 2");
       }    // 유저 예외처리 완료
       String userIdx = oauthService.getUserIdx(accessToken);
 
@@ -216,15 +216,21 @@ public class PostController {
           }
 
           SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+
           Date convertedTime = userPost.getCreatedAt();
           String dBconvertedTime = format1.format(convertedTime);
 
-          LocalDateTime dueDate = null;
-          Optional<Notification> notification = notificationService.returnDueDate((long) bookmarkId,
+          Date dueDate = null;
+          Notification notification = notificationService.returnDueDate((long) bookmarkId,
               Long.valueOf(userIdx), true);
-          if (!notification.isEmpty()) {
-            dueDate = notification.get().getDueDate();
+
+          String convertedDueDate = null;
+          if(notification!=null) {
+            convertedDueDate = format2.format(notification.getDueDate());
           }
+
+
 
           EachPostResponseDto eachPostResponseDto = EachPostResponseDto.builder()
               .id(userPost.getId())
@@ -236,7 +242,7 @@ public class PostController {
               .createdAt(dBconvertedTime)
               .memo(userPost.getPostMemo())
               .isRead(userPost.getIsRead()) //isRead, dueDate 추가
-              .dueDate(dueDate)
+              .dueDate(convertedDueDate)
               .build();
 
           return ResponseEntity.status(200).body(eachPostResponseDto);
@@ -251,15 +257,20 @@ public class PostController {
           }
 
           SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+
           Date convertedTime = userBookmark.getCreatedAt();
           String dBconvertedTime = format1.format(convertedTime);
 
-          LocalDateTime dueDate = null;
-          Optional<Notification> notification = notificationService.returnDueDate((long) bookmarkId,
+          Notification notification = notificationService.returnDueDate((long) bookmarkId,
               Long.valueOf(userIdx), true);
-          if (!notification.isEmpty()) {
-            dueDate = notification.get().getDueDate();
+
+          String convertedDueDate = null;
+          if(notification!=null) {
+            convertedDueDate = format2.format(notification.getDueDate());
           }
+
+
 
           EachPostResponseDto eachPostResponseDto = EachPostResponseDto.builder()
               .id(userPost.getId())
@@ -271,7 +282,7 @@ public class PostController {
               .createdAt(dBconvertedTime)
               .memo(userBookmark.getMemo())
               .isRead(userBookmark.getIsRead())
-              .dueDate(dueDate)
+              .dueDate(convertedDueDate)
               .build();
 
           return ResponseEntity.status(200).body(eachPostResponseDto);
@@ -281,11 +292,8 @@ public class PostController {
         }
 
       }
-      return ResponseEntity.status(404).body("");
-    } catch (Exception e) {
-      System.out.println(e);
-      return ResponseEntity.status(404).body(" ");
-    }
+      return ResponseEntity.status(404).body("3");
+
 
   }
 
@@ -296,8 +304,13 @@ public class PostController {
       @RequestBody RequestMemoDto requestMemoDto) {
 
     String requestMemo = requestMemoDto.getMemo();
-    Date requestDueDate = requestMemoDto.getDueDate();
+    Date dueDate = requestMemoDto.getDueDate();
     Boolean isRead = requestMemoDto.getIsRead();
+
+    if(isRead==null){
+      isRead=false;
+    }
+
 
     try {
       String accessToken = accessTokenGet.split(" ")[1];
@@ -317,13 +330,20 @@ public class PostController {
             .equals(userIdx)) {
 
           Post newPost = postRepository.getPostByPostIdx(Long.valueOf(bookmarkId));
-          newPost.setPostMemo(requestMemo);
-          newPost.setIsRead(isRead);
+
+          if(requestMemo!=null){
+            newPost.setPostMemo(requestMemo);
+          }
+          if(isRead!=null){
+            newPost.setIsRead(isRead);
+          }
 
           // notification 에도 저장
 
 
           postRepository.save(newPost);
+
+          notificationService.saveNotification((long)bookmarkId,Long.valueOf(userIdx),true,dueDate);
 
           return ResponseEntity.status(200).body(" ");
         }
@@ -333,12 +353,16 @@ public class PostController {
 
         UserBookmark userBookmark=userBookmarkRepository.findByPost_postIdxAndUser_userIdx((long)bookmarkId,Long.valueOf(userIdx));
 
-        userBookmark.setMemo(requestMemo);
-        userBookmark.setIsRead(isRead);
-
-        // notification 에도 저장
+        if(requestMemo!=null){
+          userBookmark.setMemo(requestMemo);
+        }
+        if(isRead!=null) {
+          userBookmark.setIsRead(isRead);
+        }
 
         userBookmarkRepository.save(userBookmark);
+        notificationService.saveNotification((long)bookmarkId,Long.valueOf(userIdx),false,dueDate);
+
         return ResponseEntity.status(200).body(" ");
 
       }
