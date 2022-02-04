@@ -153,7 +153,6 @@ public class PostController {
       @RequestParam(name = "isBookmarkRead", required = false)Boolean isBookmarkRead,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
-    try {
 
       String accessToken = accessTokenGet.split(" ")[1];
       if (!oauthService.validatieTokenInput(accessToken)) {
@@ -172,10 +171,6 @@ public class PostController {
       // 여기 String 배열 반환
       return ResponseEntity.status(200).body(finalResponseString);
 
-    } catch (Exception e) {
-      System.out.println(e);
-      return ResponseEntity.status(401).body(" ");
-    }
 
   }
 

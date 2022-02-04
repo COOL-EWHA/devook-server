@@ -67,7 +67,7 @@ public class PostService {
 
   public List<String> getPostTagList(String userIdx, Boolean isBookmarkRead) {
 
-    List<Post> isBookmarkReadList=new ArrayList<>();
+    List<Post> isBookmarkReadList = new ArrayList<>();
 
     List<Post> returnPost = postRepository.findAllByUserIdx(userIdx);
 
@@ -79,14 +79,22 @@ public class PostService {
       );
     }
 
-
     // isBookmarkRead 고려
 
-    for(Post post:returnPost){
-      if(post.getIsRead().booleanValue()==isBookmarkRead){
+    if (isBookmarkRead == null) {
+
+      for (Post post : returnPost) {
+        isBookmarkReadList.add(post);
+      }
+    } else{
+
+
+    for (Post post : returnPost) {
+      if (post.getIsRead().booleanValue() == isBookmarkRead) {
         isBookmarkReadList.add(post);
       }
     }
+  }
 
     List<String> searchResponseDtoList = new ArrayList<>();
 
@@ -162,7 +170,11 @@ public class PostService {
 
       String convertedDueDate = null;
       if(notification!=null) {
-        convertedDueDate = format2.format(notification.getDueDate());
+        if(notification.getDueDate()==null){
+          convertedDueDate = null;
+        }else{
+          convertedDueDate = format2.format(notification.getDueDate());
+        }
       }
 
 
