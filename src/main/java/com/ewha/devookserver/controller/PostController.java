@@ -298,6 +298,15 @@ public class PostController {
       @RequestHeader(name = "Authorization") String accessTokenGet,
       @RequestBody RequestMemoDto requestMemoDto) {
 
+    System.out.println("=================");
+
+    System.out.println(requestMemoDto.getMemo()+"    memo");
+    System.out.println(requestMemoDto.getDueDate()+ "     duedate");
+    System.out.println(requestMemoDto.getIsRead()+ "      isRead");
+
+    System.out.println("=================");
+
+
     String requestMemo = requestMemoDto.getMemo();
     Date dueDate = requestMemoDto.getDueDate();
     Boolean isRead = requestMemoDto.getIsRead();
