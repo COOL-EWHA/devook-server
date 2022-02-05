@@ -1,7 +1,6 @@
 package com.ewha.devookserver.repository;
 
 import com.ewha.devookserver.domain.post.Notification;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,8 +12,10 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
   Notification getNotification(Long post_postIdx, Long user_userIdx, Boolean isPost);
 
   Boolean existsByUserIdxAndPostIdx(Long userIdx, Long postIdx);
+
   Notification findByUserIdxAndPostIdx(Long userIdx, Long postIdx);
 
   Boolean existsByUserIdxAndBookmarkIdx(Long userIdx, Long bookmarkIdx);
+
   Notification findByUserIdxAndBookmarkIdx(Long userIdx, Long bookmarkIdx);
 }

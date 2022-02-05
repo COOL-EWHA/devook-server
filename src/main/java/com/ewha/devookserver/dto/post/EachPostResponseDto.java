@@ -1,12 +1,8 @@
 package com.ewha.devookserver.dto.post;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.tomcat.jni.Local;
 
 @Getter
 public class EachPostResponseDto {
@@ -26,7 +22,8 @@ public class EachPostResponseDto {
 
   @Builder
   public EachPostResponseDto(Long id, String title, String thumbnail, String description,
-      List<String> tags, String url, String createdAt, String memo, Boolean isRead, String dueDate) {
+      List<String> tags, String url, String createdAt, String memo, Boolean isRead,
+      String dueDate) {
     this.id = id;
     this.title = title;
     this.thumbnail = thumbnail;
@@ -36,7 +33,7 @@ public class EachPostResponseDto {
     this.createdAt = createdAt;
     this.memo = memo;
 
-    this.isRead=isRead;
-    this.dueDate=dueDate;
+    this.isRead = isRead;
+    this.dueDate = dueDate;
   }
 }

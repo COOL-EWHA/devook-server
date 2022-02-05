@@ -17,8 +17,6 @@ public interface UserBookmarkRepository extends JpaRepository<UserBookmark, Long
   @Query("select p from UserBookmark p where p.userIdx=?1")
   List<UserBookmark> findAllByUser_userIdx(Long user_userIdx);
 
-  // TODO 에 해당하는 부분
-
   @Query("select p from UserBookmark p where p.postIdx=?1 and p.userIdx=?2")
   UserBookmark findByPost_postIdxAndUser_userIdx(Long post_postIdx, Long user_userIdx);
 

@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -86,15 +85,14 @@ public class PostService {
       for (Post post : returnPost) {
         isBookmarkReadList.add(post);
       }
-    } else{
+    } else {
 
-
-    for (Post post : returnPost) {
-      if (post.getIsRead().booleanValue() == isBookmarkRead) {
-        isBookmarkReadList.add(post);
+      for (Post post : returnPost) {
+        if (post.getIsRead().booleanValue() == isBookmarkRead) {
+          isBookmarkReadList.add(post);
+        }
       }
     }
-  }
 
     List<String> searchResponseDtoList = new ArrayList<>();
 
@@ -158,25 +156,25 @@ public class PostService {
 
   public List<PostListDto> responseListMaker(CursorResult<Post> productList, Boolean isRead) {
     List<PostListDto> searchResponseDtoList = new ArrayList<>();
-    List<PostListDto> isReadReturnDtoList=new ArrayList<>();
+    List<PostListDto> isReadReturnDtoList = new ArrayList<>();
 
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
       List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
 
-      Notification notification=notificationService.returnDueDate(post.getPostIdx(),Long.valueOf(post.getUserIdx()),true);
+      Notification notification = notificationService.returnDueDate(post.getPostIdx(),
+          Long.valueOf(post.getUserIdx()), true);
 
       SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
       String convertedDueDate = null;
-      if(notification!=null) {
-        if(notification.getDueDate()==null){
+      if (notification != null) {
+        if (notification.getDueDate() == null) {
           convertedDueDate = null;
-        }else{
+        } else {
           convertedDueDate = format2.format(notification.getDueDate());
         }
       }
-
 
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
@@ -199,11 +197,11 @@ public class PostService {
           .build();
       searchResponseDtoList.add(postListDto);
     }
-    if(isRead==null){
+    if (isRead == null) {
       return searchResponseDtoList.stream().limit(10).collect(Collectors.toList());
     }
-    for(PostListDto postListDto:searchResponseDtoList){
-      if(postListDto.getIsRead().booleanValue()==isRead){
+    for (PostListDto postListDto : searchResponseDtoList) {
+      if (postListDto.getIsRead().booleanValue() == isRead) {
         isReadReturnDtoList.add(postListDto);
       }
     }
@@ -296,14 +294,14 @@ public class PostService {
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
 
-    if(postRepository.existsByPostIdxAndUserIdx(post_postIdx, String.valueOf(user_userIdx))){
-      Post post=postRepository.findByPostIdxAndUserIdx(post_postIdx, String.valueOf(user_userIdx));
+    if (postRepository.existsByPostIdxAndUserIdx(post_postIdx, String.valueOf(user_userIdx))) {
+      Post post = postRepository.findByPostIdxAndUserIdx(post_postIdx,
+          String.valueOf(user_userIdx));
       Timestamp timestamp = new Timestamp(System.currentTimeMillis());
       post.setCreatedAt(timestamp);
       postRepository.save(post);
       return;
     }
-
 
     UserBookmark userBookmark = UserBookmark.builder()
         .postIdx(post_postIdx)

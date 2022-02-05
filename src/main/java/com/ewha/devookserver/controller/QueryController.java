@@ -36,7 +36,7 @@ public class QueryController {
       (@RequestParam(name = "tags", required = false) String tags,
           @RequestParam(name = "cursor", required = false) Long cursor,
           @RequestParam(name = "q", required = false) String question,
-          @RequestParam(name="isRead", required = false) Boolean isRead,
+          @RequestParam(name = "isRead", required = false) Boolean isRead,
           @RequestHeader(value = "Authorization") String tokenGet
       ) {
 
@@ -104,7 +104,8 @@ public class QueryController {
 
       // 여기 아래부터 시작
       return ResponseEntity.status(200).body(postService.responseListMaker
-          (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question, postTagList),isRead));
+          (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question, postTagList),
+              isRead));
 
 
     } catch (Exception e) {

@@ -2,9 +2,7 @@ package com.ewha.devookserver.service;
 
 import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.repository.NotificationRepository;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,12 +15,12 @@ public class NotificationService {
 
   // 사용자의 idx, bookmarkIdx, isPost를 넣으면 그것에 해당하는 dueDate를 반환해주는 함수
 
-  public Notification returnDueDate(Long bookmarkIdx, Long userIdx, Boolean isPost){
-    if(notificationRepository.existsByUserIdxAndPostIdx(userIdx,bookmarkIdx)){
-      return notificationRepository.findByUserIdxAndPostIdx(userIdx,bookmarkIdx);
+  public Notification returnDueDate(Long bookmarkIdx, Long userIdx, Boolean isPost) {
+    if (notificationRepository.existsByUserIdxAndPostIdx(userIdx, bookmarkIdx)) {
+      return notificationRepository.findByUserIdxAndPostIdx(userIdx, bookmarkIdx);
     }
-    if(notificationRepository.existsByUserIdxAndBookmarkIdx(userIdx,bookmarkIdx)){
-      return notificationRepository.findByUserIdxAndBookmarkIdx(userIdx,bookmarkIdx);
+    if (notificationRepository.existsByUserIdxAndBookmarkIdx(userIdx, bookmarkIdx)) {
+      return notificationRepository.findByUserIdxAndBookmarkIdx(userIdx, bookmarkIdx);
     }
     return null;
   }
@@ -48,7 +46,7 @@ public class NotificationService {
         Notification notification = notificationRepository.findByUserIdxAndPostIdx(userIdx,
             bookmarkIdx);
 
-        if(dueDate!=null){
+        if (dueDate != null) {
           notification.setDueDate(dueDate);
         }
         notificationRepository.save(notification);
@@ -70,10 +68,10 @@ public class NotificationService {
 
         notificationRepository.save(notification);
         return true;
-      }else{
+      } else {
         Notification notification = notificationRepository.findByUserIdxAndBookmarkIdx(userIdx,
             bookmarkIdx);
-        if(dueDate!=null){
+        if (dueDate != null) {
           notification.setDueDate(dueDate);
         }
         notificationRepository.save(notification);
