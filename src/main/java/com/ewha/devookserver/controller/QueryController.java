@@ -32,7 +32,7 @@ public class QueryController {
 
 
   @GetMapping("/bookmarks")
-  public ResponseEntity<?> get_dsl
+  public ResponseEntity<?> getBookmarkList
       (@RequestParam(name = "tags", required = false) String tags,
           @RequestParam(name = "cursor", required = false) Long cursor,
           @RequestParam(name = "q", required = false) String question,

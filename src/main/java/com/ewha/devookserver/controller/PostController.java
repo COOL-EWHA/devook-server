@@ -45,7 +45,7 @@ public class PostController {
   private final UserBookmarkService userBookmarkService;
 
   @PostMapping("/bookmarks")
-  public ResponseEntity<?> testPost(
+  public ResponseEntity<?> addPost(
       @RequestHeader(value = "Authorization") String tokenGet,
       HttpServletResponse response, @RequestBody PostUserRequestDto postUserRequestDto) {
 
@@ -145,7 +145,7 @@ public class PostController {
 
 
   @GetMapping("/bookmarks/tags")
-  public ResponseEntity<?> getTagList(
+  public ResponseEntity<?> getPostsTags(
       @RequestParam(name = "isBookmarkRead", required = false) Boolean isBookmarkRead,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
@@ -172,7 +172,7 @@ public class PostController {
 
   // 개별 북마크 글 조회 GET
   @GetMapping("/bookmarks/{bookmarkId}")
-  public ResponseEntity<?> eachPostResponse(
+  public ResponseEntity<?> getPost(
       @PathVariable(name = "bookmarkId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
@@ -289,7 +289,7 @@ public class PostController {
   }
 
   @PatchMapping("/bookmarks/{bookmarkId}")
-  public ResponseEntity<?> editBookmarkMemo(
+  public ResponseEntity<?> editPost(
       @PathVariable(name = "bookmarkId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet,
       @RequestBody RequestMemoDto requestMemoDto) {

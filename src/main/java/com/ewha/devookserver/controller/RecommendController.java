@@ -44,7 +44,7 @@ public class RecommendController {
 
 
   @GetMapping("/posts")
-  public ResponseEntity<?> bookMarkLists(
+  public ResponseEntity<?> getRecommendList(
       @RequestParam(name = "postId", required = false) Long postId,
       @RequestParam(name = "bookmarkId", required = false) Long bookmarkId,
       @RequestParam(name = "cursor", required = false) Long cursor,
@@ -159,7 +159,7 @@ public class RecommendController {
 
 
   @GetMapping("/posts/tags")
-  public ResponseEntity<?> getTagList(
+  public ResponseEntity<?> getRecommendTagList(
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     try {
@@ -187,7 +187,7 @@ public class RecommendController {
   }
 
   @GetMapping("/posts/{postId}")
-  public ResponseEntity<?> eachPostResponse(
+  public ResponseEntity<?> getPost(
       @PathVariable(name = "postId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
