@@ -222,7 +222,11 @@ public class PostController {
 
           String convertedDueDate = null;
           if(notification!=null) {
-            convertedDueDate = format2.format(notification.getDueDate());
+            if(notification.getDueDate()==null){
+              convertedDueDate=null;
+            }else{
+              convertedDueDate = format2.format(notification.getDueDate());
+            }
           }
 
 
@@ -262,7 +266,11 @@ public class PostController {
 
           String convertedDueDate = null;
           if(notification!=null) {
-            convertedDueDate = format2.format(notification.getDueDate());
+            if(notification.getDueDate()==null){
+              convertedDueDate=null;
+            }else{
+              convertedDueDate = format2.format(notification.getDueDate());
+            }
           }
 
 
