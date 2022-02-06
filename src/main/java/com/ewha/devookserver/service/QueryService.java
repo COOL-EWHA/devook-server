@@ -112,7 +112,8 @@ public class QueryService {
   }
 
 
-  public CursorResult<Post> getPostForNotUser(Long cursorId, Pageable page, String userIdx, String question,
+  public CursorResult<Post> getPostForNotUser(Long cursorId, Pageable page, String userIdx,
+      String question,
       List<Long> postTaglist, boolean isRecommend, List<String> postTagList, int limit) {
     final List<Post> boards = getPost(cursorId, page, userIdx, question, postTaglist, isRecommend,
         postTagList, limit);

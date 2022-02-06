@@ -410,19 +410,18 @@ public class QueryRepository {
         List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
             post.getPostIdx().intValue());
 
-
-          for (PostTag postTag : eachPostTagList) {
-            for (String string : requiredTagList) {
-              if (postTag.getPostTagName().equals(string)) {
-                count++;
-              }
+        for (PostTag postTag : eachPostTagList) {
+          for (String string : requiredTagList) {
+            if (postTag.getPostTagName().equals(string)) {
+              count++;
             }
           }
+        }
 
-          RefrenceDto refrenceDto = new RefrenceDto();
-          refrenceDto.setPost(post);
-          refrenceDto.setRefrence(count);
-          resultArray.add(refrenceDto);
+        RefrenceDto refrenceDto = new RefrenceDto();
+        refrenceDto.setPost(post);
+        refrenceDto.setRefrence(count);
+        resultArray.add(refrenceDto);
 
 
       }
