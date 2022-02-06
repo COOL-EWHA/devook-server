@@ -146,8 +146,6 @@ public class RecommendController {
         refrenceDtos = recommendService.calculateReferenceOfPost(postTagList);
       }
 
-      // 이제 각 post 당 refrence 를 알았으니, 이거 역순으로 정렬해서 리턴해주면 된다.
-
       List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMaker(
           this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
               userIdx), userIdx);
