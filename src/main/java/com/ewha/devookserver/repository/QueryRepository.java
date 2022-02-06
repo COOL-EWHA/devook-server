@@ -391,4 +391,172 @@ public class QueryRepository {
     return filteredPostList.stream().limit(limit).collect(Collectors.toList());
 
   }
+
+  // 태그 리스트 필터링하는 함수
+  public List<Post> tagFilteringRecommendNotUser1(List<Long> postIdxList,
+      String question, boolean isUser, List<String> requiredTagList, int limit) {
+
+    System.out.println("들어왔다.");
+    List<Post> getList = postRepository.findAll();
+    List<Post> filteredPostList = new ArrayList<>();
+    List<RefrenceDto> resultArray = new ArrayList<>();
+
+    int count;
+    if (requiredTagList.isEmpty()) {
+      requiredTagList = userRecommService.getAllTagList();
+      for (Post post : getList) {
+        count = 0;
+
+        List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
+            post.getPostIdx().intValue());
+
+
+          for (PostTag postTag : eachPostTagList) {
+            for (String string : requiredTagList) {
+              if (postTag.getPostTagName().equals(string)) {
+                count++;
+              }
+            }
+          }
+
+          RefrenceDto refrenceDto = new RefrenceDto();
+          refrenceDto.setPost(post);
+          refrenceDto.setRefrence(count);
+          resultArray.add(refrenceDto);
+
+
+      }
+      Collections.sort(resultArray);
+
+      for (RefrenceDto refrenceDto : resultArray) {
+        filteredPostList.add(refrenceDto.getPost());
+      }
+
+      if (question != null) {
+        filteredPostList = searchEngine(filteredPostList, question);
+      }
+
+      return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+
+    }
+
+    for (Post post : getList) {
+      count = 0;
+
+      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
+          post.getPostIdx().intValue());
+      if (postIdxList.contains(post.getPostIdx())) {
+        for (PostTag postTag : eachPostTagList) {
+          for (String string : requiredTagList) {
+            if (postTag.getPostTagName().equals(string)) {
+              count++;
+            }
+          }
+        }
+
+        RefrenceDto refrenceDto = new RefrenceDto();
+        refrenceDto.setPost(post);
+        refrenceDto.setRefrence(count);
+        resultArray.add(refrenceDto);
+
+
+      }
+    }
+    Collections.sort(resultArray);
+
+    if (question != null) {
+      filteredPostList = searchEngine(filteredPostList, question);
+    }
+
+    System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
+    return filteredPostList.stream().collect(Collectors.toList());
+  }
+
+  public List<Post> tagFilteringRecommendNotUser2(List<Long> postIdxList, Long id,
+      String question, boolean isUser, List<String> requiredTagList, int limit) {
+    System.out.println("들어왔다22.");
+
+    List<Post> getList = postRepository.findAll();
+    List<Post> filteredPostList = new ArrayList<>();
+    List<RefrenceDto> resultArray = new ArrayList<>();
+
+    int count;
+
+    if (requiredTagList.isEmpty()) {
+      requiredTagList = userRecommService.getAllTagList();
+      for (Post post : getList) {
+        count = 0;
+
+        List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
+            post.getPostIdx().intValue());
+        if (
+            post.getPostIdx() < id) {
+          //filteredPostList.add(post);
+
+          for (PostTag postTag : eachPostTagList) {
+            for (String string : requiredTagList) {
+              if (postTag.getPostTagName().equals(string)) {
+                count++;
+              }
+            }
+          }
+
+          RefrenceDto refrenceDto = new RefrenceDto();
+          refrenceDto.setPost(post);
+          refrenceDto.setRefrence(count);
+          resultArray.add(refrenceDto);
+
+        }
+      }
+      Collections.sort(resultArray);
+
+      for (RefrenceDto refrenceDto : resultArray) {
+        filteredPostList.add(refrenceDto.getPost());
+      }
+
+      if (question != null) {
+        filteredPostList = searchEngine(filteredPostList, question);
+      }
+
+      return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+
+    }
+
+    for (Post post : getList) {
+      count = 0;
+
+      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
+          post.getPostIdx().intValue());
+      if (postIdxList.contains(post.getPostIdx())
+          && post.getPostIdx() < id) {
+        //filteredPostList.add(post);
+
+        for (PostTag postTag : eachPostTagList) {
+          for (String string : requiredTagList) {
+            if (postTag.getPostTagName().equals(string)) {
+              count++;
+            }
+          }
+        }
+
+        RefrenceDto refrenceDto = new RefrenceDto();
+        refrenceDto.setPost(post);
+        refrenceDto.setRefrence(count);
+        resultArray.add(refrenceDto);
+
+      }
+    }
+    Collections.sort(resultArray);
+
+    for (RefrenceDto refrenceDto : resultArray) {
+      filteredPostList.add(refrenceDto.getPost());
+    }
+
+    if (question != null) {
+      filteredPostList = searchEngine(filteredPostList, question);
+    }
+
+    return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+
+  }
 }

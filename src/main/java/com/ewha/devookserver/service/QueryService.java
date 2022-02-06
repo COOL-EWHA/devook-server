@@ -111,6 +111,17 @@ public class QueryService {
     return new CursorResult<>(boards, hasNext(lastIdofList));
   }
 
+
+  public CursorResult<Post> getPostForNotUser(Long cursorId, Pageable page, String userIdx, String question,
+      List<Long> postTaglist, boolean isRecommend, List<String> postTagList, int limit) {
+    final List<Post> boards = getPost(cursorId, page, userIdx, question, postTaglist, isRecommend,
+        postTagList, limit);
+    final Long lastIdofList = boards.isEmpty() ?
+        null : boards.get(boards.size() - 1).getId();
+
+    return new CursorResult<>(boards, hasNext(lastIdofList));
+  }
+
   public CursorResult<Post> get(Long cursorId, Pageable page, String userIdx, String question,
       List<Long> postTaglist, boolean isRecommend, List<String> postTagList, int limit) {
     final List<Post> boards = getPost(cursorId, page, userIdx, question, postTaglist, isRecommend,
@@ -157,6 +168,15 @@ public class QueryService {
         queryRepository.tagFilteringRecommendUser1(postTagList, userIdx, question, isRecommend,
             requiredList, limit) :
         queryRepository.tagFilteringRecommendUser2(postTagList, id, userIdx, question, isRecommend,
+            requiredList, limit);
+  }
+
+  public List<Post> getPost(Long id, Pageable page, String question,
+      List<Long> postTagList, boolean isRecommend, List<String> requiredList, int limit) {
+    return id == null ?
+        queryRepository.tagFilteringRecommendNotUser1(postTagList, question, isRecommend,
+            requiredList, limit) :
+        queryRepository.tagFilteringRecommendNotUser2(postTagList, id, question, isRecommend,
             requiredList, limit);
   }
 

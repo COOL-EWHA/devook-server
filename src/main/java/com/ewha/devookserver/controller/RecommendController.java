@@ -51,7 +51,7 @@ public class RecommendController {
       @RequestParam(name = "limit", required = false) Long limit,
       @RequestParam(name = "q", required = false) String question,
       @RequestParam(name = "tags", required = false) String tags,
-      @RequestHeader(name = "Authorization") String accessTokenGet) {
+      @RequestHeader(name = "Authorization", required = false) String accessTokenGet) {
 
     System.out.println(accessTokenGet);
     List<String> requiredTagList = new ArrayList<>();
@@ -88,11 +88,43 @@ public class RecommendController {
       }
     }
 
+
+
     try {
+
+
+
       String accessToken = accessTokenGet.split(" ")[1];
     } catch (Exception e) {
-      return ResponseEntity.status(401).body("accessToken 빈 값 ");
+      // accessToken이 빈 값이거나, 존재하지 않을 경우 로그인하지 않은 사용자로 간주
+
+
+      //유저 추천글 전체 목록 GET (분기)
+      if (bookmarkId == null && postId == null) {
+        List<Long> postTagList = tagService.makePostTagList(requiredTagList);
+
+        List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForNoAuthUser
+            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "notUser", question, postTagList,
+                true, requiredTagList, limit.intValue()));
+
+        return ResponseEntity.status(200).body(
+            (listDtos));
+      }
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
       return ResponseEntity.status(401).body("1");
@@ -105,8 +137,6 @@ public class RecommendController {
 
     //유저 추천글 전체 목록 GET (분기)
     if (bookmarkId == null && postId == null) {
-      System.out.println("태그로 들어가서 검색!");
-
       List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
       List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMaker
@@ -116,8 +146,6 @@ public class RecommendController {
       return ResponseEntity.status(200).body(
           (listDtos));
     }
-
-    System.out.println("태그말고 원래대로~");
 
     if (tags == null) {
 
@@ -129,11 +157,8 @@ public class RecommendController {
 
       //북마크 아이디는 그대로 함수 사용(calculateRefrence)
       if (isBookmarkInput != 0) {
-        System.out.println("북마크로 이동");
         refrenceDtos = recommendService.calculateReference(postTagList);
       } else {
-        System.out.println("post로 이동");
-
         refrenceDtos = recommendService.calculateReferenceOfPost(postTagList);
       }
 

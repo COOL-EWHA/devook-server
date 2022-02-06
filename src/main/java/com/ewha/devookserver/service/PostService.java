@@ -244,6 +244,37 @@ public class PostService {
     return searchResponseDtoList;
   }
 
+  public List<PostBookmarkRequestDto> responseBookmarkListMakerForNoAuthUser(
+      CursorResult<Post> productList) {
+    List<PostBookmarkRequestDto> searchResponseDtoList = new ArrayList<>();
+
+    for (Post post : productList.getValues()) {
+      List<String> forTestString = new ArrayList<>();
+      List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
+
+      for (PostTag postTag : postTagList) {
+        forTestString.add(postTag.getPostTagName());
+      }
+
+      if (forTestString.size() == 0) {
+        forTestString.add("태그1");
+        forTestString.add("태그2");
+      }
+
+      PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
+          .id(post.getId())
+          .thumbnail(post.getPostThumbnail())
+          .description(post.getPostDescription())
+          .title(post.getPostTitle())
+          .tags(forTestString)
+          .url(post.getPostUrl())
+          .isBookmarked(null) // 여기 수정! (일단 기본값으로)
+          .build();
+      searchResponseDtoList.add(postListDto);
+    }
+    return searchResponseDtoList;
+  }
+
   public CursorResult<Post> get(Long cursorId, Pageable page, String userIdx, String question) {
     final List<Post> boards = getPost(cursorId, page, userIdx, question);
     final Long lastIdofList = boards.isEmpty() ?
