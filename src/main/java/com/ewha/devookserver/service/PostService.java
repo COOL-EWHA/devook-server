@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -172,7 +173,8 @@ public class PostService {
         if (notification.getDueDate() == null) {
           convertedDueDate = null;
         } else {
-          convertedDueDate = format2.format(notification.getDueDate());
+          convertedDueDate = notification.getDueDate().format(
+              DateTimeFormatter.ofPattern("yyyy.MM.dd"));
         }
       }
 
