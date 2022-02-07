@@ -14,7 +14,10 @@ import com.ewha.devookserver.service.NotificationService;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserBookmarkService;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -271,6 +274,7 @@ public class PostController {
             .id(userPost.getId())
             .title(userPost.getPostTitle())
             .thumbnail(userPost.getPostThumbnail())
+            .thumbnail(userPost.getPostThumbnail())
             .description(userPost.getPostDescription())
             .tags(tagList)
             .url(userPost.getPostUrl())
@@ -295,7 +299,7 @@ public class PostController {
   public ResponseEntity<?> editPost(
       @PathVariable(name = "bookmarkId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet,
-      @RequestBody RequestMemoDto requestMemoDto) {
+      @RequestBody RequestMemoDto requestMemoDto) throws ParseException {
 
     System.out.println("=================");
 
@@ -306,8 +310,24 @@ public class PostController {
     System.out.println("=================");
 
     String requestMemo = requestMemoDto.getMemo();
-    Date dueDate = requestMemoDto.getDueDate();
+    String dueDateGet = requestMemoDto.getDueDate();
     Boolean isRead = requestMemoDto.getIsRead();
+
+
+
+    String dueDateSplittedYear =  dueDateGet.split("\\.")[0];
+    String dueDateSplittedMonth =  dueDateGet.split("\\.")[1];
+    String dueDateSplittedDate =  dueDateGet.split("\\.")[2];
+
+    String dueDateIntegration = dueDateSplittedYear.concat("-")
+        .concat(dueDateSplittedMonth)
+        .concat("-")
+        .concat(dueDateSplittedDate);
+
+    SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+
+    LocalDate dueDate = LocalDate.parse(dueDateIntegration, DateTimeFormatter.ISO_LOCAL_DATE);
+
 
     if (isRead == null) {
       isRead = false;

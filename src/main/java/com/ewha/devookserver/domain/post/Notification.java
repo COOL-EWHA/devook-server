@@ -4,6 +4,7 @@ package com.ewha.devookserver.domain.post;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.Entity;
@@ -34,13 +35,13 @@ public class Notification {
 
   @CreationTimestamp
   private Timestamp createdAt;
-  private Date dueDate;
+  private LocalDate dueDate;
 
   private LocalDateTime alertTime;
 
   @Builder
   public Notification
-      (Long postIdx, Long bookmarkIdx, Long userIdx, Boolean isPost, Date dueDate,
+      (Long postIdx, Long bookmarkIdx, Long userIdx, Boolean isPost, LocalDate dueDate,
           LocalDateTime alertTime) {
     this.postIdx = postIdx;
     this.bookmarkIdx = bookmarkIdx;
