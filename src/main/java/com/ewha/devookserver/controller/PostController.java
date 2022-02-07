@@ -209,6 +209,7 @@ public class PostController {
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         Date dBconvertedTime = userPost.getCreatedAt();
         String dBCreatedAt = formatISO.format(dBconvertedTime);
@@ -222,7 +223,8 @@ public class PostController {
           if (notification.getDueDate() == null) {
             convertedDueDate = null;
           } else {
-            convertedDueDate = format2.format(notification.getDueDate());
+            convertedDueDate = notification.getDueDate().format(
+                DateTimeFormatter.ofPattern("yyyy.MM.dd"));
           }
         }
 
@@ -266,7 +268,8 @@ public class PostController {
           if (notification.getDueDate() == null) {
             convertedDueDate = null;
           } else {
-            convertedDueDate = format2.format(notification.getDueDate());
+            convertedDueDate = notification.getDueDate().format(
+                DateTimeFormatter.ofPattern("yyyy.MM.dd"));
           }
         }
 
