@@ -205,8 +205,7 @@ public class PostController {
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
-        Date convertedTime = userPost.getCreatedAt();
-        String dBconvertedTime = format1.format(convertedTime);
+        Date dBconvertedTime = userPost.getCreatedAt();
 
         Date dueDate = null;
         Notification notification = notificationService.returnDueDate((long) bookmarkId,
@@ -249,8 +248,7 @@ public class PostController {
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
-        Date convertedTime = userBookmark.getCreatedAt();
-        String dBconvertedTime = format1.format(convertedTime);
+        Date dBconvertedTime = userBookmark.getCreatedAt();
 
         Notification notification = notificationService.returnDueDate((long) bookmarkId,
             Long.valueOf(userIdx), true);
