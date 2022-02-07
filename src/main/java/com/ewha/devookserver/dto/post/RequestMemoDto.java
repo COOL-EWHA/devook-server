@@ -10,6 +10,6 @@ public class RequestMemoDto {
 
   public Boolean isRead;
   public String memo;
-  public Date dueDate;
+  public String dueDate;
 
 }
