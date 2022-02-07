@@ -168,9 +168,9 @@ public class RecommendController {
   public ResponseEntity<?> getRecommendTagList(
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
-    try{
+    try {
       String accessToken = accessTokenGet.split(" ")[1];
-    }catch (Exception e){
+    } catch (Exception e) {
       List<String> finalResponseString = postService.getPostTagList();
       return ResponseEntity.status(200).body(finalResponseString);
     }

@@ -14,7 +14,6 @@ import com.ewha.devookserver.service.NotificationService;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserBookmarkService;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -316,21 +315,24 @@ public class PostController {
     String dueDateGet = requestMemoDto.getDueDate();
     Boolean isRead = requestMemoDto.getIsRead();
 
+    LocalDate dueDate = null;
+    if (dueDateGet == "") {
 
+    }
+    if (dueDateGet != null) {
+      String dueDateSplittedYear = dueDateGet.split("\\.")[0];
+      String dueDateSplittedMonth = dueDateGet.split("\\.")[1];
+      String dueDateSplittedDate = dueDateGet.split("\\.")[2];
 
-    String dueDateSplittedYear =  dueDateGet.split("\\.")[0];
-    String dueDateSplittedMonth =  dueDateGet.split("\\.")[1];
-    String dueDateSplittedDate =  dueDateGet.split("\\.")[2];
+      String dueDateIntegration = dueDateSplittedYear.concat("-")
+          .concat(dueDateSplittedMonth)
+          .concat("-")
+          .concat(dueDateSplittedDate);
 
-    String dueDateIntegration = dueDateSplittedYear.concat("-")
-        .concat(dueDateSplittedMonth)
-        .concat("-")
-        .concat(dueDateSplittedDate);
+      SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
-    SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
-
-    LocalDate dueDate = LocalDate.parse(dueDateIntegration, DateTimeFormatter.ISO_LOCAL_DATE);
-
+      dueDate = LocalDate.parse(dueDateIntegration, DateTimeFormatter.ISO_LOCAL_DATE);
+    }
 
     if (isRead == null) {
       isRead = false;
