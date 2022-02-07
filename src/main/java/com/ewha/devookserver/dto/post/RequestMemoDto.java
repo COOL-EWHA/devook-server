@@ -1,6 +1,5 @@
 package com.ewha.devookserver.dto.post;
 
-import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

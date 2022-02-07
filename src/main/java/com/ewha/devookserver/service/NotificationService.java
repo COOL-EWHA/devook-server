@@ -3,7 +3,6 @@ package com.ewha.devookserver.service;
 import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.repository.NotificationRepository;
 import java.time.LocalDate;
-import java.util.Date;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,8 @@ public class NotificationService {
   // notification 새로 생성, 혹은 정보 수정하는 함수
 
   @Transactional
-  public Boolean saveNotification(Long bookmarkIdx, Long userIdx, Boolean isPost, LocalDate dueDate) {
+  public Boolean saveNotification(Long bookmarkIdx, Long userIdx, Boolean isPost,
+      LocalDate dueDate) {
     if (isPost.booleanValue() == true) {
 
       if (!notificationRepository.existsByUserIdxAndPostIdx(userIdx, bookmarkIdx)) {

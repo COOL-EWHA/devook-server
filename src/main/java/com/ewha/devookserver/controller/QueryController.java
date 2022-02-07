@@ -96,14 +96,15 @@ public class QueryController {
         System.out.println("tags==null");
 
         return ResponseEntity.status(200).body(postService.responseListMaker
-            (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question), isRead));
+            (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question), isRead,
+                Long.valueOf(userIdx)));
       }
       System.out.println("tags!=null");
 
       // 여기 아래부터 시작
       return ResponseEntity.status(200).body(postService.responseListMaker
           (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question, postTagList),
-              isRead));
+              isRead, Long.valueOf(userIdx)));
 
 
     } catch (Exception e) {

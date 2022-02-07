@@ -155,7 +155,9 @@ public class PostService {
 
   }
 
-  public List<PostListDto> responseListMaker(CursorResult<Post> productList, Boolean isRead) {
+  // TODO return DueDate 관련 null 문제 여기서 해결
+  public List<PostListDto> responseListMaker(CursorResult<Post> productList, Boolean isRead,
+      Long userIdx) {
     List<PostListDto> searchResponseDtoList = new ArrayList<>();
     List<PostListDto> isReadReturnDtoList = new ArrayList<>();
 
@@ -164,7 +166,7 @@ public class PostService {
       List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
 
       Notification notification = notificationService.returnDueDate(post.getPostIdx(),
-          Long.valueOf(post.getUserIdx()), true);
+          userIdx, true);
 
       SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
