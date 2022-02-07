@@ -15,6 +15,7 @@ import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -204,8 +205,10 @@ public class PostController {
 
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         Date dBconvertedTime = userPost.getCreatedAt();
+        String dBCreatedAt = formatISO.format(dBconvertedTime);
 
         Date dueDate = null;
         Notification notification = notificationService.returnDueDate((long) bookmarkId,
@@ -227,7 +230,7 @@ public class PostController {
             .description(userPost.getPostDescription())
             .tags(tagList)
             .url(userPost.getPostUrl())
-            .createdAt(dBconvertedTime)
+            .createdAt(dBCreatedAt)
             .memo(userPost.getPostMemo())
             .isRead(userPost.getIsRead()) //isRead, dueDate 추가
             .dueDate(convertedDueDate)
@@ -247,8 +250,10 @@ public class PostController {
 
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         Date dBconvertedTime = userBookmark.getCreatedAt();
+        String dBCreatedAt = formatISO.format(dBconvertedTime);
 
         Notification notification = notificationService.returnDueDate((long) bookmarkId,
             Long.valueOf(userIdx), true);
@@ -269,7 +274,7 @@ public class PostController {
             .description(userPost.getPostDescription())
             .tags(tagList)
             .url(userPost.getPostUrl())
-            .createdAt(dBconvertedTime)
+            .createdAt(dBCreatedAt)
             .memo(userBookmark.getMemo())
             .isRead(userBookmark.getIsRead())
             .dueDate(convertedDueDate)
