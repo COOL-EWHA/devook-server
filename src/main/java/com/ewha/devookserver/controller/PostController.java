@@ -316,27 +316,10 @@ public class PostController {
     Boolean isRead = requestMemoDto.getIsRead();
 
     LocalDate dueDate = null;
-    if (dueDateGet == "") {
 
-    }
-    if (dueDateGet != null) {
-      String dueDateSplittedYear = dueDateGet.split("\\.")[0];
-      String dueDateSplittedMonth = dueDateGet.split("\\.")[1];
-      String dueDateSplittedDate = dueDateGet.split("\\.")[2];
 
-      String dueDateIntegration = dueDateSplittedYear.concat("-")
-          .concat(dueDateSplittedMonth)
-          .concat("-")
-          .concat(dueDateSplittedDate);
+    // 빈 문자열로 들어올 경우 해당 dueDate null 값으로 설정
 
-      SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
-
-      dueDate = LocalDate.parse(dueDateIntegration, DateTimeFormatter.ISO_LOCAL_DATE);
-    }
-
-    if (isRead == null) {
-      isRead = false;
-    }
 
     try {
       String accessToken = accessTokenGet.split(" ")[1];
@@ -348,9 +331,35 @@ public class PostController {
         return ResponseEntity.status(401).body(" 2");
       }    // 유저 예외처리 완료
 
-      // 이제 post 관련한 method 짜기.
-
       String userIdx = oauthService.getUserIdx(accessToken);
+
+      if (dueDateGet == "") {
+        System.out.println("dueDate 빈문자열");
+        notificationService.deleteDueDate((long) bookmarkId, Long.valueOf(userIdx));
+      }
+      if (dueDateGet != null && dueDateGet != "") {
+        String dueDateSplittedYear = dueDateGet.split("\\.")[0];
+        String dueDateSplittedMonth = dueDateGet.split("\\.")[1];
+        String dueDateSplittedDate = dueDateGet.split("\\.")[2];
+
+        String dueDateIntegration = dueDateSplittedYear.concat("-")
+            .concat(dueDateSplittedMonth)
+            .concat("-")
+            .concat(dueDateSplittedDate);
+
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+
+        dueDate = LocalDate.parse(dueDateIntegration, DateTimeFormatter.ISO_LOCAL_DATE);
+      }
+
+      if (isRead == null) {
+        isRead = false;
+      }
+
+
+
+
+
       if (postRepository.existsByPostIdx((long) bookmarkId)) {
         if (postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx()
             .equals(userIdx)) {
