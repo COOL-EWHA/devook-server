@@ -164,33 +164,33 @@ public class RecommendController {
     return null;
   }
 
-
   @GetMapping("/posts/tags")
   public ResponseEntity<?> getRecommendTagList(
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
-    try {
-
+    try{
       String accessToken = accessTokenGet.split(" ")[1];
-      if (!oauthService.validatieTokenInput(accessToken)) {
-        return ResponseEntity.status(401).body(" ");
-      }
-      System.out.println(oauthService.isUserExist(accessToken));
-      if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(401).body(" ");
-      }    // 유저 예외처리 완료
-      String userIdx = oauthService.getUserIdx(accessToken);
-      System.out.println(userIdx);
-      // 1. userIdx와 일치하는 post
-      List<String> finalResponseString = postService.getPostTagList(userIdx);
-
-      // 여기 String 배열 반환
+    }catch (Exception e){
+      List<String> finalResponseString = postService.getPostTagList();
       return ResponseEntity.status(200).body(finalResponseString);
-
-    } catch (Exception e) {
-      System.out.println(e);
+    }
+    String accessToken = accessTokenGet.split(" ")[1];
+    if (!oauthService.validatieTokenInput(accessToken)) {
       return ResponseEntity.status(401).body(" ");
     }
+    System.out.println(oauthService.isUserExist(accessToken));
+    if (!oauthService.isUserExist(accessToken)) {
+      return ResponseEntity.status(401).body(" ");
+    }    // 유저 예외처리 완료
+    String userIdx = oauthService.getUserIdx(accessToken);
+    System.out.println(userIdx);
+    // 1. userIdx와 일치하는 post
+    List<String> finalResponseString = postService.getPostTagList(userIdx);
+
+    // 여기 String 배열 반환
+    return ResponseEntity.status(200).body(finalResponseString);
+
+
   }
 
   @GetMapping("/posts/{postId}")

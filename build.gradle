@@ -12,7 +12,7 @@ plugins {
 }
 
 group = 'com.ewha'
-version = 'recomm-0206-0003' // postId 관련 오류 수정
+version = '0207-1001' // postId 관련 오류 수정
 sourceCompatibility = '11'
 
 configurations {
