@@ -168,6 +168,18 @@ public class PostService {
       Notification notification = notificationService.returnDueDate(post.getPostIdx(),
           userIdx, true);
 
+      Boolean isUserPost = postRepository.existsByPostIdxAndUserIdx(post.getPostIdx(),
+          String.valueOf(userIdx));
+
+      Boolean isReadPost;
+      if(isUserPost==false){
+        UserBookmark userBookmark=userBookmarkRepository.findByPost_postIdxAndUser_userIdx(post.getPostIdx(), userIdx);
+        isReadPost=userBookmark.getIsRead();
+      }else{
+        isReadPost=post.getIsRead();
+      }
+
+
       SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
       String convertedDueDate = null;
@@ -196,7 +208,7 @@ public class PostService {
           .title(post.getPostTitle())
           .tags(forTestString)
           .url(post.getPostUrl())
-          .isRead(post.getIsRead())
+          .isRead(isReadPost)
           .dueDate(convertedDueDate)
           .build();
       searchResponseDtoList.add(postListDto);
@@ -232,7 +244,7 @@ public class PostService {
 
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
 
-        boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
+      boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
       if(getIsBookmarked==false) {
         PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
             .id(post.getId())
