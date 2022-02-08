@@ -8,6 +8,9 @@ import com.ewha.devookserver.domain.post.RefrenceDto;
 import com.ewha.devookserver.service.UserBookmarkService;
 import com.ewha.devookserver.service.UserRecommService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +30,7 @@ public class QueryRepository {
   private final TagRepository tagRepository;
   private final UserRecommService userRecommService;
   private final UserBookmarkService userBookmarkService;
+  private final UserBookmarkRepository userBookmarkRepository;
   QPost qPost = new QPost("m");
   QPostTag qPostTag = new QPostTag("p");
 
@@ -77,6 +81,18 @@ public class QueryRepository {
         .fetch();
   }
 
+  public Object returnNowPost(Long id, String userIdx){
+    // post
+    if(postRepository.existsByPostIdxAndUserIdx(id, userIdx)){
+      return postRepository.findByPostIdxAndUserIdx(id, userIdx);
+    }
+    if(userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))){
+      return userBookmarkRepository.findByPost_postIdxAndUser_userIdx(id, Long.valueOf(userIdx));
+    }
+
+    // bookmarkId
+    return null;
+  }
 
   // findAllByPostIdx
   public List<Post> findAllByPostIdxFunction1(Pageable page, String userIdx, String question) {
@@ -114,13 +130,28 @@ public class QueryRepository {
   public List<Post> findAllByPostIdxDescFunction2(Long id, Pageable page, String userIdx,
       String question) {
 
-    if (question == null) {
+    // TODO 현재 id 값보다 createdAt 값이 작은 것도 추가
+
+    Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+    System.out.println(createdAt);
+
+    if(postRepository.existsByPostIdxAndUserIdx(id, userIdx)){
+      createdAt = postRepository.findByPostIdxAndUserIdx(id,userIdx).getCreatedAt();
+    }
+    if(userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))){
+
+      createdAt = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(id, Long.valueOf(userIdx)).getCreatedAt();
+    }
+
+        if (question == null) {
       System.out.println("여기?");
+
+
 
       List<Post> postList = userBookmarkService.bookmarkExcludeUserPosts(Long.valueOf(userIdx));
       List<Post> returnList = new ArrayList<>();
       for (Post post : postList) {
-        if (post.getPostIdx() < id) {
+        if (post.getPostIdx() < id && post.getCreatedAt().before(createdAt)) {
           returnList.add(post);
         }
       }
@@ -135,7 +166,7 @@ public class QueryRepository {
     List<Post> filteredPostList = new ArrayList<>();
 
     for (Post post : getList) {
-      if (post.getPostIdx() < id) {
+      if (post.getPostIdx() < id && post.getCreatedAt().before(createdAt)) {
         filteredPostList.add(post);
       }
     }
@@ -169,11 +200,22 @@ public class QueryRepository {
   public List<Post> tagFiltering2(List<Long> postIdxList, Long id, String userIdx,
       String question) {
 
+    Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+    System.out.println(createdAt);
+
+    if(postRepository.existsByPostIdxAndUserIdx(id, userIdx)){
+      createdAt = postRepository.findByPostIdxAndUserIdx(id,userIdx).getCreatedAt();
+    }
+    if(userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))){
+
+      createdAt = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(id, Long.valueOf(userIdx)).getCreatedAt();
+    }
+
     List<Post> getList = userBookmarkService.bookmarkExcludeUserPosts(Long.valueOf(userIdx));
     List<Post> filteredPostList = new ArrayList<>();
 
     for (Post post : getList) {
-      if (postIdxList.contains(post.getPostIdx()) && post.getPostIdx() < id) {
+      if (postIdxList.contains(post.getPostIdx()) && post.getPostIdx() < id && post.getCreatedAt().before(createdAt)) {
         filteredPostList.add(post);
       }
     }
