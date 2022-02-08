@@ -88,7 +88,7 @@ public class RecommendService {
       for (PostTag postTag : eachPostTagList) {
         for (PostTag postTag1 : postTagList) {
           if (postTag.getPostTagName().equals(postTag1.getPostTagName())) {
-            count += 3;
+            count += 10;
           }
           if (post.getPostTitle().contains(postTag1.getPostTagName())) {
             count += 2;
