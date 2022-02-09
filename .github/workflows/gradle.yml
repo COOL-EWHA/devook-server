@@ -1,4 +1,4 @@
-name: CI/CD Test
+name: CI/CD Test & S3 deploy
 
 on:
   push:
@@ -22,19 +22,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew clean build -x test
-
-      - name: Make Directory for deliver
-        run: mkdir deploy
-
-      - name: Copy Jar
-        run: cp ./build/libs/*.jar ./deploy/
-
-      - name: Make zip file
-        run: zip -r -qq -j ./devook-production.zip ./deploy
-
-      - name: Deliver to AWS S3
+      - name: Copy application.properties from S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -42,4 +30,17 @@ jobs:
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \
-    ./devook-production.zip s3://devook-deploy/
+          s3://devook-deploy/application.properties src/main/resources/application.properties
+
+      - name: Copy application-oauth.yml from S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp \
+          --region ap-northeast-2 \
+          --acl private \
+          s3://devook-deploy/application-oauth.yml src/main/resources/application-oauth.yml
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
