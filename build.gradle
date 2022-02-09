@@ -1,3 +1,9 @@
+import java.sql.Time
+import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+
 buildscript {
 	ext {
 		queryDslVersion = "5.0.0"
@@ -11,8 +17,12 @@ plugins {
 	id 'java'
 }
 
+jar {
+	enabled = false
+}
+
 group = 'com.ewha'
-version = '0207-1001' // postId 관련 오류 수정
+version = '0.1' // postId 관련 오류 수정
 sourceCompatibility = '11'
 
 configurations {
