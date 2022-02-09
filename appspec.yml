@@ -4,3 +4,9 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/app/deploy
+
+hooks:
+  AfterInstall:
+    - location: deploy.sh
+      timeout: 60
+      runas: ec2-user
