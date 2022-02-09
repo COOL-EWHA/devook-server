@@ -56,6 +56,9 @@ jobs:
       - name: Copy appspec
         run: cp appspec.yml ./deploy/
 
+      - name: Copy shell script
+        run: cp deploy.sh ./deploy/
+
       - name: Make zip file
         run: zip -r -qq -j ./devook-production.zip ./deploy
 
