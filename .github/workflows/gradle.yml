@@ -44,3 +44,14 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
+
+      # 빌드 완료, S3 로 전달
+
+      - name: make directory for deliver
+        run: mkdir deploy
+
+      - name: Copy Jar
+        run: cp ./build/libs/*.jar ./deploy/
+
+      - name: Make zip file
+        run: zip -r -qq -j ./devook-production.zip ./deploy
