@@ -9,7 +9,6 @@ import com.ewha.devookserver.service.UserBookmarkService;
 import com.ewha.devookserver.service.UserRecommService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,12 +80,12 @@ public class QueryRepository {
         .fetch();
   }
 
-  public Object returnNowPost(Long id, String userIdx){
+  public Object returnNowPost(Long id, String userIdx) {
     // post
-    if(postRepository.existsByPostIdxAndUserIdx(id, userIdx)){
+    if (postRepository.existsByPostIdxAndUserIdx(id, userIdx)) {
       return postRepository.findByPostIdxAndUserIdx(id, userIdx);
     }
-    if(userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))){
+    if (userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))) {
       return userBookmarkRepository.findByPost_postIdxAndUser_userIdx(id, Long.valueOf(userIdx));
     }
 
@@ -135,18 +134,17 @@ public class QueryRepository {
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
     System.out.println(createdAt);
 
-    if(postRepository.existsByPostIdxAndUserIdx(id, userIdx)){
-      createdAt = postRepository.findByPostIdxAndUserIdx(id,userIdx).getCreatedAt();
+    if (postRepository.existsByPostIdxAndUserIdx(id, userIdx)) {
+      createdAt = postRepository.findByPostIdxAndUserIdx(id, userIdx).getCreatedAt();
     }
-    if(userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))){
+    if (userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))) {
 
-      createdAt = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(id, Long.valueOf(userIdx)).getCreatedAt();
+      createdAt = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(id,
+          Long.valueOf(userIdx)).getCreatedAt();
     }
 
-        if (question == null) {
+    if (question == null) {
       System.out.println("여기?");
-
-
 
       List<Post> postList = userBookmarkService.bookmarkExcludeUserPosts(Long.valueOf(userIdx));
       List<Post> returnList = new ArrayList<>();
@@ -203,19 +201,21 @@ public class QueryRepository {
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
     System.out.println(createdAt);
 
-    if(postRepository.existsByPostIdxAndUserIdx(id, userIdx)){
-      createdAt = postRepository.findByPostIdxAndUserIdx(id,userIdx).getCreatedAt();
+    if (postRepository.existsByPostIdxAndUserIdx(id, userIdx)) {
+      createdAt = postRepository.findByPostIdxAndUserIdx(id, userIdx).getCreatedAt();
     }
-    if(userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))){
+    if (userBookmarkRepository.existsUserBookmarkByPostIdxAndUserIdx(id, Long.valueOf(userIdx))) {
 
-      createdAt = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(id, Long.valueOf(userIdx)).getCreatedAt();
+      createdAt = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(id,
+          Long.valueOf(userIdx)).getCreatedAt();
     }
 
     List<Post> getList = userBookmarkService.bookmarkExcludeUserPosts(Long.valueOf(userIdx));
     List<Post> filteredPostList = new ArrayList<>();
 
     for (Post post : getList) {
-      if (postIdxList.contains(post.getPostIdx()) && post.getPostIdx() < id && post.getCreatedAt().before(createdAt)) {
+      if (postIdxList.contains(post.getPostIdx()) && post.getPostIdx() < id && post.getCreatedAt()
+          .before(createdAt)) {
         filteredPostList.add(post);
       }
     }

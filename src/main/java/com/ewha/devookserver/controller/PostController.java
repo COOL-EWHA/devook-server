@@ -317,9 +317,7 @@ public class PostController {
 
     LocalDate dueDate = null;
 
-
     // 빈 문자열로 들어올 경우 해당 dueDate null 값으로 설정
-
 
     try {
       String accessToken = accessTokenGet.split(" ")[1];
@@ -355,10 +353,6 @@ public class PostController {
       if (isRead == null) {
         isRead = false;
       }
-
-
-
-
 
       if (postRepository.existsByPostIdx((long) bookmarkId)) {
         if (postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx()
