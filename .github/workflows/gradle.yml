@@ -3,8 +3,6 @@ name: CI/CD Test & S3 deploy
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
