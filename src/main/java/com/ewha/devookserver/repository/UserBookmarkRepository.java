@@ -21,4 +21,6 @@ public interface UserBookmarkRepository extends JpaRepository<UserBookmark, Long
   UserBookmark findByPost_postIdxAndUser_userIdx(Long post_postIdx, Long user_userIdx);
 
   Boolean existsUserBookmarkByPostIdxAndUserIdx(Long postIdx, Long userIdx);
+
+  Integer countAllByUserIdx(Long userIdx);
 }

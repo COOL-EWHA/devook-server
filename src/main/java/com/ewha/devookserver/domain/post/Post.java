@@ -65,7 +65,7 @@ public class Post implements Comparable<Post> {
   public int compareTo(Post o) {
 
     if (this.getPostIdx() > o.getPostIdx() || this.getCreatedAt().after(o.getCreatedAt())) {
-    //if (this.getCreatedAt().after(o.getCreatedAt())) {
+      //if (this.getCreatedAt().after(o.getCreatedAt())) {
       return -1;
     } else if (this.getPostIdx() < o.getPostIdx()) {
       return 1;

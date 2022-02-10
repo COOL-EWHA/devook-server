@@ -21,6 +21,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
   Post getPostByPostUrlAndUserIdx(String postUrl, String userIdx);
 
+  Integer countAllByUserIdx(String userIdx);
+
   @Transactional
   void deletePostByPostIdx(Long postIdx);
 

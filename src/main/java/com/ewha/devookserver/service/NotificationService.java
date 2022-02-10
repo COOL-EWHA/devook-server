@@ -13,22 +13,23 @@ public class NotificationService {
 
   private final NotificationRepository notificationRepository;
 
-  public Boolean deleteDueDate(Long bookmarkIdx, Long userIdx){
+  public Boolean deleteDueDate(Long bookmarkIdx, Long userIdx) {
     if (notificationRepository.existsByUserIdxAndPostIdx(userIdx, bookmarkIdx)) {
-      Notification notification =  notificationRepository.findByUserIdxAndPostIdx(userIdx, bookmarkIdx);
+      Notification notification = notificationRepository.findByUserIdxAndPostIdx(userIdx,
+          bookmarkIdx);
       notification.setDueDate(null);
       notificationRepository.save(notification);
       return true;
     }
     if (notificationRepository.existsByUserIdxAndBookmarkIdx(userIdx, bookmarkIdx)) {
-      Notification notification =  notificationRepository.findByUserIdxAndBookmarkIdx(userIdx, bookmarkIdx);
+      Notification notification = notificationRepository.findByUserIdxAndBookmarkIdx(userIdx,
+          bookmarkIdx);
       notification.setDueDate(null);
       notificationRepository.save(notification);
       return true;
     }
     return null;
   }
-
 
   // 사용자의 idx, bookmarkIdx, isPost를 넣으면 그것에 해당하는 dueDate를 반환해주는 함수
 
