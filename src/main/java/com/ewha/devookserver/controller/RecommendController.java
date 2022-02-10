@@ -6,14 +6,12 @@ import com.ewha.devookserver.domain.post.RefrenceDto;
 import com.ewha.devookserver.dto.post.PostBookmarkGetDto;
 import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
 import com.ewha.devookserver.repository.PostRepository;
-import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.TagRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
 import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.TagService;
-import com.ewha.devookserver.service.UserService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,13 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RecommendController {
 
-  private final UserService userService;
   private final PostService postService;
   private final OauthService oauthService;
   private final RecommendService recommendService;
   private final PostRepository postRepository;
   private final TagRepository tagRepository;
-  private final QueryRepository queryRepository;
   private final QueryService queryService;
   private final TagService tagService;
 
