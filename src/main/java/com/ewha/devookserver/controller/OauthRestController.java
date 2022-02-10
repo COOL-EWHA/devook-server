@@ -56,12 +56,11 @@ public class OauthRestController {
       if (!oauthService.isUserExist(accessToken)) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
+
       String userIdx = oauthService.getUserIdx(accessToken);
       oauthService.deleteUserRefreshToken(Long.valueOf(userIdx));
 
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
-          .sameSite("None")
-          .secure(true)
           .httpOnly(true)
           .path("/")
           .build();
@@ -73,12 +72,15 @@ public class OauthRestController {
     }
   }
 
+
   @PostMapping("/auth/test-login")
   public ResponseEntity<?> testLogin(HttpServletResponse response,
       @RequestBody TestLoginDto testLoginDto) {
 
     String userEmail = testLoginDto.getEmail();
     boolean isUserExistemail = userService.isMemberExistByEmail(userEmail);
+
+    //유저가 존재하면 그 유저의 정보 반환
 
     if (isUserExistemail) {
       if (memberRepository.countMemberByEmail(userEmail) != 1) {
@@ -100,8 +102,6 @@ public class OauthRestController {
 
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
                 loginFinalResponseDto.getRefreshToken())
-            .sameSite("None")
-            .secure(true)
             .httpOnly(true)
             .path("/")
             .build();
@@ -129,8 +129,6 @@ public class OauthRestController {
 
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
                 loginFinalResponseDto.getRefreshToken())
-            .sameSite("None")
-            .secure(true)
             .httpOnly(true)
             .path("/")
             .build();
@@ -139,44 +137,70 @@ public class OauthRestController {
         return ResponseEntity.status(200).body(revisedCookieDto);
       }
     } else {
+      System.out.println("일치하는 유저가 없습니다");
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
   @PostMapping("/auth/refresh")
-  public ResponseEntity<?> loginRefresh(@RequestHeader(value = "Cookie") String refreshTokenGet,
-      HttpServletResponse response) {
+  public ResponseEntity<?> loginRefresh(
+      @RequestHeader(value = "Cookie") String realRefreshToken, HttpServletResponse response) {
 
     try {
 
-      if (Objects.equals(refreshTokenGet, "REFRESH_TOKEN=")) {
-        ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
-            .sameSite("None")
-            .secure(true)
-            .httpOnly(true)
-            .path("/")
-            .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+      String tokenizedRefreshToken = null;
 
-        return ResponseEntity.status(404).body("빈리프레쉬");
+      String[] date = realRefreshToken.split("; ");
+
+      for (int i = 0; i < date.length; i++) {
+        System.out.println("번호" + date[i]);
+        if (date[i].contains("REFRESH_TOKEN")) {
+          tokenizedRefreshToken = date[i];
+        }
       }
 
-      String accessToken = refreshTokenGet.split("=")[1];
+      System.out.println(tokenizedRefreshToken);
 
-      boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
-
-      if (!isTokenExists) {
-        ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
-            .sameSite("None")
-            .secure(true)
+      if (Objects.equals(tokenizedRefreshToken, "REFRESH_TOKEN=")) {
+        ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
+                null)
             .httpOnly(true)
             .path("/")
             .build();
+        //domain "localhost:8080"
+        //domain "localhost:3000"
+        // domain "https://localhost:3000"
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        return ResponseEntity.status(404).body("");
+      }
 
-        return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
+      String refreshTokenGet = tokenizedRefreshToken;
+      String accessToken = refreshTokenGet.split("=")[1];
+
+      System.out.println(accessToken + "\n\n\n\n\n");
+
+      System.out.println("@Getmapping /auth/refresh");
+      boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
+      System.out.println(isTokenExists);
+
+      if (!isTokenExists) {
+        System.out.println("존재하지 않는 유저!\n");
+        ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
+                null)
+            .httpOnly(true)
+            .path("/")
+            .build();
+        //domain "localhost:8080"
+        //domain "localhost:3000"
+        // domain "https://localhost:3000"
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        return ResponseEntity.status(404).body("");
       } else {
+        System.out.println("존재하는 유저입니다");
         Member member = userService.returnRefreshTokenMember(accessToken);
+        System.out.println(member.getRefreshToken());
+
+        // refreshToken 값이 업데이트가 안됨. accessToken 값은 매번 새롭게 잘 설정되고 있음.
 
         RefreshDto refreshDto = oauthService.refreshUserToken(member);
         RefreshResponseDto refreshResponseDto =
@@ -184,8 +208,6 @@ public class OauthRestController {
                 .refreshToken(refreshDto.getRefreshToken()).build();
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
                 refreshDto.getRefreshToken())
-            .sameSite("None")
-            .secure(true)
             .httpOnly(true)
             .path("/")
             .build();
@@ -195,22 +217,21 @@ public class OauthRestController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
       }
-
     } catch (Exception e) {
-      ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
-          .sameSite("None")
-          .secure(true)
+      System.out.println("오류 발생 Exception::::");
+      System.out.println(e);
+      ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
+              null)
           .httpOnly(true)
           .path("/")
           .build();
+      //domain "localhost:8080"
+      //domain "localhost:3000"
+      // domain "https://localhost:3000"
       response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-      System.out.println("오류");
-
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" ");
     }
   }
-
 
   @PostMapping("/auth/login/{provider}")
   public ResponseEntity<?> loginUser(@PathVariable String provider,
@@ -218,10 +239,15 @@ public class OauthRestController {
     System.out.println("@PostMapping /auth/login/provider");
 
     String replaceToken = tokenRequestDto.getCode().replace("%2F", "/");
+    System.out.println(replaceToken);
 
     try {
       LoginResponse loginResponse = oauthService.login(provider, replaceToken);
+      // 기존 회원 아님 -> 회원가입 진행 (201)
 
+      //Error : 처음 회원가입 할때 refreshToken이 저장이 안된다.
+
+      System.out.println(loginResponse.isExistUser());
       LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
           .email(loginResponse.getEmail())
           .nickname(loginResponse.getNickname())
@@ -237,8 +263,6 @@ public class OauthRestController {
 
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
               loginFinalResponseDto.getRefreshToken())
-          .sameSite("None")
-          .secure(true)
           .httpOnly(true)
           .path("/")
           .build();
@@ -250,6 +274,7 @@ public class OauthRestController {
 
       return ResponseEntity.status(200).body(revisedCookieDto);
     } catch (Exception e) {
+      System.out.println("에러내용");
       System.out.println(e);
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -266,10 +291,14 @@ public class OauthRestController {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    System.out.println(oauthService.isUserExist(accessToken));
+
     try {
       if (!oauthService.isUserExist(accessToken)) {
+        System.out.println("존재하지 않는 유저");
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
+      System.out.println("여기까지 ok");
       String userIdx = oauthService.getUserIdx(accessToken);
 
       System.out.println(userIdx);
@@ -284,6 +313,7 @@ public class OauthRestController {
           .build();
       return ResponseEntity.status(200).headers(httpHeaders).body(userinfo);
     } catch (RuntimeException e) {
+      System.out.println("유효하지 않은 토큰");
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
@@ -304,6 +334,7 @@ public class OauthRestController {
       userService.deleteMember(member.getId());
       return new ResponseEntity<>(HttpStatus.OK);
     } catch (RuntimeException e) {
+      System.out.println("삭제 오류 발생. 존재하지 않는 유저");
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
