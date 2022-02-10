@@ -11,10 +11,13 @@ import com.ewha.devookserver.repository.NotificationRepository;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -104,9 +107,8 @@ public class AlarmService {
 
     if (postCount + bookmarkCount == 0) {
 
-
       Alarm alarm = Alarm.builder()
-          .isRead(null)
+          .isRead(false)
           .postIdx(null)
           .userIdx(userIdx)
           .message("등록된 북마크가 없어요. 북마크를 추가해보세요!\uD83D\uDE0E")
@@ -114,7 +116,7 @@ public class AlarmService {
 
       alarmRepository.save(alarm);
 
-    }else{
+    } else {
       for (Post post : postList) {
         if (post.getIsRead() == false) {
           userIsReadCount++;
@@ -130,7 +132,7 @@ public class AlarmService {
       }
 
       Alarm alarm = Alarm.builder()
-          .isRead(null)
+          .isRead(false)
           .postIdx(null)
           .userIdx(userIdx)
           .message("읽지 않은 북마크가 " + userIsReadCount + "개 있어요. 추가한 글을 읽어보세요!\uD83E\uDD29")
@@ -139,5 +141,29 @@ public class AlarmService {
       alarmRepository.save(alarm);
 
     }
+  }
+
+  public List<AlarmResponseDto> returnAlarmCursorList(Long userIdx, Long cursor, Integer limit) {
+    List<Alarm> userAlarm = alarmRepository.findAllByUserIdx(Long.valueOf(userIdx));
+    List<AlarmResponseDto> responseDtos = new ArrayList<>();
+    SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+    for (Alarm alarm : userAlarm) {
+      if (alarm.getAlarmIdx() < cursor && alarm.getIsRead() == false) {
+        Date dBconvertedTime = alarm.getCreatedAt();
+        String dBCreatedAt = formatISO.format(dBconvertedTime);
+        AlarmResponseDto alarmResponseDto = AlarmResponseDto.builder()
+            .id(alarm.getAlarmIdx())
+            .createdAt(dBCreatedAt)
+            .message(alarm.getMessage())
+            .isRead(alarm.getIsRead())
+            .bookmarkId(alarm.getPostIdx())
+            .build();
+
+        responseDtos.add(alarmResponseDto);
+      }
+    }
+    Collections.sort(responseDtos);
+    return responseDtos.stream().limit(limit).collect(Collectors.toList());
   }
 }

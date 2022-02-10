@@ -14,22 +14,22 @@ public class AlarmScheduledService {
   private final MemberRepository memberRepository;
   private final AlarmService alarmService;
 
-  @Scheduled(cron = "50 59 8 * * *")
-  public void generateUsageAlarm(){
+  @Scheduled(cron = "00 09 5 * * *")
+  public void generateUsageAlarm() {
 
     List<Member> memberList = memberRepository.findAll();
 
-    for(Member member : memberList){
+    for (Member member : memberList) {
       alarmService.saveUsageAlert(member.getId());
     }
   }
 
-  @Scheduled(cron = "50 59 20 * * *")
-  public void generateTitleAlarm(){
+  @Scheduled(cron = "00 09 5 * * *")
+  public void generateTitleAlarm() {
 
     List<Member> memberList = memberRepository.findAll();
 
-    for(Member member : memberList){
+    for (Member member : memberList) {
       alarmService.saveTitlePost(member.getId());
     }
   }

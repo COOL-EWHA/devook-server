@@ -18,7 +18,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @Entity
 @Table(name = "alarm")
-public class Alarm {
+public class Alarm implements Comparable<Alarm> {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -37,6 +37,17 @@ public class Alarm {
     this.userIdx = userIdx;
     this.message = message;
     this.isRead = isRead;
-    this.postIdx=postIdx;
+    this.postIdx = postIdx;
+  }
+
+  @Override
+  public int compareTo(Alarm o) {
+    if (this.getPostIdx() > o.getPostIdx()) {
+      return -1;
+    } else if (this.getPostIdx() < o.getPostIdx()) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 }
