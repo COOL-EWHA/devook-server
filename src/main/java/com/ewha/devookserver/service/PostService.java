@@ -172,13 +172,13 @@ public class PostService {
           String.valueOf(userIdx));
 
       Boolean isReadPost;
-      if(isUserPost==false){
-        UserBookmark userBookmark=userBookmarkRepository.findByPost_postIdxAndUser_userIdx(post.getPostIdx(), userIdx);
-        isReadPost=userBookmark.getIsRead();
-      }else{
-        isReadPost=post.getIsRead();
+      if (isUserPost == false) {
+        UserBookmark userBookmark = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(
+            post.getPostIdx(), userIdx);
+        isReadPost = userBookmark.getIsRead();
+      } else {
+        isReadPost = post.getIsRead();
       }
-
 
       SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -245,7 +245,7 @@ public class PostService {
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
 
       boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
-      if(getIsBookmarked==false) {
+      if (getIsBookmarked == false) {
         PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
             .id(post.getId())
             .thumbnail(post.getPostThumbnail())
@@ -262,7 +262,8 @@ public class PostService {
     return searchResponseDtoList;
   }
 
-  public List<PostBookmarkRequestDto> responseBookmarkListMakerForPost(CursorResult<Post> productList,
+  public List<PostBookmarkRequestDto> responseBookmarkListMakerForPost(
+      CursorResult<Post> productList,
       String userIdx) {
     List<PostBookmarkRequestDto> searchResponseDtoList = new ArrayList<>();
 
@@ -281,7 +282,7 @@ public class PostService {
 
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
       boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
-      if(getIsBookmarked==false){
+      if (getIsBookmarked == false) {
         PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
             .id(post.getId())
             .thumbnail(post.getPostThumbnail())
