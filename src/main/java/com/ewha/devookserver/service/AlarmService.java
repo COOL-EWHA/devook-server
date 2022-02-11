@@ -75,7 +75,7 @@ public class AlarmService {
       Alarm alarm = Alarm.builder()
           .userIdx(Long.valueOf(userIdx))
           .message(
-              "\uD83D\uDD14 오늘은 `" + title + "` 의 읽기 마감 기한이에요. 서둘러 읽어주세요!\uD83D\uDE09")
+              "\uD83D\uDD14 오늘은 '" + title + "' 의 읽기 마감 기한이에요. 서둘러 읽어주세요! \uD83D\uDE09")
           .isRead(false)
           .postIdx(post.getPostIdx())
           .build();
