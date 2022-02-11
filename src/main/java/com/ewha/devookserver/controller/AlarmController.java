@@ -46,7 +46,6 @@ public class AlarmController {
     if (!oauthService.validatieTokenInput(accessToken)) {
       return ResponseEntity.status(401).body("1");
     }
-    System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       return ResponseEntity.status(401).body("2");
     }    // 유저 예외처리 완료
@@ -74,7 +73,6 @@ public class AlarmController {
     if (!oauthService.validatieTokenInput(accessToken)) {
       return ResponseEntity.status(401).body("1");
     }
-    System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       return ResponseEntity.status(401).body("2");
     }    // 유저 예외처리 완료

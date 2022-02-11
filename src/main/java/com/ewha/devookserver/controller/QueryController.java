@@ -40,16 +40,6 @@ public class QueryController {
           @RequestHeader(value = "Authorization") String tokenGet
       ) {
 
-    if (cursor == null) {
-      System.out.println("cursornull");
-    }
-    if (tags == null) {
-      System.out.println("tagsnull");
-    }
-    if (question == null) {
-      System.out.println("questionnull");
-    }
-
     List<String> requiredTagList = new ArrayList<>();
 
     if (tags != null) {
@@ -60,7 +50,6 @@ public class QueryController {
       }
 
     }
-    System.out.println(requiredTagList);
     int limit = 10;
 
     try {
@@ -78,7 +67,6 @@ public class QueryController {
       String userIdx = oauthService.getUserIdx(accessToken);
 
       List<Long> postTagList = tagService.makePostTagList(requiredTagList);
-      System.out.println(postTagList);
 
       // 11.21 @ 1:03:31 수정사항
 
@@ -93,13 +81,11 @@ public class QueryController {
 
       if (tags == null) {
         // 여기 아래부터 시작
-        System.out.println("tags==null");
 
         return ResponseEntity.status(200).body(postService.responseListMaker
             (this.queryService.get(cursor, PageRequest.of(0, 10), userIdx, question), isRead,
                 Long.valueOf(userIdx)));
       }
-      System.out.println("tags!=null");
 
       // 여기 아래부터 시작
       return ResponseEntity.status(200).body(postService.responseListMaker

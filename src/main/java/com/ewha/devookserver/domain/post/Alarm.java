@@ -39,7 +39,7 @@ public class Alarm implements Comparable<Alarm> {
     this.message = message;
     this.isRead = isRead;
     this.postIdx = postIdx;
-    this.type=type;
+    this.type = type;
   }
 
   @Override

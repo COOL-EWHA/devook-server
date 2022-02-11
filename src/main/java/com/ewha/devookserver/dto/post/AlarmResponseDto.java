@@ -17,7 +17,7 @@ public class AlarmResponseDto implements Comparable<AlarmResponseDto> {
   public AlarmResponseDto(Long id, String type, String message, String createdAt, Boolean isRead,
       Long bookmarkId) {
     this.id = id;
-    this.type=type;
+    this.type = type;
     this.message = message;
     this.createdAt = createdAt;
     this.isRead = isRead;
