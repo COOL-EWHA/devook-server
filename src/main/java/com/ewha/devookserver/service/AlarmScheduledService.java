@@ -14,7 +14,7 @@ public class AlarmScheduledService {
   private final MemberRepository memberRepository;
   private final AlarmService alarmService;
 
-  @Scheduled(cron = "50 02 14 * * *")
+  @Scheduled(cron = "00 00 6 * * *")
   public void generateUsageAlarm() {
 
     List<Member> memberList = memberRepository.findAll();
@@ -24,7 +24,7 @@ public class AlarmScheduledService {
     }
   }
 
-  @Scheduled(cron = "50 02 14 * * *")
+  @Scheduled(cron = "00 00 18 * * *")
   public void generateTitleAlarm() {
 
     List<Member> memberList = memberRepository.findAll();

@@ -74,6 +74,7 @@ public class AlarmService {
 
       Alarm alarm = Alarm.builder()
           .userIdx(Long.valueOf(userIdx))
+          .type("due-date")
           .message(
               "\uD83D\uDD14 오늘은 '" + title + "' 의 읽기 마감 기한이에요. 서둘러 읽어주세요! \uD83D\uDE09")
           .isRead(false)
@@ -109,6 +110,7 @@ public class AlarmService {
 
       Alarm alarm = Alarm.builder()
           .isRead(false)
+          .type("no-bookmarks")
           .postIdx(null)
           .userIdx(userIdx)
           .message("등록된 북마크가 없어요. 북마크를 추가해보세요!\uD83D\uDE0E")
@@ -133,6 +135,7 @@ public class AlarmService {
 
       Alarm alarm = Alarm.builder()
           .isRead(false)
+          .type("to-read")
           .postIdx(null)
           .userIdx(userIdx)
           .message("읽지 않은 북마크가 " + userIsReadCount + "개 있어요. 추가한 글을 읽어보세요!\uD83E\uDD29")
@@ -154,6 +157,7 @@ public class AlarmService {
         String dBCreatedAt = formatISO.format(dBconvertedTime);
         AlarmResponseDto alarmResponseDto = AlarmResponseDto.builder()
             .id(alarm.getAlarmIdx())
+            .type(alarm.getType())
             .createdAt(dBCreatedAt)
             .message(alarm.getMessage())
             .isRead(alarm.getIsRead())
