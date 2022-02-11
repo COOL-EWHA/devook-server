@@ -28,16 +28,18 @@ public class Alarm implements Comparable<Alarm> {
   private String message;
   private Boolean isRead;
   private Long postIdx;
+  private String type;
 
   @CreationTimestamp
   private Timestamp createdAt;
 
   @Builder
-  public Alarm(Long userIdx, String message, Boolean isRead, Long postIdx) {
+  public Alarm(Long userIdx, String message, Boolean isRead, Long postIdx, String type) {
     this.userIdx = userIdx;
     this.message = message;
     this.isRead = isRead;
     this.postIdx = postIdx;
+    this.type=type;
   }
 
   @Override
