@@ -107,12 +107,32 @@ public class RecommendController {
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
-      return ResponseEntity.status(401).body("1");
-    }
+      //유저 추천글 전체 목록 GET (분기)
+      if (bookmarkId == null && postId == null) {
+        List<Long> postTagList = tagService.makePostTagList(requiredTagList);
+
+        List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForNoAuthUser
+            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "notUser", question,
+                postTagList,
+                true, requiredTagList, limit.intValue()));
+
+        return ResponseEntity.status(200).body(
+            (listDtos));
+      }    }
     System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
-      return ResponseEntity.status(401).body("2");
-    }    // 유저 예외처리 완료
+      //유저 추천글 전체 목록 GET (분기)
+      if (bookmarkId == null && postId == null) {
+        List<Long> postTagList = tagService.makePostTagList(requiredTagList);
+
+        List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForNoAuthUser
+            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "notUser", question,
+                postTagList,
+                true, requiredTagList, limit.intValue()));
+
+        return ResponseEntity.status(200).body(
+            (listDtos));
+      }    }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
 
     //유저 추천글 전체 목록 GET (분기)
@@ -172,11 +192,13 @@ public class RecommendController {
     }
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
-      return ResponseEntity.status(401).body(" ");
+      List<String> finalResponseString = postService.getPostTagList();
+      return ResponseEntity.status(200).body(finalResponseString);
     }
     System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
-      return ResponseEntity.status(401).body(" ");
+      List<String> finalResponseString = postService.getPostTagList();
+      return ResponseEntity.status(200).body(finalResponseString);
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
     System.out.println(userIdx);
@@ -230,11 +252,63 @@ public class RecommendController {
     String accessToken = accessTokenGet.split(" ")[1];
 
     if (!oauthService.validatieTokenInput(accessToken)) {
-      return ResponseEntity.status(401).body(" ");
+      if (postRepository.existsByPostIdx((long) bookmarkId)) {
+        Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);
+
+        List<String> tagList = postService.getEachPostTagList(bookmarkId);
+        if (tagList.size() == 0) {
+          tagList.add("태그1");
+          tagList.add("태그2");
+        }
+
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date convertedTime = userPost.getCreatedAt();
+        String dBconvertedTime = format1.format(convertedTime);
+
+        PostBookmarkGetDto eachPostResponseDto = PostBookmarkGetDto.builder()
+            .id(userPost.getId())
+            .title(userPost.getPostTitle())
+            .thumbnail(userPost.getPostThumbnail())
+            .description(userPost.getPostDescription())
+            .tags(tagList)
+            .url(userPost.getPostUrl())
+            .isBookmarked(null) // 이후 수정
+            .build();
+
+        return ResponseEntity.status(200).body(eachPostResponseDto);
+      }
+      return ResponseEntity.status(404).body("");
+
     }
     System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
-      return ResponseEntity.status(401).body(" ");
+      if (postRepository.existsByPostIdx((long) bookmarkId)) {
+        Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);
+
+        List<String> tagList = postService.getEachPostTagList(bookmarkId);
+        if (tagList.size() == 0) {
+          tagList.add("태그1");
+          tagList.add("태그2");
+        }
+
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date convertedTime = userPost.getCreatedAt();
+        String dBconvertedTime = format1.format(convertedTime);
+
+        PostBookmarkGetDto eachPostResponseDto = PostBookmarkGetDto.builder()
+            .id(userPost.getId())
+            .title(userPost.getPostTitle())
+            .thumbnail(userPost.getPostThumbnail())
+            .description(userPost.getPostDescription())
+            .tags(tagList)
+            .url(userPost.getPostUrl())
+            .isBookmarked(null) // 이후 수정
+            .build();
+
+        return ResponseEntity.status(200).body(eachPostResponseDto);
+      }
+      return ResponseEntity.status(404).body("");
+
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
 

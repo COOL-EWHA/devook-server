@@ -149,7 +149,7 @@ public class AlarmService {
     SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     for (Alarm alarm : userAlarm) {
-      if (alarm.getAlarmIdx() < cursor && alarm.getIsRead() == false) {
+      if (alarm.getAlarmIdx() < cursor) {
         Date dBconvertedTime = alarm.getCreatedAt();
         String dBCreatedAt = formatISO.format(dBconvertedTime);
         AlarmResponseDto alarmResponseDto = AlarmResponseDto.builder()
