@@ -118,7 +118,8 @@ public class RecommendController {
 
         return ResponseEntity.status(200).body(
             (listDtos));
-      }    }
+      }
+    }
     System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       //유저 추천글 전체 목록 GET (분기)
@@ -132,7 +133,8 @@ public class RecommendController {
 
         return ResponseEntity.status(200).body(
             (listDtos));
-      }    }    // 유저 예외처리 완료
+      }
+    }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
 
     //유저 추천글 전체 목록 GET (분기)

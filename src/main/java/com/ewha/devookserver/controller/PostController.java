@@ -52,11 +52,7 @@ public class PostController {
       @RequestHeader(value = "Authorization") String tokenGet,
       HttpServletResponse response, @RequestBody PostUserRequestDto postUserRequestDto) {
 
-    System.out.println(postUserRequestDto.getMemo());
-    System.out.println(postUserRequestDto.getPostId());
-
     try {
-      System.out.println(tokenGet + "요청");
       String accessToken = tokenGet.split(" ")[1];
       if (Objects.equals(accessToken, "undefined")) {
         return ResponseEntity.status(401).body("1");
@@ -78,10 +74,8 @@ public class PostController {
             if (postRepository.existsByPostIdxAndUserIdx(
                 Long.valueOf(postUserRequestDto.getPostId()),
                 userIdx)) {
-              System.out.println("이미 유저가 등록한 post, 따로 북마크 되지는 않음"); // 일단 이렇게 처리하고, 나중에 고려
               return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
             }
-            System.out.println("이미 등록된 북마크.");
             return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
           } else {
             Post post = postRepository.getPostByPostIdx(postIdx);
@@ -98,14 +92,12 @@ public class PostController {
       }
 
       if (postService.isPostUserExists(postUserRequestDto.getUrl(), userIdx)) {
-        System.out.println("이미 존재하는 글.");
         return ResponseEntity.status(201).body("");
       }
 
       PostLabmdaRequestDto postLabmdaRequestDto = new PostLabmdaRequestDto();
       postLabmdaRequestDto.setUrl(postUserRequestDto.getUrl());
 
-      String url = postLabmdaRequestDto.getUrl();
       PostLambdaDto postLambdaDto = postService.getPostInfo(postLabmdaRequestDto);
 
       postService.savePost(
@@ -117,7 +109,6 @@ public class PostController {
 
       return ResponseEntity.status(201).body("4");
     } catch (Exception e) {
-      System.out.println(e);
       return ResponseEntity.status(500).body("5");
     }
   }
@@ -133,7 +124,6 @@ public class PostController {
     if (!oauthService.validatieTokenInput(accessToken)) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }    // 유저 예외처리 완료
@@ -156,12 +146,10 @@ public class PostController {
     if (!oauthService.validatieTokenInput(accessToken)) {
       return ResponseEntity.status(401).body(" ");
     }
-    System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       return ResponseEntity.status(401).body(" ");
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
-    System.out.println(userIdx);
     // 1. userIdx와 일치하는 post
 
     List<String> finalResponseString = postService.getPostTagList(userIdx, isBookmarkRead);
@@ -183,7 +171,6 @@ public class PostController {
     if (!oauthService.validatieTokenInput(accessToken)) {
       return ResponseEntity.status(401).body("1");
     }
-    System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       return ResponseEntity.status(401).body(" 2");
     }    // 유저 예외처리 완료
@@ -205,15 +192,11 @@ public class PostController {
           tagList.add("태그2");
         }
 
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         Date dBconvertedTime = userPost.getCreatedAt();
         String dBCreatedAt = formatISO.format(dBconvertedTime);
 
-        Date dueDate = null;
         Notification notification = notificationService.returnDueDate((long) bookmarkId,
             Long.valueOf(userIdx), true);
 
@@ -303,14 +286,6 @@ public class PostController {
       @RequestHeader(name = "Authorization") String accessTokenGet,
       @RequestBody RequestMemoDto requestMemoDto) throws ParseException {
 
-    System.out.println("=================");
-
-    System.out.println(requestMemoDto.getMemo() + "    memo");
-    System.out.println(requestMemoDto.getDueDate() + "     duedate");
-    System.out.println(requestMemoDto.getIsRead() + "      isRead");
-
-    System.out.println("=================");
-
     String requestMemo = requestMemoDto.getMemo();
     String dueDateGet = requestMemoDto.getDueDate();
     Boolean isRead = requestMemoDto.getIsRead();
@@ -324,7 +299,6 @@ public class PostController {
       if (!oauthService.validatieTokenInput(accessToken)) {
         return ResponseEntity.status(401).body("1");
       }
-      System.out.println(oauthService.isUserExist(accessToken));
       if (!oauthService.isUserExist(accessToken)) {
         return ResponseEntity.status(401).body(" 2");
       }    // 유저 예외처리 완료
@@ -332,7 +306,6 @@ public class PostController {
       String userIdx = oauthService.getUserIdx(accessToken);
 
       if (dueDateGet == "") {
-        System.out.println("dueDate 빈문자열");
         notificationService.deleteDueDate((long) bookmarkId, Long.valueOf(userIdx));
       }
       if (dueDateGet != null && dueDateGet != "") {
@@ -344,8 +317,6 @@ public class PostController {
             .concat(dueDateSplittedMonth)
             .concat("-")
             .concat(dueDateSplittedDate);
-
-        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 
         dueDate = LocalDate.parse(dueDateIntegration, DateTimeFormatter.ISO_LOCAL_DATE);
       }
@@ -378,8 +349,8 @@ public class PostController {
         }
       }
 
-      if (!userBookmarkRepository.findByPost_postIdxAndUser_userIdx((long) bookmarkId,
-          Long.valueOf(userIdx)).equals(null)) {
+      if (userBookmarkRepository.findByPost_postIdxAndUser_userIdx((long) bookmarkId,
+          Long.valueOf(userIdx)) != null) {
 
         UserBookmark userBookmark = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(
             (long) bookmarkId, Long.valueOf(userIdx));
@@ -399,13 +370,10 @@ public class PostController {
 
       }
 
-      System.out.println(userIdx + "  " + bookmarkId);
-
       return ResponseEntity.status(401).body(" 3");
 
 
     } catch (Exception e) {
-      System.out.println(e);
       return ResponseEntity.status(401).body(" 4");
     }
 
