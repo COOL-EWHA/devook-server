@@ -36,14 +36,12 @@ public class AlarmService {
   private final AlarmRepository alarmRepository;
 
   public void saveTitlePost(Long userIdx) {
-    List<AlarmResponseDto> alarmResponseDtos = new ArrayList<>();
     List<Post> postList = postRepository.findAllByUserIdx(String.valueOf(userIdx));
     List<Long> dueDateAlertList = new ArrayList<>();
 
     for (Post post : postList) {
       Notification notification = notificationService.returnDueDate(post.getPostIdx(), userIdx,
           true);
-      System.out.println(LocalDate.now());
 
       if (post.getIsRead() == false && notification != null) {
         if (notification.getDueDate().getDayOfMonth() == LocalDate.now().getDayOfMonth()) {
@@ -73,7 +71,7 @@ public class AlarmService {
       }
 
       Alarm alarm = Alarm.builder()
-          .userIdx(Long.valueOf(userIdx))
+          .userIdx(userIdx)
           .type("due-date")
           .message(
               "\uD83D\uDD14 오늘은 '" + title + "' 의 읽기 마감 기한이에요. 서둘러 읽어주세요! \uD83D\uDE09")
@@ -93,9 +91,7 @@ public class AlarmService {
 
 
   public void saveUsageAlert(Long userIdx) {
-    List<AlarmResponseDto> alarmResponseDtos = new ArrayList<>();
     List<Post> postList = postRepository.findAllByUserIdx(String.valueOf(userIdx));
-    Integer counterUserPost = postRepository.countAllByUserIdx(String.valueOf(userIdx));
 
     int userIsReadCount = 0;
 
@@ -147,7 +143,7 @@ public class AlarmService {
   }
 
   public List<AlarmResponseDto> returnAlarmCursorList(Long userIdx, Long cursor, Integer limit) {
-    List<Alarm> userAlarm = alarmRepository.findAllByUserIdx(Long.valueOf(userIdx));
+    List<Alarm> userAlarm = alarmRepository.findAllByUserIdx(userIdx);
     List<AlarmResponseDto> responseDtos = new ArrayList<>();
     SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
