@@ -25,21 +25,17 @@ public class RecommendService {
 
     if (userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(postId, Long.valueOf(userIdx))
         != null) {
-      System.out.println("ok");
       return true;
     }
-    System.out.println("존재 하지 않음." + postId + "" + userIdx);
     return false;
   }
 
 
   public boolean isPostByUser(Long postId, String userIdx) {
     if (!postRepository.existsByPostIdx(postId)) {
-      System.out.println("존재안함!!");
       return false;
     }
     if (postRepository.getPostByPostIdx(postId).getUserIdx().equals(userIdx)) {
-      System.out.println("존재!!");
 
       return true;
     }
