@@ -51,10 +51,6 @@ public class UserBookmarkService {
 
     List<Post> postList = postRepository.findAllByUserIdx(String.valueOf(userIdx));
 
-    System.out.println("user가 직접 등록한 post");
-    for (Post post : postList) {
-      System.out.println(post.getPostIdx() + "번");
-    }
 
     for (Post post : postList) {
       finalResultList.add(post);
@@ -63,7 +59,6 @@ public class UserBookmarkService {
     // 이 아래 문이 안먹는다.
     for (Post post : postUserBookmarkList) {
       if (finalResultList.contains(post)) {
-        System.out.println(post.getPostIdx() + post.getPostTitle());
         finalResultList.add(post);
       }
     }
@@ -84,10 +79,6 @@ public class UserBookmarkService {
       }
     }
 
-    System.out.println("최종리턴");
-    for (Post post : finalResultList) {
-      System.out.println(post.getPostIdx() + "번");
-    }
 
     return finalResultList;
   }

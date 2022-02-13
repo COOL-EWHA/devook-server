@@ -129,8 +129,6 @@ public class QueryRepository {
   public List<Post> findAllByPostIdxDescFunction2(Long id, Pageable page, String userIdx,
       String question) {
 
-    // TODO 현재 id 값보다 createdAt 값이 작은 것도 추가
-
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
     System.out.println(createdAt);
 
@@ -342,7 +340,6 @@ public class QueryRepository {
       filteredPostList = searchEngine(filteredPostList, question);
     }
 
-    System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
     return filteredPostList.stream().collect(Collectors.toList());
   }
 
@@ -365,7 +362,6 @@ public class QueryRepository {
             post.getPostIdx().intValue());
         if (!post.getUserIdx().equals(userIdx)
             && post.getPostIdx() < id) {
-          //filteredPostList.add(post);
 
           for (PostTag postTag : eachPostTagList) {
             for (String string : requiredTagList) {
@@ -403,7 +399,6 @@ public class QueryRepository {
           post.getPostIdx().intValue());
       if (postIdxList.contains(post.getPostIdx()) && !post.getUserIdx().equals(userIdx)
           && post.getPostIdx() < id) {
-        //filteredPostList.add(post);
 
         for (PostTag postTag : eachPostTagList) {
           for (String string : requiredTagList) {
@@ -438,7 +433,6 @@ public class QueryRepository {
   public List<Post> tagFilteringRecommendNotUser1(List<Long> postIdxList,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
 
-    System.out.println("들어왔다.");
     List<Post> getList = postRepository.findAll();
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray = new ArrayList<>();
@@ -509,13 +503,11 @@ public class QueryRepository {
       filteredPostList = searchEngine(filteredPostList, question);
     }
 
-    System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
     return filteredPostList.stream().collect(Collectors.toList());
   }
 
   public List<Post> tagFilteringRecommendNotUser2(List<Long> postIdxList, Long id,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
-    System.out.println("들어왔다22.");
 
     List<Post> getList = postRepository.findAll();
     List<Post> filteredPostList = new ArrayList<>();
@@ -532,7 +524,6 @@ public class QueryRepository {
             post.getPostIdx().intValue());
         if (
             post.getPostIdx() < id) {
-          //filteredPostList.add(post);
 
           for (PostTag postTag : eachPostTagList) {
             for (String string : requiredTagList) {
@@ -570,7 +561,6 @@ public class QueryRepository {
           post.getPostIdx().intValue());
       if (postIdxList.contains(post.getPostIdx())
           && post.getPostIdx() < id) {
-        //filteredPostList.add(post);
 
         for (PostTag postTag : eachPostTagList) {
           for (String string : requiredTagList) {

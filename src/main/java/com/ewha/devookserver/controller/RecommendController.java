@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,7 @@ public class RecommendController {
 
 
   @GetMapping("/posts")
-  public ResponseEntity<?> getRecommendList(
+  public ResponseEntity<List<PostBookmarkRequestDto>> getRecommendList(
       @RequestParam(name = "postId", required = false) Long postId,
       @RequestParam(name = "bookmarkId", required = false) Long bookmarkId,
       @RequestParam(name = "cursor", required = false) Long cursor,
@@ -49,7 +50,6 @@ public class RecommendController {
       @RequestParam(name = "tags", required = false) String tags,
       @RequestHeader(name = "Authorization", required = false) String accessTokenGet) {
 
-    System.out.println(accessTokenGet);
     List<String> requiredTagList = new ArrayList<>();
 
     if (tags != null) {
@@ -183,7 +183,7 @@ public class RecommendController {
   }
 
   @GetMapping("/posts/tags")
-  public ResponseEntity<?> getRecommendTagList(
+  public ResponseEntity<List<String>> getRecommendTagList(
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     try {
@@ -214,7 +214,7 @@ public class RecommendController {
   }
 
   @GetMapping("/posts/{postId}")
-  public ResponseEntity<?> getPost(
+  public ResponseEntity<PostBookmarkGetDto> getPost(
       @PathVariable(name = "postId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
     try {
@@ -248,7 +248,7 @@ public class RecommendController {
 
         return ResponseEntity.status(200).body(eachPostResponseDto);
       }
-      return ResponseEntity.status(404).body("");
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     String accessToken = accessTokenGet.split(" ")[1];
@@ -279,7 +279,7 @@ public class RecommendController {
 
         return ResponseEntity.status(200).body(eachPostResponseDto);
       }
-      return ResponseEntity.status(404).body("");
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
     System.out.println(oauthService.isUserExist(accessToken));
@@ -309,7 +309,7 @@ public class RecommendController {
 
         return ResponseEntity.status(200).body(eachPostResponseDto);
       }
-      return ResponseEntity.status(404).body("");
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
@@ -341,7 +341,7 @@ public class RecommendController {
 
       return ResponseEntity.status(200).body(eachPostResponseDto);
     }
-    return ResponseEntity.status(404).body("");
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
   }
 }

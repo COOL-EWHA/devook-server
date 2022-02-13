@@ -28,7 +28,6 @@ public class UserService {
   }
 
   public Member returnRefreshTokenMember(String refreshToken) {
-    System.out.println(refreshToken);
     return memberRepository.findMemberByRefreshToken(refreshToken);
   }
 
