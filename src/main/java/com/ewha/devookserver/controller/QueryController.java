@@ -1,5 +1,6 @@
 package com.ewha.devookserver.controller;
 
+import com.ewha.devookserver.dto.post.PostListDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.service.OauthService;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -32,7 +34,7 @@ public class QueryController {
 
 
   @GetMapping("/bookmarks")
-  public ResponseEntity<?> getBookmarkList
+  public ResponseEntity<List<PostListDto>> getBookmarkList
       (@RequestParam(name = "tags", required = false) String tags,
           @RequestParam(name = "cursor", required = false) Long cursor,
           @RequestParam(name = "q", required = false) String question,
@@ -57,11 +59,11 @@ public class QueryController {
 
       // 로그인 안 한 유저
       if (accessToken == "undefined") {
-        return ResponseEntity.status(401).body("");
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
       }
       // 존재하지 않는 유저
       if (!oauthService.isUserExist(accessToken)) {
-        return ResponseEntity.status(404).body("");
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
       }
 
       String userIdx = oauthService.getUserIdx(accessToken);
@@ -95,7 +97,7 @@ public class QueryController {
 
     } catch (Exception e) {
       e.printStackTrace();
-      return ResponseEntity.status(401).body("어떤 에러인지 확인" + e);
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
   }

@@ -48,7 +48,7 @@ public class PostController {
   private final UserBookmarkService userBookmarkService;
 
   @PostMapping("/bookmarks")
-  public ResponseEntity<?> addPost(
+  public ResponseEntity<String> addPost(
       @RequestHeader(value = "Authorization") String tokenGet,
       HttpServletResponse response, @RequestBody PostUserRequestDto postUserRequestDto) {
 
@@ -115,7 +115,7 @@ public class PostController {
 
 
   @DeleteMapping("/bookmarks/{bookmarkId}")
-  public ResponseEntity<?> deletePost(
+  public ResponseEntity<String> deletePost(
       @PathVariable("bookmarkId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
@@ -138,16 +138,16 @@ public class PostController {
 
 
   @GetMapping("/bookmarks/tags")
-  public ResponseEntity<?> getPostsTags(
+  public ResponseEntity<List<String>> getPostsTags(
       @RequestParam(name = "isBookmarkRead", required = false) Boolean isBookmarkRead,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
-      return ResponseEntity.status(401).body(" ");
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
     if (!oauthService.isUserExist(accessToken)) {
-      return ResponseEntity.status(401).body(" ");
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
     // 1. userIdx와 일치하는 post
@@ -163,16 +163,16 @@ public class PostController {
 
   // 개별 북마크 글 조회 GET
   @GetMapping("/bookmarks/{bookmarkId}")
-  public ResponseEntity<?> getPost(
+  public ResponseEntity<EachPostResponseDto> getPost(
       @PathVariable(name = "bookmarkId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
-      return ResponseEntity.status(401).body("1");
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
     if (!oauthService.isUserExist(accessToken)) {
-      return ResponseEntity.status(401).body(" 2");
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
 
@@ -235,8 +235,6 @@ public class PostController {
           tagList.add("태그2");
         }
 
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         Date dBconvertedTime = userBookmark.getCreatedAt();
@@ -275,13 +273,13 @@ public class PostController {
       }
 
     }
-    return ResponseEntity.status(404).body("3");
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
 
   }
 
   @PatchMapping("/bookmarks/{bookmarkId}")
-  public ResponseEntity<?> editPost(
+  public ResponseEntity<String> editPost(
       @PathVariable(name = "bookmarkId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet,
       @RequestBody RequestMemoDto requestMemoDto) throws ParseException {

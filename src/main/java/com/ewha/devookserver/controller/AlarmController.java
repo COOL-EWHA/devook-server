@@ -13,6 +13,7 @@ import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,17 +38,17 @@ public class AlarmController {
 
 
   @GetMapping("/notifications")
-  public ResponseEntity<?> getNotification(
+  public ResponseEntity<List<AlarmResponseDto>> getNotification(
       @RequestParam(name = "cursor", required = false) Long cursor,
       @RequestParam(name = "limit", required = false) Long limit,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
-      return ResponseEntity.status(401).body("1");
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
     if (!oauthService.isUserExist(accessToken)) {
-      return ResponseEntity.status(401).body("2");
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
 
@@ -64,7 +65,7 @@ public class AlarmController {
 
 
   @PatchMapping("/notifications/{id}")
-  public ResponseEntity<?> editNotification(
+  public ResponseEntity<String> editNotification(
       @PathVariable(name = "id") Long id,
       @RequestBody AlarmPatchRequestDto alarmPatchRequestDto,
       @RequestHeader(name = "Authorization") String accessTokenGet) {
