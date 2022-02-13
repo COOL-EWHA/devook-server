@@ -49,9 +49,7 @@ public class OauthService {
   }
 
   public RefreshDto refreshUserToken(Member member) {
-    if (member == null) {
-      System.out.println("\n\n\nnull");
-    }
+
 
     Member willChangeMember = memberRepository.findMemberById(member.getId());
 

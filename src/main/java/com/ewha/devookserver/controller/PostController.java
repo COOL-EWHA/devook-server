@@ -14,7 +14,6 @@ import com.ewha.devookserver.service.NotificationService;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserBookmarkService;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -109,7 +108,7 @@ public class PostController {
 
       return ResponseEntity.status(201).body("4");
     } catch (Exception e) {
-      return ResponseEntity.status(500).body("5");
+      return ResponseEntity.status(500).body("크롤러 오류, 크롤러 로그 확인");
     }
   }
 
@@ -282,7 +281,7 @@ public class PostController {
   public ResponseEntity<String> editPost(
       @PathVariable(name = "bookmarkId") int bookmarkId,
       @RequestHeader(name = "Authorization") String accessTokenGet,
-      @RequestBody RequestMemoDto requestMemoDto) throws ParseException {
+      @RequestBody RequestMemoDto requestMemoDto) {
 
     String requestMemo = requestMemoDto.getMemo();
     String dueDateGet = requestMemoDto.getDueDate();
@@ -324,10 +323,10 @@ public class PostController {
       }
 
       if (postRepository.existsByPostIdx((long) bookmarkId)) {
-        if (postRepository.getPostByPostIdx(Long.valueOf(bookmarkId)).getUserIdx()
+        if (postRepository.getPostByPostIdx((long) bookmarkId).getUserIdx()
             .equals(userIdx)) {
 
-          Post newPost = postRepository.getPostByPostIdx(Long.valueOf(bookmarkId));
+          Post newPost = postRepository.getPostByPostIdx((long) bookmarkId);
 
           if (requestMemo != null) {
             newPost.setPostMemo(requestMemo);
