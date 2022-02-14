@@ -205,7 +205,10 @@ public class RecommendController {
     String userIdx = oauthService.getUserIdx(accessToken);
     System.out.println(userIdx);
     // 1. userIdx와 일치하는 post
-    List<String> finalResponseString = postService.getPostTagList(userIdx);
+
+    // List<String> finalResponseString = postService.getPostTagList(userIdx);
+    List<String> finalResponseString = postService.getPostTagList();
+
 
     // 여기 String 배열 반환
     return ResponseEntity.status(200).body(finalResponseString);

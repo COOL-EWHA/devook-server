@@ -109,6 +109,7 @@ public class PostService {
     return searchResponseDtoList;
   }
 
+  // TODO 유저에게 리턴해주는 posts 들의 tags를 리턴해줘야 함.
   public List<String> getPostTagList(String userIdx) {
     List<Post> returnPost = postRepository.findAllByUserIdx(userIdx);
 
@@ -154,7 +155,6 @@ public class PostService {
 
   }
 
-  // TODO return DueDate 관련 null 문제 여기서 해결
   public List<PostListDto> responseListMaker(CursorResult<Post> productList, Boolean isRead,
       Long userIdx) {
     List<PostListDto> searchResponseDtoList = new ArrayList<>();
