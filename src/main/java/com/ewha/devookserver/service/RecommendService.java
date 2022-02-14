@@ -23,11 +23,8 @@ public class RecommendService {
 
   public boolean checkIsBookmarked(Long postId, String userIdx) {
 
-    if (userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(postId, Long.valueOf(userIdx))
-        != null) {
-      return true;
-    }
-    return false;
+    return userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(postId, Long.valueOf(userIdx))
+        != null;
   }
 
 
@@ -35,12 +32,7 @@ public class RecommendService {
     if (!postRepository.existsByPostIdx(postId)) {
       return false;
     }
-    if (postRepository.getPostByPostIdx(postId).getUserIdx().equals(userIdx)) {
-
-      return true;
-    }
-
-    return false;
+    return postRepository.getPostByPostIdx(postId).getUserIdx().equals(userIdx);
   }
 
   public List<RefrenceDto> calculateReference(List<PostTag> postTagList) {
