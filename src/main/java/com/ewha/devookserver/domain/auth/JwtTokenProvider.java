@@ -31,7 +31,8 @@ public class JwtTokenProvider {
   // 테스트용으로 1분으로 설정해보자
   private final long accessTokenValidityInMilliseconds = 1000 * 60 * 60 * 2;
 
-  private final long refreshTokenValidityInMilliseconds = 1000 * 60 * 60 * 24 * 14;
+  // 무제한으로 설정
+  private final long refreshTokenValidityInMilliseconds = 1000 * 60 * 60 * 24 * 14 * 1000L;
 
   @Value("${jwt.token.secret-key:secret-key}")
   private String secretKey;
