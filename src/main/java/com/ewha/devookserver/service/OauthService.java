@@ -50,17 +50,19 @@ public class OauthService {
 
   public RefreshDto refreshUserToken(Member member) {
 
-
     Member willChangeMember = memberRepository.findMemberById(member.getId());
 
     String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(member.getId()));
     String refreshToken = member.getRefreshToken();
 
+    /*
     if (jwtTokenProvider.validateCheckWeekToken(member.getRefreshToken())) {
       refreshToken = jwtTokenProvider.createRefreshToken();
       willChangeMember.updateRefreshToken(refreshToken);
       memberRepository.save(willChangeMember);
     }
+
+     */
     return RefreshDto.builder()
         .accessToken(accessToken)
         .refreshToken(refreshToken)
@@ -76,7 +78,7 @@ public class OauthService {
 
   public void deleteUserRefreshToken(Long userIdx) {
     Member deletedMember = memberRepository.findMemberById(userIdx);
-    deletedMember.setRefreshToken("");
+    deletedMember.setRefreshToken(null);
     memberRepository.save(deletedMember);
 
   }
@@ -98,8 +100,31 @@ public class OauthService {
     // 이미 존재하는 유저인지 확인 (회원가입 or 로그인)
     boolean existUser = memberRepository.existsMemberByOauthId(userProfile.getOauthId());
 
-    String refreshToken = jwtTokenProvider.createRefreshToken();
-    Member member = saveOrUpdate(userProfile, refreshToken);
+
+      String refreshToken;
+      Member member;
+
+      if(existUser){
+        member = memberRepository.findMemberByOauthId(userProfile.getOauthId());
+
+        System.out.println(member.getRefreshToken()+"refreshToken값");
+        System.out.println(member.getRefreshToken().equals(null));
+        System.out.println(member.getRefreshToken().equals(""));
+
+        if(member.getRefreshToken()!=null||member.getRefreshToken()!=""){
+          refreshToken=member.getRefreshToken();
+        }
+        else{
+          refreshToken = jwtTokenProvider.createRefreshToken();
+          member = saveOrUpdate(userProfile, refreshToken);
+        }
+      }else{
+        System.out.println("존재하지 않는 유저");
+        refreshToken = jwtTokenProvider.createRefreshToken();
+        member = saveOrUpdate(userProfile, refreshToken);
+      }
+
+
     String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(member.getId()));
 
     return LoginResponse.builder()
