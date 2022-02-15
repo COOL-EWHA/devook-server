@@ -2,6 +2,7 @@ package com.ewha.devookserver.repository;
 
 import com.ewha.devookserver.domain.post.UserBookmark;
 import java.util.List;
+import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -23,4 +24,7 @@ public interface UserBookmarkRepository extends JpaRepository<UserBookmark, Long
   Boolean existsUserBookmarkByPostIdxAndUserIdx(Long postIdx, Long userIdx);
 
   Integer countAllByUserIdx(Long userIdx);
+
+  @Transactional
+  void deleteAllByPostIdx(Long postIdx);
 }

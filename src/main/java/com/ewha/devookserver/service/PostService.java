@@ -351,6 +351,7 @@ public class PostService {
   public boolean deletePost(int postIdx, String userIdx) {
     if (postRepository.existsByPostIdx((long) postIdx)) {
       if (Objects.equals(postRepository.getPostByPostIdx((long) postIdx).getUserIdx(), userIdx)) {
+        userBookmarkRepository.deleteAllByPostIdx((long) postIdx);
         postRepository.deletePostByPostIdx((long) postIdx);
         return true;
       } else {

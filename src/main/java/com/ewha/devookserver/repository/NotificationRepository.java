@@ -18,4 +18,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
   Boolean existsByUserIdxAndBookmarkIdx(Long userIdx, Long bookmarkIdx);
 
   Notification findByUserIdxAndBookmarkIdx(Long userIdx, Long bookmarkIdx);
+
 }
