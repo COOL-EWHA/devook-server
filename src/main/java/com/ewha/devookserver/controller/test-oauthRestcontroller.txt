@@ -14,6 +14,8 @@ import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.UserService;
 import java.util.Objects;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -58,14 +60,20 @@ public class OauthRestController {
       String userIdx = oauthService.getUserIdx(accessToken);
       // oauthService.deleteUserRefreshToken(Long.valueOf(userIdx));
 
+
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
+          .maxAge(0)
           .sameSite("None")
           .secure(true)
           .httpOnly(true)
           .path("/")
           .build();
       response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+
       return new ResponseEntity<>(HttpStatus.OK);
+
+
     } catch (RuntimeException e) {
       System.out.println(e);
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -144,11 +152,13 @@ public class OauthRestController {
 
   @PostMapping("/auth/refresh")
   public ResponseEntity<?> loginRefresh(@RequestHeader(value = "Cookie") String refreshTokenGet,
+      HttpServletRequest request,
       HttpServletResponse response) {
 
     try {
 
       if (Objects.equals(refreshTokenGet, "REFRESH_TOKEN=")) {
+        /*
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
             .sameSite("None")
             .secure(true)
@@ -157,6 +167,8 @@ public class OauthRestController {
             .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         System.out.println("빈 리프레쉬");
+
+         */
         return ResponseEntity.status(404).body("빈리프레쉬");
       }
 
@@ -165,6 +177,7 @@ public class OauthRestController {
       boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
 
       if (!isTokenExists) {
+        /*
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
             .sameSite("None")
             .secure(true)
@@ -174,7 +187,11 @@ public class OauthRestController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         System.out.println("토큰 존재하지 않음");
 
+
+         */
         return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
+
+
       } else {
         Member member = userService.returnRefreshTokenMember(accessToken);
 
@@ -192,11 +209,24 @@ public class OauthRestController {
         //domain "localhost:8080"
         //domain "localhost:3000"
         // domain "https://localhost:3000"
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        int i=0;
+        Cookie[] getCookie = request.getCookies();
+        for(i=0;i<getCookie.length;i++){
+          Cookie c = getCookie[i];
+          String name = c.getName();
+          String value = c.getValue();
+        }
+        //if(getCookie==null){
+
+          //response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        //}
+
         return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
       }
 
     } catch (Exception e) {
+      /*
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
           .sameSite("None")
           .secure(true)
@@ -204,6 +234,8 @@ public class OauthRestController {
           .path("/")
           .build();
       response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+       */
 
       System.out.println("오류");
 

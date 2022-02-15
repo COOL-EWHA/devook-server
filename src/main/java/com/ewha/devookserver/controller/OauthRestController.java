@@ -59,6 +59,7 @@ public class OauthRestController {
       // oauthService.deleteUserRefreshToken(Long.valueOf(userIdx));
 
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
+          .maxAge(0)
           .httpOnly(true)
           .path("/")
           .build();
@@ -143,12 +144,15 @@ public class OauthRestController {
     try {
 
       if (Objects.equals(refreshTokenGet, "REFRESH_TOKEN=")) {
+        /*
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
             .httpOnly(true)
             .path("/")
             .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         System.out.println("빈 리프레쉬");
+
+         */
         return ResponseEntity.status(404).body("빈리프레쉬");
       }
 
@@ -157,6 +161,7 @@ public class OauthRestController {
       boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
 
       if (!isTokenExists) {
+        /*
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
             .httpOnly(true)
             .path("/")
@@ -164,6 +169,8 @@ public class OauthRestController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         System.out.println("토큰 존재하지 않음");
 
+
+         */
         return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
       } else {
         Member member = userService.returnRefreshTokenMember(accessToken);
@@ -180,11 +187,12 @@ public class OauthRestController {
         //domain "localhost:8080"
         //domain "localhost:3000"
         // domain "https://localhost:3000"
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        //response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
       }
 
     } catch (Exception e) {
+      /*
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
           .httpOnly(true)
           .path("/")
@@ -193,6 +201,8 @@ public class OauthRestController {
 
       System.out.println("오류");
 
+
+       */
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" ");
     }
   }
