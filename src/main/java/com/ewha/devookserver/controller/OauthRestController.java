@@ -74,7 +74,7 @@ public class OauthRestController {
   }
 
   @PostMapping("/auth/test-login")
-  public ResponseEntity<?> testLogin(HttpServletResponse response,
+  public ResponseEntity<?> testLogin(HttpServletRequest request, HttpServletResponse response,
       @RequestBody TestLoginDto testLoginDto) {
 
     String refreshToken = testLoginDto.getRefreshToken();
@@ -152,6 +152,15 @@ public class OauthRestController {
 
 
          */
+
+        Cookie[] list = request.getCookies();
+        for(Cookie cookie : list){
+          if(cookie.getName().equals("REFRESH_TOKEN")){
+            String refreshCookieToken = cookie.getValue();
+          }
+        }
+        System.out.println(refreshTokenGet);
+
         System.out.println("토큰이 존재하지 않을 경우");
         return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
 
