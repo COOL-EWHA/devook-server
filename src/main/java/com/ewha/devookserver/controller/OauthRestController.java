@@ -14,6 +14,8 @@ import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.UserService;
 import java.util.Objects;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -37,11 +39,11 @@ public class OauthRestController {
   private final MemberRepository memberRepository;
   private final JwtTokenProvider jwtTokenProvider;
 
+  // @ 0217 09:45 변경사항 production ver.
 
   @PostMapping("/auth/logout")
   public ResponseEntity<?> userLogout(@RequestHeader(value = "Authorization") String accessTokenGet,
       HttpServletResponse response) throws Exception {
-
 
     String accessToken = accessTokenGet.split(" ")[1];
 
@@ -75,12 +77,11 @@ public class OauthRestController {
   public ResponseEntity<?> testLogin(HttpServletResponse response,
       @RequestBody TestLoginDto testLoginDto) {
 
-    String userEmail = testLoginDto.getEmail();
-    boolean isUserExistemail = userService.isMemberExistByEmail(userEmail);
+    String refreshToken = testLoginDto.getRefreshToken();
+    boolean isUserExistRefreshToken = userService.isMemberExistByUserRefreshToken(refreshToken);
 
-    if (isUserExistemail) {
-      if (memberRepository.countMemberByEmail(userEmail) != 1) {
-        Member member = userService.ifGoogleUser(userEmail);
+    if (isUserExistRefreshToken) {
+        Member member = memberRepository.findMemberByRefreshToken(refreshToken);
         String userAccessToken = oauthService.getAccessToken(member);
 
         LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
@@ -107,38 +108,13 @@ public class OauthRestController {
 
         return ResponseEntity.status(200).body(revisedCookieDto);
       } else {
-        Member member = userService.returnEmailUSer(userEmail);
-        String userAccessToken = oauthService.getAccessToken(member);
-
-        LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
-            .email(member.getEmail())
-            .nickname(member.getName())
-            .accessToken(userAccessToken)
-            .refreshToken(member.getRefreshToken())
-            .build();
-
-        RevisedCookieDto revisedCookieDto = RevisedCookieDto.builder()
-            .email(loginFinalResponseDto.getEmail())
-            .nickname(loginFinalResponseDto.getNickname())
-            .accessToken(loginFinalResponseDto.getAccessToken())
-            .build();
-
-        ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
-                loginFinalResponseDto.getRefreshToken())
-            .httpOnly(true)
-            .path("/")
-            .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        return ResponseEntity.status(200).body(revisedCookieDto);
-      }
-    } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
   @PostMapping("/auth/refresh")
   public ResponseEntity<?> loginRefresh(@RequestHeader(value = "Cookie") String refreshTokenGet,
+      HttpServletRequest request,
       HttpServletResponse response) {
 
     try {
@@ -146,6 +122,8 @@ public class OauthRestController {
       if (Objects.equals(refreshTokenGet, "REFRESH_TOKEN=")) {
         /*
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
+            .sameSite("None")
+            .secure(true)
             .httpOnly(true)
             .path("/")
             .build();
@@ -163,6 +141,8 @@ public class OauthRestController {
       if (!isTokenExists) {
         /*
         ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
+            .sameSite("None")
+            .secure(true)
             .httpOnly(true)
             .path("/")
             .build();
@@ -172,6 +152,8 @@ public class OauthRestController {
 
          */
         return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
+
+
       } else {
         Member member = userService.returnRefreshTokenMember(accessToken);
 
@@ -187,22 +169,36 @@ public class OauthRestController {
         //domain "localhost:8080"
         //domain "localhost:3000"
         // domain "https://localhost:3000"
+
+        int i = 0;
+        Cookie[] getCookie = request.getCookies();
+        for (i = 0; i < getCookie.length; i++) {
+          Cookie c = getCookie[i];
+          String name = c.getName();
+          String value = c.getValue();
+        }
+        //if(getCookie==null){
+
         //response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        //}
+
         return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
       }
 
     } catch (Exception e) {
       /*
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
+          .sameSite("None")
+          .secure(true)
           .httpOnly(true)
           .path("/")
           .build();
       response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
+       */
+
       System.out.println("오류");
 
-
-       */
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" ");
     }
   }
@@ -218,7 +214,6 @@ public class OauthRestController {
 
     try {
       LoginResponse loginResponse = oauthService.login(provider, replaceToken);
-
 
       LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
           .email(loginResponse.getEmail())

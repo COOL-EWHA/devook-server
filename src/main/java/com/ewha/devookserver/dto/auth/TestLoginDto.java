@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public class TestLoginDto {
 
-  public String email;
+  public String refreshToken;
 
   @Builder
-  public TestLoginDto(String email) {
-    this.email = email;
+  public TestLoginDto(String refreshToken) {
+    this.refreshToken = refreshToken;
   }
 }

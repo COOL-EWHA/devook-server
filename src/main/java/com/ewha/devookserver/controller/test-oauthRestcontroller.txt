@@ -39,11 +39,11 @@ public class OauthRestController {
   private final MemberRepository memberRepository;
   private final JwtTokenProvider jwtTokenProvider;
 
+  // @ 0217 09:00 변경사항 test server ver.
 
   @PostMapping("/auth/logout")
   public ResponseEntity<?> userLogout(@RequestHeader(value = "Authorization") String accessTokenGet,
       HttpServletResponse response) throws Exception {
-
 
     String accessToken = accessTokenGet.split(" ")[1];
 
@@ -60,7 +60,6 @@ public class OauthRestController {
       String userIdx = oauthService.getUserIdx(accessToken);
       // oauthService.deleteUserRefreshToken(Long.valueOf(userIdx));
 
-
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN", null)
           .maxAge(0)
           .sameSite("None")
@@ -69,7 +68,6 @@ public class OauthRestController {
           .path("/")
           .build();
       response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
 
       return new ResponseEntity<>(HttpStatus.OK);
 
@@ -84,12 +82,11 @@ public class OauthRestController {
   public ResponseEntity<?> testLogin(HttpServletResponse response,
       @RequestBody TestLoginDto testLoginDto) {
 
-    String userEmail = testLoginDto.getEmail();
-    boolean isUserExistemail = userService.isMemberExistByEmail(userEmail);
+    String refreshToken = testLoginDto.getRefreshToken();
+    boolean isUserExistRefreshToken = userService.isMemberExistByUserRefreshToken(refreshToken);
 
-    if (isUserExistemail) {
-      if (memberRepository.countMemberByEmail(userEmail) != 1) {
-        Member member = userService.ifGoogleUser(userEmail);
+    if (isUserExistRefreshToken) {
+        Member member = memberRepository.findMemberByRefreshToken(refreshToken);
         String userAccessToken = oauthService.getAccessToken(member);
 
         LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
@@ -118,34 +115,6 @@ public class OauthRestController {
 
         return ResponseEntity.status(200).body(revisedCookieDto);
       } else {
-        Member member = userService.returnEmailUSer(userEmail);
-        String userAccessToken = oauthService.getAccessToken(member);
-
-        LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
-            .email(member.getEmail())
-            .nickname(member.getName())
-            .accessToken(userAccessToken)
-            .refreshToken(member.getRefreshToken())
-            .build();
-
-        RevisedCookieDto revisedCookieDto = RevisedCookieDto.builder()
-            .email(loginFinalResponseDto.getEmail())
-            .nickname(loginFinalResponseDto.getNickname())
-            .accessToken(loginFinalResponseDto.getAccessToken())
-            .build();
-
-        ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
-                loginFinalResponseDto.getRefreshToken())
-            .sameSite("None")
-            .secure(true)
-            .httpOnly(true)
-            .path("/")
-            .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        return ResponseEntity.status(200).body(revisedCookieDto);
-      }
-    } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
@@ -210,16 +179,16 @@ public class OauthRestController {
         //domain "localhost:3000"
         // domain "https://localhost:3000"
 
-        int i=0;
+        int i = 0;
         Cookie[] getCookie = request.getCookies();
-        for(i=0;i<getCookie.length;i++){
+        for (i = 0; i < getCookie.length; i++) {
           Cookie c = getCookie[i];
           String name = c.getName();
           String value = c.getValue();
         }
         //if(getCookie==null){
 
-          //response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        //response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         //}
 
         return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
@@ -254,7 +223,6 @@ public class OauthRestController {
 
     try {
       LoginResponse loginResponse = oauthService.login(provider, replaceToken);
-
 
       LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
           .email(loginResponse.getEmail())
