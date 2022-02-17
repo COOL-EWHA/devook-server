@@ -131,6 +131,7 @@ public class OauthRestController {
         System.out.println("빈 리프레쉬");
 
          */
+        System.out.println("빈 리프레쉬");
         return ResponseEntity.status(404).body("빈리프레쉬");
       }
 
@@ -151,6 +152,7 @@ public class OauthRestController {
 
 
          */
+        System.out.println("토큰이 존재하지 않을 경우");
         return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
 
 
@@ -181,7 +183,7 @@ public class OauthRestController {
 
         //response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         //}
-
+        System.out.println("정상적으로 완료");
         return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
       }
 
