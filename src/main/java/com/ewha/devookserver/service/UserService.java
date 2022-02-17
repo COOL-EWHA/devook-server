@@ -35,6 +35,10 @@ public class UserService {
     return memberRepository.existsMemberByEmail(email);
   }
 
+  public boolean isMemberExistByUserRefreshToken(String refreshToken){
+    return memberRepository.existsMemberByRefreshToken(refreshToken);
+  }
+
   public Member returnEmailUSer(String email) {
     return memberRepository.findMemberByEmail(email);
   }
