@@ -153,13 +153,14 @@ public class OauthRestController {
 
          */
 
+        String refreshCookieToken = "빈 값";
         Cookie[] list = request.getCookies();
         for(Cookie cookie : list){
           if(cookie.getName().equals("REFRESH_TOKEN")){
-            String refreshCookieToken = cookie.getValue();
+            refreshCookieToken = cookie.getValue();
           }
         }
-        System.out.println(refreshTokenGet);
+        System.out.println(refreshCookieToken);
 
         System.out.println("토큰이 존재하지 않을 경우");
         return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
