@@ -240,7 +240,15 @@ public class QueryRepository {
       }
     }
 
-    return resultList.stream().limit(limit).collect(Collectors.toList());
+    List<Post> testFilteredPostList = new ArrayList<>();
+    for (Post post : resultList) {
+      if (!testFilteredPostList.stream()
+          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+        testFilteredPostList.add(post);
+      }
+    }
+
+    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
   }
 
   public List<Post> recommendPost2(Long id, Pageable page, List<RefrenceDto> refrenceDtos,
@@ -259,8 +267,15 @@ public class QueryRepository {
       }
     }
 
-    return resultList.stream().limit(limit).collect(Collectors.toList());
-  }
+    List<Post> testFilteredPostList = new ArrayList<>();
+    for (Post post : resultList) {
+      if (!testFilteredPostList.stream()
+          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+        testFilteredPostList.add(post);
+      }
+    }
+
+    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());  }
 
   // 태그 리스트 필터링하는 함수
   public List<Post> tagFilteringRecommendUser1(List<Long> postIdxList, String userIdx,
@@ -388,7 +403,15 @@ public class QueryRepository {
         filteredPostList = searchEngine(filteredPostList, question);
       }
 
-      return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+      List<Post> testFilteredPostList = new ArrayList<>();
+      for (Post post : filteredPostList) {
+        if (!testFilteredPostList.stream()
+            .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+          testFilteredPostList.add(post);
+        }
+      }
+
+      return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
 
     }
 
@@ -425,8 +448,15 @@ public class QueryRepository {
       filteredPostList = searchEngine(filteredPostList, question);
     }
 
-    return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+    List<Post> testFilteredPostList = new ArrayList<>();
+    for (Post post : filteredPostList) {
+      if (!testFilteredPostList.stream()
+          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+        testFilteredPostList.add(post);
+      }
+    }
 
+    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
   }
 
   // 태그 리스트 필터링하는 함수
@@ -471,8 +501,15 @@ public class QueryRepository {
         filteredPostList = searchEngine(filteredPostList, question);
       }
 
-      return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+      List<Post> testFilteredPostList = new ArrayList<>();
+      for (Post post : filteredPostList) {
+        if (!testFilteredPostList.stream()
+            .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+          testFilteredPostList.add(post);
+        }
+      }
 
+      return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
     }
 
     for (Post post : getList) {
@@ -503,8 +540,15 @@ public class QueryRepository {
       filteredPostList = searchEngine(filteredPostList, question);
     }
 
-    return filteredPostList.stream().collect(Collectors.toList());
-  }
+    List<Post> testFilteredPostList = new ArrayList<>();
+    for (Post post : filteredPostList) {
+      if (!testFilteredPostList.stream()
+          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+        testFilteredPostList.add(post);
+      }
+    }
+
+    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());  }
 
   public List<Post> tagFilteringRecommendNotUser2(List<Long> postIdxList, Long id,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
@@ -550,8 +594,15 @@ public class QueryRepository {
         filteredPostList = searchEngine(filteredPostList, question);
       }
 
-      return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+      List<Post> testFilteredPostList = new ArrayList<>();
+      for (Post post : filteredPostList) {
+        if (!testFilteredPostList.stream()
+            .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+          testFilteredPostList.add(post);
+        }
+      }
 
+      return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
     }
 
     for (Post post : getList) {
@@ -587,7 +638,14 @@ public class QueryRepository {
       filteredPostList = searchEngine(filteredPostList, question);
     }
 
-    return filteredPostList.stream().limit(limit).collect(Collectors.toList());
+    List<Post> testFilteredPostList = new ArrayList<>();
+    for (Post post : filteredPostList) {
+      if (!testFilteredPostList.stream()
+          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+        testFilteredPostList.add(post);
+      }
+    }
 
+    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
   }
 }
