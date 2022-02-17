@@ -117,6 +117,15 @@ public class OauthRestController {
       HttpServletRequest request,
       HttpServletResponse response) {
 
+    String accessToken = "no";
+    Cookie[] list = request.getCookies();
+    for(Cookie cookie : list){
+      if(cookie.getName().equals("REFRESH_TOKEN")){
+        accessToken = cookie.getValue();
+      }
+    }
+    System.out.println(accessToken);
+
     try {
 
       if (Objects.equals(refreshTokenGet, "REFRESH_TOKEN=")) {
@@ -135,7 +144,6 @@ public class OauthRestController {
         return ResponseEntity.status(404).body("빈리프레쉬");
       }
 
-      String accessToken = refreshTokenGet.split("=")[1];
 
       boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
 
@@ -152,15 +160,6 @@ public class OauthRestController {
 
 
          */
-
-        String refreshCookieToken = "빈 값";
-        Cookie[] list = request.getCookies();
-        for(Cookie cookie : list){
-          if(cookie.getName().equals("REFRESH_TOKEN")){
-            refreshCookieToken = cookie.getValue();
-          }
-        }
-        System.out.println(refreshCookieToken);
 
         System.out.println("토큰이 존재하지 않을 경우");
         return ResponseEntity.status(404).body("토큰이 존재하지 않을 경우");
