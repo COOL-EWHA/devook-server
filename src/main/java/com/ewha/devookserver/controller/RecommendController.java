@@ -209,7 +209,6 @@ public class RecommendController {
     // List<String> finalResponseString = postService.getPostTagList(userIdx);
     List<String> finalResponseString = postService.getPostTagList();
 
-
     // 여기 String 배열 반환
     return ResponseEntity.status(200).body(finalResponseString);
 

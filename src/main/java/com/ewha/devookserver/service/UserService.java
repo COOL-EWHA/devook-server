@@ -35,7 +35,7 @@ public class UserService {
     return memberRepository.existsMemberByEmail(email);
   }
 
-  public boolean isMemberExistByUserRefreshToken(String refreshToken){
+  public boolean isMemberExistByUserRefreshToken(String refreshToken) {
     return memberRepository.existsMemberByRefreshToken(refreshToken);
   }
 
