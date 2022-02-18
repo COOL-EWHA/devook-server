@@ -51,7 +51,6 @@ public class UserBookmarkService {
 
     List<Post> postList = postRepository.findAllByUserIdx(String.valueOf(userIdx));
 
-
     for (Post post : postList) {
       finalResultList.add(post);
     }
@@ -78,7 +77,6 @@ public class UserBookmarkService {
         finalResultList.add(post);
       }
     }
-
 
     return finalResultList;
   }

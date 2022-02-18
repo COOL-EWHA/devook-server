@@ -275,7 +275,8 @@ public class QueryRepository {
       }
     }
 
-    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());  }
+    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
+  }
 
   // 태그 리스트 필터링하는 함수
   public List<Post> tagFilteringRecommendUser1(List<Long> postIdxList, String userIdx,
@@ -548,7 +549,8 @@ public class QueryRepository {
       }
     }
 
-    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());  }
+    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
+  }
 
   public List<Post> tagFilteringRecommendNotUser2(List<Long> postIdxList, Long id,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
