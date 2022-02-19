@@ -35,17 +35,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   @Query("select p from Post p where p.postIdx<?1 and p.userIdx=?2 order by p.postIdx DESC")
   List<Post> findAllByPostIdxDesc(Long id, Pageable page, String userIdx);
 
-  List<Post> findAllByPostIdx(Long postIdx);
-
-  Boolean existsByPostIdxIsLessThan(Long id);
-
-  Post getTopByCreatedAtIsNotNull();
-
   List<Post> findAllByUserIdx(String userIdx);
 
   Post findByPostIdxAndUserIdx(Long postIdx, String userIdx);
 
-  Boolean existsByUserIdxAndPostTitle(String userIdx, String postTitle);
 
   Post findFirstByOrderByPostIdxDesc();
+
 }
