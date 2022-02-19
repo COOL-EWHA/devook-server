@@ -362,7 +362,7 @@ public class PostService {
     return false;
   }
 
-  public void savePost(String memo, String url, String description, String title, String image,
+  public Post savePost(String memo, String url, String description, String title, String image,
       String userIdx) throws InterruptedException {
 
     Post post = Post.builder()
@@ -374,18 +374,7 @@ public class PostService {
         .userIdx(userIdx)
         .build();
 
-    postRepository.save(post);
-
-    /*
-    while(true){
-      if(postRepository.existsByUserIdxAndPostTitle(userIdx, post.getPostTitle())){
-        System.out.println("초");
-        break;
-      }
-    }
-
-     */
-    TimeUnit.SECONDS.sleep(1);
+    return postRepository.save(post);
   }
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
