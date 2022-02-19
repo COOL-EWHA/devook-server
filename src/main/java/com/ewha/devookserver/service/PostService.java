@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -362,7 +363,7 @@ public class PostService {
   }
 
   public void savePost(String memo, String url, String description, String title, String image,
-      String userIdx) {
+      String userIdx) throws InterruptedException {
 
     Post post = Post.builder()
         .postMemo(memo)
@@ -374,6 +375,8 @@ public class PostService {
         .build();
 
     postRepository.save(post);
+
+    TimeUnit.SECONDS.sleep(3);
   }
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
