@@ -47,4 +47,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   List<Post> findAllByUserIdx(String userIdx);
 
   Post findByPostIdxAndUserIdx(Long postIdx, String userIdx);
+
+  Boolean existsByUserIdxAndPostTitle(String userIdx, String postTitle);
 }
