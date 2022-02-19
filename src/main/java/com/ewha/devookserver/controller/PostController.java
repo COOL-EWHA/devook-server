@@ -4,6 +4,7 @@ import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.UserBookmark;
 import com.ewha.devookserver.dto.post.EachPostResponseDto;
+import com.ewha.devookserver.dto.post.PostAddResponseDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.dto.post.PostLambdaDto;
 import com.ewha.devookserver.dto.post.PostUserRequestDto;
@@ -17,6 +18,7 @@ import com.ewha.devookserver.service.UserBookmarkService;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +49,7 @@ public class PostController {
   private final UserBookmarkService userBookmarkService;
 
   @PostMapping("/bookmarks")
-  public ResponseEntity<String> addPost(
+  public ResponseEntity<?> addPost(
       @RequestHeader(value = "Authorization") String tokenGet,
       HttpServletResponse response, @RequestBody PostUserRequestDto postUserRequestDto) {
 
@@ -73,6 +75,7 @@ public class PostController {
             if (postRepository.existsByPostIdxAndUserIdx(
                 Long.valueOf(postUserRequestDto.getPostId()),
                 userIdx)) {
+
               return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
             }
             return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
@@ -99,6 +102,22 @@ public class PostController {
 
       PostLambdaDto postLambdaDto = postService.getPostInfo(postLabmdaRequestDto);
 
+      List<String> forTestString = new ArrayList<>();
+        forTestString.add("태그1");
+        forTestString.add("태그2");
+
+
+      PostAddResponseDto postAddResponseDto = PostAddResponseDto.builder()
+          .id(postRepository.findFirstByOrderByPostIdxDesc().getPostIdx())
+              .title(postLambdaDto.getTitle())
+                  .thumbnail(postLambdaDto.getImage())
+                      .description(postLambdaDto.getDescription())
+                          .isRead(false)
+          .url(postUserRequestDto.getUrl())
+                              .dueDate(null)
+                                  .tags(forTestString)
+                                      .build();
+
       postService.savePost(
           postUserRequestDto.getMemo(),
           postUserRequestDto.getUrl(),
@@ -106,7 +125,7 @@ public class PostController {
           postLambdaDto.getTitle(),
           postLambdaDto.getImage(), userIdx);
 
-      return ResponseEntity.status(201).body("4");
+      return ResponseEntity.status(201).body(postAddResponseDto);
     } catch (Exception e) {
       return ResponseEntity.status(500).body("크롤러 오류, 크롤러 로그 확인");
     }

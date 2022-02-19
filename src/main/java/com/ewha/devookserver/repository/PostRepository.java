@@ -39,9 +39,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
   Boolean existsByPostIdxIsLessThan(Long id);
 
-  Post findTopByUserIdxOrderByPostIdxDesc(String useridx);
-
-
   Post getTopByCreatedAtIsNotNull();
 
   List<Post> findAllByUserIdx(String userIdx);
@@ -49,4 +46,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   Post findByPostIdxAndUserIdx(Long postIdx, String userIdx);
 
   Boolean existsByUserIdxAndPostTitle(String userIdx, String postTitle);
+
+  Post findFirstByOrderByPostIdxDesc();
 }
