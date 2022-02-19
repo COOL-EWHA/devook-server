@@ -376,7 +376,16 @@ public class PostService {
 
     postRepository.save(post);
 
-    TimeUnit.SECONDS.sleep(3);
+    /*
+    while(true){
+      if(postRepository.existsByUserIdxAndPostTitle(userIdx, post.getPostTitle())){
+        System.out.println("초");
+        break;
+      }
+    }
+
+     */
+    TimeUnit.SECONDS.sleep(1);
   }
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
