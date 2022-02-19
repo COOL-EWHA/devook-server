@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostAddResponseDto {
+
   private final Long id;
   private final String title;
   private final String thumbnail;
@@ -19,7 +20,8 @@ public class PostAddResponseDto {
 
 
   @Builder
-  public PostAddResponseDto(Long id, String title, String thumbnail, String description, List<String> tags,
+  public PostAddResponseDto(Long id, String title, String thumbnail, String description,
+      List<String> tags,
       String url, Boolean isRead, String dueDate) {
     this.id = id;
     this.title = title;

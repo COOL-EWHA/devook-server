@@ -103,20 +103,8 @@ public class PostController {
       PostLambdaDto postLambdaDto = postService.getPostInfo(postLabmdaRequestDto);
 
       List<String> forTestString = new ArrayList<>();
-        forTestString.add("태그1");
-        forTestString.add("태그2");
-
-
-      PostAddResponseDto postAddResponseDto = PostAddResponseDto.builder()
-          .id(postRepository.findFirstByOrderByPostIdxDesc().getPostIdx())
-              .title(postLambdaDto.getTitle())
-                  .thumbnail(postLambdaDto.getImage())
-                      .description(postLambdaDto.getDescription())
-                          .isRead(false)
-          .url(postUserRequestDto.getUrl())
-                              .dueDate(null)
-                                  .tags(forTestString)
-                                      .build();
+      forTestString.add("태그1");
+      forTestString.add("태그2");
 
       postService.savePost(
           postUserRequestDto.getMemo(),
@@ -124,6 +112,19 @@ public class PostController {
           postLambdaDto.getDescription(),
           postLambdaDto.getTitle(),
           postLambdaDto.getImage(), userIdx);
+
+      Post post = postRepository.getPostByPostUrlAndUserIdx(postUserRequestDto.getUrl(), userIdx);
+
+      PostAddResponseDto postAddResponseDto = PostAddResponseDto.builder()
+          .id(post.getPostIdx())
+          .title(postLambdaDto.getTitle())
+          .thumbnail(postLambdaDto.getImage())
+          .description(postLambdaDto.getDescription())
+          .isRead(false)
+          .url(postUserRequestDto.getUrl())
+          .dueDate(null)
+          .tags(forTestString)
+          .build();
 
       return ResponseEntity.status(201).body(postAddResponseDto);
     } catch (Exception e) {
