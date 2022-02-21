@@ -41,7 +41,7 @@ jobs:
           s3://devook-deploy/application-oauth.yml src/main/resources/application-oauth.yml
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
 
       # 빌드 완료, S3 로 전달
 
