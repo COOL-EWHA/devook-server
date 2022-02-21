@@ -1,5 +1,6 @@
 package com.ewha.devookserver.domain.user;
 
+import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Setter
 @Getter
@@ -23,6 +25,9 @@ public class Member {
   private String email;
   private String imageUrl;
   private String refreshToken;
+
+  @CreationTimestamp
+  private Timestamp createdAt;
 
   @Enumerated(EnumType.STRING)
   private Role role;
