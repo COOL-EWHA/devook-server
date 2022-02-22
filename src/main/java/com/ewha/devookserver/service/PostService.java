@@ -5,6 +5,7 @@ import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.UserBookmark;
+import com.ewha.devookserver.dto.post.PostAddResponseDto;
 import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
 import com.ewha.devookserver.dto.post.PostLambdaDto;
@@ -326,6 +327,26 @@ public class PostService {
     }
     return searchResponseDtoList;
   }
+
+
+  // @Postmapping 요청에 대한 responseBody maker
+  public PostAddResponseDto postAddBodyMaker(Long id, String title, String thumbnail,
+      String description, Boolean isRead, String url, String dueDate, List<String> tags) {
+
+    PostAddResponseDto postAddResponseDto = PostAddResponseDto.builder()
+        .id(id)
+        .title(title)
+        .thumbnail(thumbnail)
+        .description(description)
+        .isRead(isRead)
+        .url(url)
+        .dueDate(dueDate)
+        .tags(tags)
+        .build();
+
+    return postAddResponseDto;
+  }
+
 
   public CursorResult<Post> get(Long cursorId, Pageable page, String userIdx, String question) {
     final List<Post> boards = getPost(cursorId, page, userIdx, question);
