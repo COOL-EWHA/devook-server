@@ -15,8 +15,10 @@ import com.ewha.devookserver.service.NotificationService;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserBookmarkService;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.jni.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,6 +58,9 @@ public class PostController {
 
     try {
       String accessToken = tokenGet.split(" ")[1];
+      List<String> forTestString = new ArrayList<>();
+      forTestString.add("태그1");
+      forTestString.add("태그2");
       if (Objects.equals(accessToken, "undefined")) {
         return ResponseEntity.status(401).body("1");
       }
@@ -65,46 +71,67 @@ public class PostController {
       }
       String userIdx = oauthService.getUserIdx(accessToken);
 
-      // 만약 ID 값이 정확히 존재한다면. (null 값으로 판별)
       if (postUserRequestDto.getPostId() != null) {
         Long postIdx = Long.valueOf(postUserRequestDto.getPostId());
         if (postRepository.existsByPostIdx(postIdx)) {
           if (userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(
               Long.valueOf(postUserRequestDto.getPostId()), Long.valueOf(userIdx)) != null) {
 
-            if (postRepository.existsByPostIdxAndUserIdx(
-                Long.valueOf(postUserRequestDto.getPostId()),
-                userIdx)) {
-
-              return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
-            }
-            return ResponseEntity.status(201).body("DB에는 생성하지 않고, 201 코드 리턴");
+            Post post = postRepository.getPostByPostIdx(Long.valueOf(postUserRequestDto.getPostId()));
+            PostAddResponseDto postAddResponseDto = postService.postAddBodyMaker(
+                post.getPostIdx(),
+                post.getPostTitle(),
+                post.getPostThumbnail(),
+                post.getPostDescription(),
+                false,
+                post.getPostUrl(),
+                null,
+                forTestString
+            );
+            return ResponseEntity.status(201).body(postAddResponseDto);
           } else {
             Post post = postRepository.getPostByPostIdx(postIdx);
             post.setUserIdx(userIdx);
             postService.savePostBookmark(Long.valueOf(userIdx), postIdx,
                 postUserRequestDto.getMemo());
+            PostAddResponseDto postAddResponseDto = postService.postAddBodyMaker(
+                post.getPostIdx(),
+                post.getPostTitle(),
+                post.getPostThumbnail(),
+                post.getPostDescription(),
+                false,
+                post.getPostUrl(),
+                null,
+                forTestString
+            );
+            return ResponseEntity.status(201).body(postAddResponseDto);
           }
-          return ResponseEntity.status(201).body("북마크 새로 생성완료!");
-
         }
-        // postIdx 에 해당하는 post가 POST table에 존재하지 않을 때
         return ResponseEntity.status(401).body("입력한 postId가 post table에 존재하지 않음");
-
       }
-
       if (postService.isPostUserExists(postUserRequestDto.getUrl(), userIdx)) {
-        return ResponseEntity.status(201).body("");
+        Post post = postRepository.getPostByPostUrlAndUserIdx(postUserRequestDto.getUrl(), userIdx);
+        post.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        postRepository.save(post);
+
+        PostAddResponseDto postAddResponseDto = postService.postAddBodyMaker(
+            post.getPostIdx(),
+            post.getPostTitle(),
+            post.getPostThumbnail(),
+            post.getPostDescription(),
+            post.getIsRead(),
+            post.getPostUrl(),
+            null,
+            forTestString
+        );
+
+        return ResponseEntity.status(201).body(postAddResponseDto);
       }
 
       PostLabmdaRequestDto postLabmdaRequestDto = new PostLabmdaRequestDto();
       postLabmdaRequestDto.setUrl(postUserRequestDto.getUrl());
 
       PostLambdaDto postLambdaDto = postService.getPostInfo(postLabmdaRequestDto);
-
-      List<String> forTestString = new ArrayList<>();
-      forTestString.add("태그1");
-      forTestString.add("태그2");
 
       postService.savePost(
           postUserRequestDto.getMemo(),
@@ -115,16 +142,16 @@ public class PostController {
 
       Post post = postRepository.getPostByPostUrlAndUserIdx(postUserRequestDto.getUrl(), userIdx);
 
-      PostAddResponseDto postAddResponseDto = PostAddResponseDto.builder()
-          .id(post.getPostIdx())
-          .title(postLambdaDto.getTitle())
-          .thumbnail(postLambdaDto.getImage())
-          .description(postLambdaDto.getDescription())
-          .isRead(false)
-          .url(postUserRequestDto.getUrl())
-          .dueDate(null)
-          .tags(forTestString)
-          .build();
+      PostAddResponseDto postAddResponseDto = postService.postAddBodyMaker(
+          post.getPostIdx(),
+          postLambdaDto.getTitle(),
+          postLambdaDto.getImage(),
+          postLambdaDto.getDescription(),
+          false,
+          postUserRequestDto.getUrl(),
+          null,
+          forTestString
+      );
 
       return ResponseEntity.status(201).body(postAddResponseDto);
     } catch (Exception e) {
