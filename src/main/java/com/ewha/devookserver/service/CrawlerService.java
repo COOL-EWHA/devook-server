@@ -24,7 +24,7 @@ public class CrawlerService {
     List<String> categoryList = getCategoryInfo();
     for (String category : categoryList) {
       List<String> categoryUrlList = getEachCategoryUrl(category);
-      for (String url : categoryList) {
+      for (String url : categoryUrlList) {
         PostLabmdaRequestDto postLabmdaRequestDto = new PostLabmdaRequestDto();
         postLabmdaRequestDto.setUrl(url);
 
