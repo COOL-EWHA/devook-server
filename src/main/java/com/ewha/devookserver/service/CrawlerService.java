@@ -1,5 +1,7 @@
 package com.ewha.devookserver.service;
 
+import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
+import com.ewha.devookserver.dto.post.PostLambdaDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,9 +16,29 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class CrawlerService {
 
+  private final PostService postService;
   WebClient webClient = WebClient.create(
       "https://sy54a2wnyl.execute-api.ap-northeast-2.amazonaws.com/test");
 
+  public void getAICrawler() throws JsonProcessingException, InterruptedException {
+    List<String> categoryList = getCategoryInfo();
+    for (String category : categoryList) {
+      List<String> categoryUrlList = getEachCategoryUrl(category);
+      for (String url : categoryList) {
+        PostLabmdaRequestDto postLabmdaRequestDto = new PostLabmdaRequestDto();
+        postLabmdaRequestDto.setUrl(url);
+
+        PostLambdaDto postLambdaDto = postService.getPostInfo(postLabmdaRequestDto);
+
+        postService.savePost(
+            null,
+            url,
+            postLambdaDto.getDescription(),
+            postLambdaDto.getTitle(),
+            postLambdaDto.getImage(), "1");
+      }
+    }
+  }
 
   // GET /surfit/categories
   public List<String> getCategoryInfo()
