@@ -11,10 +11,12 @@ import com.ewha.devookserver.dto.post.PostUserRequestDto;
 import com.ewha.devookserver.dto.post.RequestMemoDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
+import com.ewha.devookserver.service.CrawlerService;
 import com.ewha.devookserver.service.NotificationService;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserBookmarkService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -26,9 +28,9 @@ import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -47,9 +49,16 @@ public class PostController {
   private final PostService postService;
   private final OauthService oauthService;
   private final PostRepository postRepository;
+  private final CrawlerService crawlerService;
   private final UserBookmarkRepository userBookmarkRepository;
   private final NotificationService notificationService;
   private final UserBookmarkService userBookmarkService;
+
+  // @Scheduled(cron = "00 00 6 * * *")
+  @GetMapping("/crawler")
+  public void addCrawlerResult() throws JsonProcessingException, InterruptedException {
+    crawlerService.getAICrawler();
+  }
 
   @PostMapping("/bookmarks")
   public ResponseEntity<?> addPost(
@@ -77,7 +86,8 @@ public class PostController {
           if (userBookmarkRepository.existsByPost_postIdxAndUser_userIdx(
               Long.valueOf(postUserRequestDto.getPostId()), Long.valueOf(userIdx)) != null) {
 
-            Post post = postRepository.getPostByPostIdx(Long.valueOf(postUserRequestDto.getPostId()));
+            Post post = postRepository.getPostByPostIdx(
+                Long.valueOf(postUserRequestDto.getPostId()));
             PostAddResponseDto postAddResponseDto = postService.postAddBodyMaker(
                 post.getPostIdx(),
                 post.getPostTitle(),
