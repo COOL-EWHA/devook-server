@@ -68,8 +68,11 @@ public class PostController {
     try {
       String accessToken = tokenGet.split(" ")[1];
       List<String> forTestString = new ArrayList<>();
+      /*
       forTestString.add("태그1");
       forTestString.add("태그2");
+
+       */
       if (Objects.equals(accessToken, "undefined")) {
         return ResponseEntity.status(401).body("1");
       }
@@ -243,10 +246,13 @@ public class PostController {
       if (userPost.getUserIdx().equals(userIdx)) {
 
         List<String> tagList = postService.getEachPostTagList(bookmarkId);
+        /*
         if (tagList.size() == 0) {
           tagList.add("태그1");
           tagList.add("태그2");
         }
+
+         */
 
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -286,10 +292,13 @@ public class PostController {
             userPost.getPostIdx(), Long.valueOf(userIdx));
 
         List<String> tagList = postService.getEachPostTagList(bookmarkId);
+        /*
         if (tagList.size() == 0) {
           tagList.add("태그1");
           tagList.add("태그2");
         }
+
+         */
 
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
