@@ -316,24 +316,21 @@ public class PostService {
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
       }
-/*
-      if (forTestString.size() == 0) {
-        forTestString.add("태그1");
-        forTestString.add("태그2");
+
+      if (forTestString.size() != 0) {
+        PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
+            .id(post.getId())
+            .thumbnail(post.getPostThumbnail())
+            .description(post.getPostDescription())
+            .title(post.getPostTitle())
+            .tags(forTestString)
+            .url(post.getPostUrl())
+            .isBookmarked(null) // 여기 수정! (일단 기본값으로)
+            .build();
+        searchResponseDtoList.add(postListDto);
       }
 
 
- */
-      PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
-          .id(post.getId())
-          .thumbnail(post.getPostThumbnail())
-          .description(post.getPostDescription())
-          .title(post.getPostTitle())
-          .tags(forTestString)
-          .url(post.getPostUrl())
-          .isBookmarked(null) // 여기 수정! (일단 기본값으로)
-          .build();
-      searchResponseDtoList.add(postListDto);
     }
     return searchResponseDtoList;
   }
