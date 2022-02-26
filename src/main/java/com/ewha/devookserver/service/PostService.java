@@ -194,10 +194,13 @@ public class PostService {
         forTestString.add(postTag.getPostTagName());
       }
 
+      /*
       if (forTestString.size() == 0) {
         forTestString.add("태그1");
         forTestString.add("태그2");
       }
+
+       */
 
       PostListDto postListDto = PostListDto.builder()
           .id(post.getId())
@@ -235,10 +238,13 @@ public class PostService {
         forTestString.add(postTag.getPostTagName());
       }
 
+      /*
       if (forTestString.size() == 0) {
         forTestString.add("태그1");
         forTestString.add("태그2");
       }
+
+       */
 
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
 
@@ -272,12 +278,14 @@ public class PostService {
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
       }
-
+  /*
       if (forTestString.size() == 0) {
         forTestString.add("태그1");
         forTestString.add("태그2");
       }
 
+
+   */
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
       boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
       if (getIsBookmarked == false) {
@@ -308,12 +316,14 @@ public class PostService {
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
       }
-
+/*
       if (forTestString.size() == 0) {
         forTestString.add("태그1");
         forTestString.add("태그2");
       }
 
+
+ */
       PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
           .id(post.getId())
           .thumbnail(post.getPostThumbnail())
