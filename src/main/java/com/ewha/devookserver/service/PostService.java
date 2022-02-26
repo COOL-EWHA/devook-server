@@ -249,7 +249,8 @@ public class PostService {
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
 
       boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
-      if (getIsBookmarked == false) {
+
+      if (forTestString.size()!=0&&getIsBookmarked == false) {
         PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
             .id(post.getId())
             .thumbnail(post.getPostThumbnail())
@@ -288,7 +289,7 @@ public class PostService {
    */
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
       boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
-      if (getIsBookmarked == false) {
+      if (forTestString.size()!=0&&getIsBookmarked == false) {
         PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
             .id(post.getId())
             .thumbnail(post.getPostThumbnail())
