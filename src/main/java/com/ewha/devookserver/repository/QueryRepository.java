@@ -5,6 +5,7 @@ import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.QPost;
 import com.ewha.devookserver.domain.post.QPostTag;
 import com.ewha.devookserver.domain.post.RefrenceDto;
+import com.ewha.devookserver.service.BasicListService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import com.ewha.devookserver.service.UserRecommService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -30,6 +31,7 @@ public class QueryRepository {
   private final UserRecommService userRecommService;
   private final UserBookmarkService userBookmarkService;
   private final UserBookmarkRepository userBookmarkRepository;
+  private final BasicListService basicListService;
   QPost qPost = new QPost("m");
   QPostTag qPostTag = new QPostTag("p");
 
@@ -212,6 +214,7 @@ public class QueryRepository {
     List<Post> filteredPostList = new ArrayList<>();
 
     for (Post post : getList) {
+      // TODO 여기 참고
       if (postIdxList.contains(post.getPostIdx()) && post.getPostIdx() < id && post.getCreatedAt()
           .before(createdAt)) {
         filteredPostList.add(post);
@@ -363,10 +366,13 @@ public class QueryRepository {
       String question, boolean isUser, List<String> requiredTagList, int limit) {
     System.out.println("들어왔다22.");
 
-    List<Post> getList = postRepository.findAll();
+    // TODO 여기 편집!
+    //List<Post> getList = postRepository.findAll();
+    Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+
+    List<Post> getList = basicListService.getBasicPostList();
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray = new ArrayList<>();
-    Collections.shuffle(getList);
 
     int count;
 
@@ -378,7 +384,7 @@ public class QueryRepository {
         List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
             post.getPostIdx().intValue());
         if (!post.getUserIdx().equals(userIdx)
-            && post.getPostIdx() < id) {
+            && post.getPostIdx() < id ) {
 
           for (PostTag postTag : eachPostTagList) {
             for (String string : requiredTagList) {
@@ -412,6 +418,10 @@ public class QueryRepository {
           testFilteredPostList.add(post);
         }
       }
+
+      // TODO test
+
+      Collections.shuffle(testFilteredPostList);
 
       return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
 
