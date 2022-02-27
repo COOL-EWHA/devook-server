@@ -27,4 +27,6 @@ public interface UserBookmarkRepository extends JpaRepository<UserBookmark, Long
 
   @Transactional
   void deleteAllByPostIdx(Long postIdx);
+
+  int countAllByUserIdx(Long userIdx);
 }

@@ -7,11 +7,13 @@ import com.ewha.devookserver.dto.post.PostBookmarkGetDto;
 import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.TagRepository;
+import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
 import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.TagService;
+import com.ewha.devookserver.service.UserBookmarkService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +36,7 @@ public class RecommendController {
   private final PostService postService;
   private final OauthService oauthService;
   private final RecommendService recommendService;
+  private final UserBookmarkRepository userBookmarkRepository;
   private final PostRepository postRepository;
   private final TagRepository tagRepository;
   private final QueryService queryService;
@@ -136,8 +139,8 @@ public class RecommendController {
       }
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
-
-    if(postRepository.countAllByUserIdx(userIdx)==0){
+    int countAll = postRepository.countAllByUserIdx(userIdx)+ userBookmarkRepository.countAllByUserIdx(Long.valueOf(userIdx));
+    if(countAll==0){
 
       if (bookmarkId == null && postId == null) {
         List<Long> postTagList = tagService.makePostTagList(requiredTagList);
@@ -150,7 +153,7 @@ public class RecommendController {
         return ResponseEntity.status(200).body(
             (listDtos));
       }
-      
+
     }
 
 
