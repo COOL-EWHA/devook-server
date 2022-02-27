@@ -31,7 +31,6 @@ public class QueryRepository {
   private final UserRecommService userRecommService;
   private final UserBookmarkService userBookmarkService;
   private final UserBookmarkRepository userBookmarkRepository;
-  private final BasicListService basicListService;
   QPost qPost = new QPost("m");
   QPostTag qPostTag = new QPostTag("p");
 
@@ -370,7 +369,7 @@ public class QueryRepository {
     //List<Post> getList = postRepository.findAll();
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
-    List<Post> getList = basicListService.getBasicPostList();
+    List<Post> getList = postRepository.findAll();
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray = new ArrayList<>();
 
@@ -418,10 +417,6 @@ public class QueryRepository {
           testFilteredPostList.add(post);
         }
       }
-
-      // TODO test
-
-      Collections.shuffle(testFilteredPostList);
 
       return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
 
