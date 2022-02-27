@@ -333,9 +333,6 @@ public class PostService {
       }
     }
 
-    // searchResponseDto를 랜덤으로 sort
-    Collections.shuffle(searchResponseDtoList);
-
     return searchResponseDtoList;
   }
 

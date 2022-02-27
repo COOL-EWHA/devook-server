@@ -366,6 +366,7 @@ public class QueryRepository {
     List<Post> getList = postRepository.findAll();
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray = new ArrayList<>();
+    Collections.shuffle(getList);
 
     int count;
 
