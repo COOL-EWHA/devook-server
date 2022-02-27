@@ -137,6 +137,23 @@ public class RecommendController {
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
 
+    if(postRepository.countAllByUserIdx(userIdx)==0){
+
+      if (bookmarkId == null && postId == null) {
+        List<Long> postTagList = tagService.makePostTagList(requiredTagList);
+
+        List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForNoAuthUser
+            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "notUser", question,
+                postTagList,
+                true, requiredTagList, limit.intValue()));
+
+        return ResponseEntity.status(200).body(
+            (listDtos));
+      }
+      
+    }
+
+
     //유저 추천글 전체 목록 GET (분기)
     if (bookmarkId == null && postId == null) {
       List<Long> postTagList = tagService.makePostTagList(requiredTagList);
