@@ -13,4 +13,5 @@ public interface TagRepository extends JpaRepository<PostTag, Long> {
 
   @Query("select p from PostTag p where p.post_postIdx=?1")
   List<PostTag> findAllByPost_postIdx(int postIdx);
+
 }
