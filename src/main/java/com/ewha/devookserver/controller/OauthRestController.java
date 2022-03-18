@@ -81,33 +81,33 @@ public class OauthRestController {
     boolean isUserExistRefreshToken = userService.isMemberExistByUserRefreshToken(refreshToken);
 
     if (isUserExistRefreshToken) {
-        Member member = memberRepository.findMemberByRefreshToken(refreshToken);
-        String userAccessToken = oauthService.getAccessToken(member);
+      Member member = memberRepository.findMemberByRefreshToken(refreshToken);
+      String userAccessToken = oauthService.getAccessToken(member);
 
-        LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
-            .email(member.getEmail())
-            .nickname(member.getName())
-            .accessToken(userAccessToken)
-            .refreshToken(member.getRefreshToken())
-            .build();
+      LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
+          .email(member.getEmail())
+          .nickname(member.getName())
+          .accessToken(userAccessToken)
+          .refreshToken(member.getRefreshToken())
+          .build();
 
-        RevisedCookieDto revisedCookieDto = RevisedCookieDto.builder()
-            .email(loginFinalResponseDto.getEmail())
-            .nickname(loginFinalResponseDto.getNickname())
-            .accessToken(loginFinalResponseDto.getAccessToken())
-            .build();
+      RevisedCookieDto revisedCookieDto = RevisedCookieDto.builder()
+          .email(loginFinalResponseDto.getEmail())
+          .nickname(loginFinalResponseDto.getNickname())
+          .accessToken(loginFinalResponseDto.getAccessToken())
+          .build();
 
-        ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
-                loginFinalResponseDto.getRefreshToken())
-            .httpOnly(true)
-            .path("/")
-            .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+      ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
+              loginFinalResponseDto.getRefreshToken())
+          .httpOnly(true)
+          .path("/")
+          .build();
+      response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        //    .domain(".example.com")
+      //    .domain(".example.com")
 
-        return ResponseEntity.status(200).body(revisedCookieDto);
-      } else {
+      return ResponseEntity.status(200).body(revisedCookieDto);
+    } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
@@ -119,8 +119,8 @@ public class OauthRestController {
 
     String accessToken = "no";
     Cookie[] list = request.getCookies();
-    for(Cookie cookie : list){
-      if(cookie.getName().equals("REFRESH_TOKEN")){
+    for (Cookie cookie : list) {
+      if (cookie.getName().equals("REFRESH_TOKEN")) {
         accessToken = cookie.getValue();
       }
     }
@@ -143,7 +143,6 @@ public class OauthRestController {
         System.out.println("빈 리프레쉬");
         return ResponseEntity.status(404).body("빈리프레쉬");
       }
-
 
       boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
 
@@ -237,6 +236,7 @@ public class OauthRestController {
           .email(loginResponse.getEmail())
           .nickname(loginResponse.getNickname())
           .accessToken(loginResponse.getAccessToken())
+          .refreshToken(loginResponse.getRefreshToken())
           .build();
 
       ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
