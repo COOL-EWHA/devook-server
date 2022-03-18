@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
         .allowedHeaders("*")
-        .allowedOriginPatterns("*")
+        .allowedOrigins("https://www.devook.com", "chrome-extension://kpmekjhlkibahaobgapnnbnhlpmihmnh")
         .exposedHeaders("Set-Cookie")
         .allowedMethods("POST", "GET", "PUT", "DELETE", "PATCH")
         .allowCredentials(true)
