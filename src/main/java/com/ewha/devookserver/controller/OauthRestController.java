@@ -120,16 +120,21 @@ public class OauthRestController {
 
     String accessToken = "no";
 
-    String refreshTokenValid = null;
+    Boolean refreshTokenValid=true;
+    String accessTokenBody;
     try{
-      refreshTokenValid=testLoginDto.getRefreshToken();
+      accessTokenBody=testLoginDto.getRefreshToken();
     }catch (Exception e){
-      refreshTokenValid=null;
+      accessTokenBody=null;
+      refreshTokenValid=false;
     }
 
 
-      if (refreshTokenValid!=null) {
-        String accessTokenBody = testLoginDto.getRefreshToken();
+      if (refreshTokenValid) {
+        if(accessTokenBody==null){
+          return ResponseEntity.status(404).body("body는 있지만 token이 null일때");
+        }
+        accessTokenBody = testLoginDto.getRefreshToken();
         boolean isTokenExistsBody = userService.checkRightRefreshToken(
             testLoginDto.getRefreshToken());
 
