@@ -114,7 +114,7 @@ public class OauthRestController {
 
   @PostMapping("/auth/refresh")
   public ResponseEntity<?> loginRefresh(@RequestHeader(value = "Cookie") String refreshTokenGet,
-      @RequestBody TestLoginDto testLoginDto,
+      @RequestBody(required = false) TestLoginDto testLoginDto,
       HttpServletRequest request,
       HttpServletResponse response) {
 
