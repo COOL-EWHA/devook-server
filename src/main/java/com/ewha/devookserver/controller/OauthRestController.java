@@ -118,7 +118,6 @@ public class OauthRestController {
       HttpServletRequest request,
       HttpServletResponse response) {
 
-    System.out.println(testLoginDto.getRefreshToken());
     String accessToken = "no";
 
     String refreshTokenValid = null;
@@ -156,7 +155,7 @@ public class OauthRestController {
           }
         }
         System.out.println(accessToken);
-        
+
         if(accessToken.equals("no")){
           return ResponseEntity.status(404).body("없음");
         }
