@@ -155,6 +155,8 @@ public class OauthRestController {
             return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
           }
         }
+        return ResponseEntity.status(404).body("토큰이 아예 없을때");
+      }
 
         String accessToken = refreshTokenGet.split("=")[1];
 
@@ -205,7 +207,7 @@ public class OauthRestController {
           //}
           return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
         }
-      }
+
 
     } catch (Exception e) {
       /*
@@ -222,7 +224,6 @@ public class OauthRestController {
       System.out.println("오류");
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" ");
     }
-    return null;
   }
 
 
