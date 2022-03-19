@@ -120,13 +120,6 @@ public class OauthRestController {
 
     System.out.println(testLoginDto.getRefreshToken());
     String accessToken = "no";
-    Cookie[] list = request.getCookies();
-    for(Cookie cookie : list){
-      if(cookie.getName().equals("REFRESH_TOKEN")){
-        accessToken = cookie.getValue();
-      }
-    }
-    System.out.println(accessToken);
 
     String refreshTokenValid = null;
     try{
@@ -154,6 +147,16 @@ public class OauthRestController {
           return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
         }
       } else {
+
+
+        Cookie[] list = request.getCookies();
+        for(Cookie cookie : list){
+          if(cookie.getName().equals("REFRESH_TOKEN")){
+            accessToken = cookie.getValue();
+          }
+        }
+        System.out.println(accessToken);
+        
         if(accessToken.equals("no")){
           return ResponseEntity.status(404).body("없음");
         }
