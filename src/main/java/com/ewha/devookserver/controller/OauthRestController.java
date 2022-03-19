@@ -118,9 +118,20 @@ public class OauthRestController {
       HttpServletRequest request,
       HttpServletResponse response) {
 
+    String accessToken = "no";
+    Cookie[] list = request.getCookies();
+    for(Cookie cookie : list){
+      if(cookie.getName().equals("REFRESH_TOKEN")){
+        accessToken = cookie.getValue();
+      }
+    }
+    System.out.println(accessToken);
+
+
     try {
 
-      if (Objects.equals(refreshTokenGet, "REFRESH_TOKEN=")) {
+      // cookie 값이 비어 있을 때
+      if (accessToken.equals("no")) {
 
         if (testLoginDto.getRefreshToken() != null) {
           String accessTokenBody = testLoginDto.getRefreshToken();
@@ -155,10 +166,8 @@ public class OauthRestController {
             return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
           }
         }
-        return ResponseEntity.status(404).body("토큰이 아예 없을때");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("없음");
       }
-
-        String accessToken = refreshTokenGet.split("=")[1];
 
         boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
 
@@ -193,7 +202,6 @@ public class OauthRestController {
           //domain "localhost:8080"
           //domain "localhost:3000"
           // domain "https://localhost:3000"
-
           int i = 0;
           Cookie[] getCookie = request.getCookies();
           for (i = 0; i < getCookie.length; i++) {
@@ -202,12 +210,10 @@ public class OauthRestController {
             String value = c.getValue();
           }
           //if(getCookie==null){
-
           //response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
           //}
           return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
         }
-
 
     } catch (Exception e) {
       /*
