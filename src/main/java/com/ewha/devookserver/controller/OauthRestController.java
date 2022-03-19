@@ -118,6 +118,7 @@ public class OauthRestController {
       HttpServletRequest request,
       HttpServletResponse response) {
 
+    System.out.println(testLoginDto.getRefreshToken());
     String accessToken = "no";
     Cookie[] list = request.getCookies();
     for(Cookie cookie : list){
