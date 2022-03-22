@@ -113,26 +113,61 @@ public class OauthRestController {
   }
 
   @PostMapping("/auth/refresh")
-  public ResponseEntity<?> loginRefresh(@RequestHeader(value = "Cookie", required = false) String refreshTokenGet,
+  public ResponseEntity<?> loginRefresh(
+      @RequestHeader(value = "Cookie", required = false) String refreshTokenGet,
       @RequestBody(required = false) TestLoginDto testLoginDto,
       HttpServletRequest request,
       HttpServletResponse response) {
 
     String accessToken = "no";
+    Boolean cookieValid = true;
 
-    Boolean refreshTokenValid=true;
     String accessTokenBody;
-    try{
-      accessTokenBody=testLoginDto.getRefreshToken();
-    }catch (Exception e){
-      accessTokenBody=null;
-      refreshTokenValid=false;
+
+
+    try {
+      Cookie[] list = request.getCookies();
+      for (Cookie cookie : list) {
+        if (cookie.getName().equals("REFRESH_TOKEN")) {
+          accessToken = cookie.getValue();
+        }
+      }
+
+    } catch (Exception e1) {
+      cookieValid = false;
     }
 
+    if (cookieValid) {
 
-    if (refreshTokenValid) {
-      if(accessTokenBody==null){
-        return ResponseEntity.status(404).body("body는 있지만 token이 null일때");
+      if (accessToken.equals("no")) {
+        return ResponseEntity.status(404).body("없음");
+      }
+      boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
+
+      if (!isTokenExists) {
+        return ResponseEntity.status(404).body("222");
+      } else {
+        Member member = userService.returnRefreshTokenMember(accessToken);
+
+        RefreshDto refreshDto = oauthService.refreshUserToken(member);
+        RefreshResponseDto refreshResponseDto =
+            RefreshResponseDto.builder().accessToken(refreshDto.getAccessToken())
+                .refreshToken(refreshDto.getRefreshToken()).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
+
+      }
+      }
+
+    else {
+      try {
+        accessTokenBody = testLoginDto.getRefreshToken();
+      } catch (Exception e) {
+        accessTokenBody = null;
+      }
+
+      if (accessTokenBody == null) {
+        return ResponseEntity.status(404).body("body 값 null ");
       }
       accessTokenBody = testLoginDto.getRefreshToken();
       boolean isTokenExistsBody = userService.checkRightRefreshToken(
@@ -150,36 +185,11 @@ public class OauthRestController {
 
         return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
       }
-    } else {
-
-
-      Cookie[] list = request.getCookies();
-      for(Cookie cookie : list){
-        if(cookie.getName().equals("REFRESH_TOKEN")){
-          accessToken = cookie.getValue();
-        }
-      }
-      System.out.println(accessToken);
-
-      if(accessToken.equals("no")){
-        return ResponseEntity.status(404).body("없음");
-      }
-      boolean isTokenExists = userService.checkRightRefreshToken(accessToken);
-
-      if (!isTokenExists) {
-        return ResponseEntity.status(404).body("222");
-      } else {
-        Member member = userService.returnRefreshTokenMember(accessToken);
-
-        RefreshDto refreshDto = oauthService.refreshUserToken(member);
-        RefreshResponseDto refreshResponseDto =
-            RefreshResponseDto.builder().accessToken(refreshDto.getAccessToken())
-                .refreshToken(refreshDto.getRefreshToken()).build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
-      }
     }
   }
+
+
+
 
 
   @PostMapping("/auth/login/{provider}")
