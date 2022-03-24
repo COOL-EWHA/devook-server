@@ -13,7 +13,6 @@ import com.ewha.devookserver.dto.auth.UserInfoResponseDto;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.UserService;
-import java.util.Objects;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -124,7 +123,6 @@ public class OauthRestController {
 
     String accessTokenBody;
 
-
     try {
       Cookie[] list = request.getCookies();
       for (Cookie cookie : list) {
@@ -157,9 +155,7 @@ public class OauthRestController {
         return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDto);
 
       }
-      }
-
-    else {
+    } else {
       try {
         accessTokenBody = testLoginDto.getRefreshToken();
       } catch (Exception e) {
@@ -187,9 +183,6 @@ public class OauthRestController {
       }
     }
   }
-
-
-
 
 
   @PostMapping("/auth/login/{provider}")
