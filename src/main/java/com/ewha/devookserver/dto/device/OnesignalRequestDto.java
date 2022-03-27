@@ -9,4 +9,5 @@ public class OnesignalRequestDto {
   public String app_id;
   public String device_type;
   public String identifier;
+  public String language;
 }

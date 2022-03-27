@@ -46,6 +46,7 @@ public class DeviceController {
     onesignalRequestDto.setApp_id(appId);
     onesignalRequestDto.setDevice_type(deviceType);
     onesignalRequestDto.setIdentifier(userIdx);
+    onesignalRequestDto.setLanguage("ko");
 
     OnesignalResponseDto onesignalResponseDto = deviceService.addDeviceInfo(onesignalRequestDto);
 
