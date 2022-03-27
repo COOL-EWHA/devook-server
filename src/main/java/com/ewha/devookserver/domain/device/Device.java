@@ -1,4 +1,4 @@
-package com.ewha.devookserver.domain.user;
+package com.ewha.devookserver.domain.device;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,12 +25,13 @@ public class Device {
   public Long deviceIdx;
 
   public Long userIdx;
-  public Long deviceId;
+  public String deviceId;
 
   @CreationTimestamp
   public Timestamp createdAt;
 
-  public Device(Long userIdx, Long deviceId) {
+  @Builder
+  public Device(Long userIdx, String deviceId) {
     this.userIdx = userIdx;
     this.deviceId = deviceId;
   }
