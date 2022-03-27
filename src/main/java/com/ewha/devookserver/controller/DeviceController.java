@@ -7,6 +7,7 @@ import com.ewha.devookserver.dto.device.OnesignalResponseDto;
 import com.ewha.devookserver.service.DeviceService;
 import com.ewha.devookserver.service.OauthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.time.LocalDateTime;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,11 +42,10 @@ public class DeviceController {
 
     String appId = devicePostRequestDto.getAppId();
     String deviceType = devicePostRequestDto.getDeviceType();
-
     OnesignalRequestDto onesignalRequestDto = new OnesignalRequestDto();
     onesignalRequestDto.setApp_id(appId);
     onesignalRequestDto.setDevice_type(deviceType);
-    onesignalRequestDto.setIdentifier(userIdx);
+    onesignalRequestDto.setIdentifier(userIdx+ LocalDateTime.now());
     onesignalRequestDto.setLanguage("ko");
 
     OnesignalResponseDto onesignalResponseDto = deviceService.addDeviceInfo(onesignalRequestDto);
