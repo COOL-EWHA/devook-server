@@ -14,25 +14,10 @@ public class AlarmScheduledService {
   private final MemberRepository memberRepository;
   private final AlarmService alarmService;
 
-  @Scheduled(cron = "00 25 16 * * *")
-  public void test1(){
-    List<Member> memberList = memberRepository.findAll();
 
-    for (Member member : memberList) {
-      alarmService.saveTitlePost(member.getId());
-    }
-  }
 
-  @Scheduled(cron = "00 27 16 * * *")
-  public void test2(){
-    List<Member> memberList = memberRepository.findAll();
 
-    for (Member member : memberList) {
-      alarmService.saveUsageAlert(member.getId());
-    }
-  }
-
-  @Scheduled(cron = "00 30 23 * * *")
+  @Scheduled(cron = "00 30 20 * * *")
   public void generateUsageAlarm() {
 
     List<Member> memberList = memberRepository.findAll();
@@ -42,7 +27,7 @@ public class AlarmScheduledService {
     }
   }
 
-  @Scheduled(cron = "00 30 11 * * *")
+  @Scheduled(cron = "00 30 08 * * *")
   public void generateTitleAlarm() {
 
     List<Member> memberList = memberRepository.findAll();

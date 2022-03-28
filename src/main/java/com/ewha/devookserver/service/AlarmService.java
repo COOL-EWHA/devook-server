@@ -147,7 +147,6 @@ public class AlarmService {
     List<Alarm> userAlarm = alarmRepository.findAllByUserIdx(userIdx);
     List<AlarmResponseDto> responseDtos = new ArrayList<>();
     SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-    formatISO.setTimeZone(TimeZone.getTimeZone("KST"));
 
     for (Alarm alarm : userAlarm) {
       if (alarm.getAlarmIdx() < cursor) {
