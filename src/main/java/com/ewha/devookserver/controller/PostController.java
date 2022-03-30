@@ -2,6 +2,7 @@ package com.ewha.devookserver.controller;
 
 import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.domain.post.Post;
+import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.UserBookmark;
 import com.ewha.devookserver.dto.post.EachPostResponseDto;
 import com.ewha.devookserver.dto.post.PostAddResponseDto;
@@ -10,6 +11,7 @@ import com.ewha.devookserver.dto.post.PostLambdaDto;
 import com.ewha.devookserver.dto.post.PostUserRequestDto;
 import com.ewha.devookserver.dto.post.RequestMemoDto;
 import com.ewha.devookserver.repository.PostRepository;
+import com.ewha.devookserver.repository.TagRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.ewha.devookserver.service.CrawlerService;
 import com.ewha.devookserver.service.NotificationService;
@@ -52,6 +54,7 @@ public class PostController {
   private final UserBookmarkRepository userBookmarkRepository;
   private final NotificationService notificationService;
   private final UserBookmarkService userBookmarkService;
+  private final TagRepository tagRepository;
 
   // @Scheduled(cron = "00 00 6 * * *")
   @GetMapping("/crawler")
@@ -67,6 +70,7 @@ public class PostController {
     try {
       String accessToken = tokenGet.split(" ")[1];
       List<String> forTestString = new ArrayList<>();
+
       /*
       forTestString.add("태그1");
       forTestString.add("태그2");
@@ -90,6 +94,15 @@ public class PostController {
 
             Post post = postRepository.getPostByPostIdx(
                 Long.valueOf(postUserRequestDto.getPostId()));
+
+            List<PostTag> allTags = tagRepository.findAllByPost_postIdx(
+                Math.toIntExact(post.getPostIdx()));
+
+
+            for(PostTag postTag:allTags){
+              forTestString.add(postTag.getPostTagName());
+            }
+
             PostAddResponseDto postAddResponseDto = postService.postAddBodyMaker(
                 post.getPostIdx(),
                 post.getPostTitle(),
@@ -103,6 +116,14 @@ public class PostController {
             return ResponseEntity.status(201).body(postAddResponseDto);
           } else {
             Post post = postRepository.getPostByPostIdx(postIdx);
+
+            List<PostTag> allTags = tagRepository.findAllByPost_postIdx(
+                Math.toIntExact(post.getPostIdx()));
+
+
+            for(PostTag postTag:allTags){
+              forTestString.add(postTag.getPostTagName());
+            }
             post.setUserIdx(userIdx);
             postService.savePostBookmark(Long.valueOf(userIdx), postIdx,
                 postUserRequestDto.getMemo());
@@ -123,6 +144,14 @@ public class PostController {
       }
       if (postService.isPostUserExists(postUserRequestDto.getUrl(), userIdx)) {
         Post post = postRepository.getPostByPostUrlAndUserIdx(postUserRequestDto.getUrl(), userIdx);
+
+        List<PostTag> allTags = tagRepository.findAllByPost_postIdx(
+            Math.toIntExact(post.getPostIdx()));
+
+
+        for(PostTag postTag:allTags){
+          forTestString.add(postTag.getPostTagName());
+        }
         post.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         postRepository.save(post);
 
@@ -153,7 +182,13 @@ public class PostController {
           postLambdaDto.getImage(), userIdx);
 
       Post post = postRepository.getPostByPostUrlAndUserIdx(postUserRequestDto.getUrl(), userIdx);
+      List<PostTag> allTags = tagRepository.findAllByPost_postIdx(
+          Math.toIntExact(post.getPostIdx()));
 
+
+      for(PostTag postTag:allTags){
+        forTestString.add(postTag.getPostTagName());
+      }
       PostAddResponseDto postAddResponseDto = postService.postAddBodyMaker(
           post.getPostIdx(),
           postLambdaDto.getTitle(),
