@@ -5,6 +5,8 @@ import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.UserBookmark;
+import com.ewha.devookserver.dto.post.CrawlerReqeustDto;
+import com.ewha.devookserver.dto.post.CrawlerResponseDto;
 import com.ewha.devookserver.dto.post.PostAddResponseDto;
 import com.ewha.devookserver.dto.post.PostBookmarkRequestDto;
 import com.ewha.devookserver.dto.post.PostLabmdaRequestDto;
@@ -14,6 +16,7 @@ import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.repository.NotificationRepository;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.QueryRepository;
+import com.ewha.devookserver.repository.TagRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -44,8 +46,11 @@ public class PostService {
   private final RecommendService recommendService;
   private final NotificationRepository notificationRepository;
   private final NotificationService notificationService;
+  private final TagRepository tagRepository;
   WebClient webClient = WebClient.create(
       "https://sy54a2wnyl.execute-api.ap-northeast-2.amazonaws.com/test");
+  WebClient crawlerClient = WebClient.create(
+      "http://52.79.251.102");
 
   public boolean isPostUserExists(String url, String userIdx) {
     return postRepository.getPostByPostUrlAndUserIdx(url, userIdx) != null;
@@ -391,7 +396,7 @@ public class PostService {
   }
 
   public void savePost(String memo, String url, String description, String title, String image,
-      String userIdx) throws InterruptedException {
+      String userIdx) throws InterruptedException, JsonProcessingException {
 
     Post post = Post.builder()
         .postMemo(memo)
@@ -403,6 +408,19 @@ public class PostService {
         .build();
 
     postRepository.save(post);
+    Post savedPost = postRepository.getPostByPostUrlAndUserIdx(post.getPostUrl(),
+        post.getUserIdx());
+
+    // post 카테고리 저장
+    CrawlerReqeustDto crawlerReqeustDto = new CrawlerReqeustDto();
+    crawlerReqeustDto.setTitle(post.getPostTitle());
+
+    PostTag postTag = PostTag.builder()
+        .postTagName(getPostCategory(crawlerReqeustDto))
+        .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
+        .build();
+
+    tagRepository.save(postTag);
   }
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
@@ -457,6 +475,37 @@ public class PostService {
       String returnValue = objectMapper.writeValueAsString(result);
       PostLambdaDto postLambdaDto = objectMapper.readValue(returnValue, PostLambdaDto.class);
       return postLambdaDto;
+    }
+    return null;
+  }
+
+  public String getPostCategory(CrawlerReqeustDto crawlerReqeustDto)
+      throws JsonProcessingException {
+
+    JsonNode result = crawlerClient.post()
+        .uri("/category")
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .body(Mono.just(crawlerReqeustDto), CrawlerReqeustDto.class)
+        .retrieve()
+        .bodyToMono(String.class).map(s -> {
+          ObjectMapper mapper = new ObjectMapper();
+          try {
+            return mapper.readTree(s);
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+          return null;
+        })
+        .block();
+
+    System.out.println(result);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    if (result != null) {
+      String returnValue = objectMapper.writeValueAsString(result);
+      CrawlerResponseDto crawlerResponseDto = objectMapper.readValue(returnValue,
+          CrawlerResponseDto.class);
+      return crawlerResponseDto.getCategory();
     }
     return null;
   }
