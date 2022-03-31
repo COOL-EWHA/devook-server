@@ -45,7 +45,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   Post getPostByPostUrlAndPostDescription(String url, String description);
 
 
-
   Post findFirstByOrderByPostIdxDesc();
 
 }

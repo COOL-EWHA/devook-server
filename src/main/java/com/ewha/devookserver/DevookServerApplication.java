@@ -12,13 +12,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class DevookServerApplication {
 
-  @PostConstruct
-  public void started(){
-    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-  }
-
   public static void main(String[] args) {
     SpringApplication.run(DevookServerApplication.class, args);
+  }
+
+  @PostConstruct
+  public void started() {
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
   }
 
 

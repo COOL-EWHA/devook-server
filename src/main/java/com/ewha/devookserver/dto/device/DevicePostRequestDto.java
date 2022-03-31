@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DevicePostRequestDto {
+
   public String appId;
   public String deviceType;
 }

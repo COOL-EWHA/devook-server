@@ -13,7 +13,6 @@ import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
 import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.TagService;
-import com.ewha.devookserver.service.UserBookmarkService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -139,8 +138,10 @@ public class RecommendController {
       }
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
-    int countAll = postRepository.countAllByUserIdx(userIdx)+ userBookmarkRepository.countAllByUserIdx(Long.valueOf(userIdx));
-    if(countAll==0){
+    int countAll =
+        postRepository.countAllByUserIdx(userIdx) + userBookmarkRepository.countAllByUserIdx(
+            Long.valueOf(userIdx));
+    if (countAll == 0) {
 
       if (bookmarkId == null && postId == null) {
         List<Long> postTagList = tagService.makePostTagList(requiredTagList);
@@ -155,7 +156,6 @@ public class RecommendController {
       }
 
     }
-
 
     //유저 추천글 전체 목록 GET (분기)
     if (bookmarkId == null && postId == null) {

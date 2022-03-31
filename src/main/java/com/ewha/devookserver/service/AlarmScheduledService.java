@@ -15,8 +15,6 @@ public class AlarmScheduledService {
   private final AlarmService alarmService;
 
 
-
-
   @Scheduled(cron = "00 30 20 * * *")
   public void generateUsageAlarm() {
 

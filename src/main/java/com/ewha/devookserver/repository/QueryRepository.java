@@ -5,7 +5,6 @@ import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.QPost;
 import com.ewha.devookserver.domain.post.QPostTag;
 import com.ewha.devookserver.domain.post.RefrenceDto;
-import com.ewha.devookserver.service.BasicListService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import com.ewha.devookserver.service.UserRecommService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -364,7 +363,7 @@ public class QueryRepository {
   public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
     System.out.println("들어왔다22.");
-
+    System.out.println(userIdx);
     // TODO 여기 편집!
     //List<Post> getList = postRepository.findAll();
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
@@ -383,7 +382,7 @@ public class QueryRepository {
         List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
             post.getPostIdx().intValue());
         if (!post.getUserIdx().equals(userIdx)
-            && post.getPostIdx() < id ) {
+            && post.getPostIdx() < id) {
 
           for (PostTag postTag : eachPostTagList) {
             for (String string : requiredTagList) {

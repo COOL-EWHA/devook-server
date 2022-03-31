@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class BasicListService {
+
   private final PostRepository postRepository;
-  public List<Post> getBasicPostList(){
+
+  public List<Post> getBasicPostList() {
     return postRepository.returnBasicList();
   }
 }

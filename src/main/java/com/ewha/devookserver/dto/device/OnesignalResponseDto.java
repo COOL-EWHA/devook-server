@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class OnesignalResponseDto {
+
   public Boolean success;
   public String id;
 }
