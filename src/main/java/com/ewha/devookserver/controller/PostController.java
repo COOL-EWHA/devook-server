@@ -98,8 +98,7 @@ public class PostController {
             List<PostTag> allTags = tagRepository.findAllByPost_postIdx(
                 Math.toIntExact(post.getPostIdx()));
 
-
-            for(PostTag postTag:allTags){
+            for (PostTag postTag : allTags) {
               forTestString.add(postTag.getPostTagName());
             }
 
@@ -120,8 +119,7 @@ public class PostController {
             List<PostTag> allTags = tagRepository.findAllByPost_postIdx(
                 Math.toIntExact(post.getPostIdx()));
 
-
-            for(PostTag postTag:allTags){
+            for (PostTag postTag : allTags) {
               forTestString.add(postTag.getPostTagName());
             }
             post.setUserIdx(userIdx);
@@ -148,8 +146,7 @@ public class PostController {
         List<PostTag> allTags = tagRepository.findAllByPost_postIdx(
             Math.toIntExact(post.getPostIdx()));
 
-
-        for(PostTag postTag:allTags){
+        for (PostTag postTag : allTags) {
           forTestString.add(postTag.getPostTagName());
         }
         post.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
@@ -185,8 +182,7 @@ public class PostController {
       List<PostTag> allTags = tagRepository.findAllByPost_postIdx(
           Math.toIntExact(post.getPostIdx()));
 
-
-      for(PostTag postTag:allTags){
+      for (PostTag postTag : allTags) {
         forTestString.add(postTag.getPostTagName());
       }
       PostAddResponseDto postAddResponseDto = postService.postAddBodyMaker(

@@ -7,6 +7,8 @@ import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.TagRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -59,6 +61,7 @@ public class RecommendService {
 
       resultArray.add(refrenceDto);
     }
+    Collections.sort(resultArray);
     return resultArray;
   }
 
@@ -91,6 +94,7 @@ public class RecommendService {
       refrenceDto.setRefrence(count);
 
       resultArray.add(refrenceDto);
+      Collections.sort(resultArray);
     }
     return resultArray;
   }
