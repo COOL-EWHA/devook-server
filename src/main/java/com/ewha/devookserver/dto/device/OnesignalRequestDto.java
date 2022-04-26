@@ -11,4 +11,5 @@ public class OnesignalRequestDto {
   public String device_type;
   public String identifier;
   public String language;
+  public int notification_types;
 }
