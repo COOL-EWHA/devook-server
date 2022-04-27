@@ -338,8 +338,11 @@ public class PostController {
          */
 
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(userBookmark.getCreatedAt());
+        cal.add(Calendar.HOUR, -9);
 
-        Date dBconvertedTime = userBookmark.getCreatedAt();
+        Date dBconvertedTime = cal.getTime();
         String dBCreatedAt = formatISO.format(dBconvertedTime);
 
         Notification notification = notificationService.returnDueDate((long) bookmarkId,
