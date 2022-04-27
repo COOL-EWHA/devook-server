@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,15 +28,18 @@ public class DeviceController {
   private final DeviceService deviceService;
   private final OauthService oauthService;
 
-  @PostMapping("/devices")
+  @PostMapping("/devices/{player_id}")
   public ResponseEntity<?> postDevice(
       @RequestHeader(value = "Authorization") String accessTokenGet, HttpServletResponse response
-      , @RequestBody DevicePostRequestDto devicePostRequestDto) throws JsonProcessingException {
+      , @PathVariable String player_id){
 
-
+    System.out.println(player_id);
+/*
     ObjectMapper objectMapper = new ObjectMapper();
     String returnValue = objectMapper.writeValueAsString(devicePostRequestDto);
     System.out.println(returnValue);
+
+ */
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
@@ -47,6 +51,9 @@ public class DeviceController {
 
     String userIdx = oauthService.getUserIdx(accessToken);
 
+    deviceService.addDeviceId(player_id, Long.valueOf(userIdx));
+
+    /*
     String appId = devicePostRequestDto.getAppId();
     String deviceType = devicePostRequestDto.getDeviceType();
     OnesignalRequestDto onesignalRequestDto = new OnesignalRequestDto();
@@ -57,14 +64,20 @@ public class DeviceController {
     onesignalRequestDto.setNotification_types(1);
     onesignalRequestDto.setGame_version("1");
 
+
+
     OnesignalResponseDto onesignalResponseDto = deviceService.addDeviceInfo(onesignalRequestDto);
+
+
 
     DevicePostResponseDto devicePostResponseDto = new DevicePostResponseDto();
     devicePostResponseDto.setDeviceId(onesignalResponseDto.getId());
 
     deviceService.addDeviceId(devicePostResponseDto.getDeviceId(), Long.valueOf(userIdx));
 
-    return ResponseEntity.status(200).body(devicePostResponseDto);
+
+     */
+    return ResponseEntity.status(200).body("");
   }
 
   @DeleteMapping("/devices/{deviceId}")
