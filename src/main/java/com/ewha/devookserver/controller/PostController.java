@@ -19,12 +19,14 @@ import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -285,8 +287,13 @@ public class PostController {
          */
 
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        // Date dBconvertedTime = userPost.getCreatedAt();
 
-        Date dBconvertedTime = userPost.getCreatedAt();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(userPost.getCreatedAt());
+        cal.add(Calendar.HOUR, -9);
+
+        Date dBconvertedTime = cal.getTime();
         String dBCreatedAt = formatISO.format(dBconvertedTime);
 
         Notification notification = notificationService.returnDueDate((long) bookmarkId,
