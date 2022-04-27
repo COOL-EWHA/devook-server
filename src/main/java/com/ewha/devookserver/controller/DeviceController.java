@@ -7,7 +7,9 @@ import com.ewha.devookserver.dto.device.OnesignalResponseDto;
 import com.ewha.devookserver.service.DeviceService;
 import com.ewha.devookserver.service.OauthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,11 @@ public class DeviceController {
   public ResponseEntity<?> postDevice(
       @RequestHeader(value = "Authorization") String accessTokenGet, HttpServletResponse response
       , @RequestBody DevicePostRequestDto devicePostRequestDto) throws JsonProcessingException {
+
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    String returnValue = objectMapper.writeValueAsString(devicePostRequestDto);
+    System.out.println(returnValue);
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
