@@ -48,6 +48,7 @@ public class DeviceController {
     onesignalRequestDto.setIdentifier(userIdx + LocalDateTime.now());
     onesignalRequestDto.setLanguage("ko");
     onesignalRequestDto.setNotification_types(1);
+    onesignalRequestDto.setGame_version("1");
 
     OnesignalResponseDto onesignalResponseDto = deviceService.addDeviceInfo(onesignalRequestDto);
 

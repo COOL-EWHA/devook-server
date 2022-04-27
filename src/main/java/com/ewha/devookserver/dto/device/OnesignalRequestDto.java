@@ -12,4 +12,5 @@ public class OnesignalRequestDto {
   public String identifier;
   public String language;
   public int notification_types;
+  public String game_version;
 }
