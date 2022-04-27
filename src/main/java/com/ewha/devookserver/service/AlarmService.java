@@ -14,6 +14,7 @@ import com.ewha.devookserver.repository.UserBookmarkRepository;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +35,7 @@ public class AlarmService {
   private final NotificationService notificationService;
   private final UserBookmarkService userBookmarkService;
   private final AlarmRepository alarmRepository;
+  private final DeviceService deviceService;
 
   public void saveTitlePost(Long userIdx) {
     List<Post> postList = postRepository.findAllByUserIdx(String.valueOf(userIdx));
@@ -149,7 +151,15 @@ public class AlarmService {
 
     for (Alarm alarm : userAlarm) {
       if (alarm.getAlarmIdx() < cursor) {
-        Date dBconvertedTime = alarm.getCreatedAt();
+        //Date dBconvertedTime = alarm.getCreatedAt();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(alarm.getCreatedAt());
+        cal.add(Calendar.MINUTE, 30);
+        cal.add(Calendar.HOUR, -9);
+
+        Date dBconvertedTime = cal.getTime();
+
         String dBCreatedAt = formatISO.format(dBconvertedTime);
         AlarmResponseDto alarmResponseDto = AlarmResponseDto.builder()
             .id(alarm.getAlarmIdx())
