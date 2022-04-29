@@ -15,6 +15,7 @@ import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import javax.print.attribute.standard.Media;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -191,6 +193,7 @@ public class OauthRestController {
     }
   }
 
+  /*
   @RequestMapping(value = "/auth/login/apple", method = {RequestMethod.GET, RequestMethod.POST}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @ResponseBody
   public ResponseEntity<?> publishData(@RequestBody JsonNode requestBody) {
@@ -200,13 +203,21 @@ public class OauthRestController {
 
     return ResponseEntity.status(HttpStatus.OK).body(requestBody);
   }
+*/
+
+  @RequestMapping(value = "/auth/login/apple", method = {RequestMethod.GET, RequestMethod.POST}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+  public void loginAppleUser(
+      @RequestBody MultiValueMap<String, String> formParmameters){
 
 
+    List<String> contentValues=formParmameters.get("state");
+    for (String value : contentValues){
+      System.out.println(value);
+    }
+  }
 
-  //@PostMapping("/auth/login/{provider}")
-  /*
-  @RequestMapping(value = "/auth/login/{provider}", method = {RequestMethod.GET, RequestMethod.POST})
-  public ResponseEntity<?> loginUser(@PathVariable String provider,
+  @RequestMapping(value = "/auth/login/google", method = {RequestMethod.GET, RequestMethod.POST} )
+  public ResponseEntity<?> loginUser(
       @RequestBody TokenRequestDto tokenRequestDto, HttpServletResponse response) {
     System.out.println("@PostMapping /auth/login/provider");
 
@@ -214,7 +225,7 @@ public class OauthRestController {
     System.out.println(tokenRequestDto.getCode());
 
     try {
-      LoginResponse loginResponse = oauthService.login(provider, replaceToken);
+      LoginResponse loginResponse = oauthService.login("google", replaceToken);
 
       LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
           .email(loginResponse.getEmail())
@@ -249,7 +260,8 @@ public class OauthRestController {
   }
 
 
-   */
+
+
   @GetMapping("/users")
   public ResponseEntity<?> getUserInfo(
       @RequestHeader(value = "Authorization") String accessTokenGet, HttpServletResponse response)
