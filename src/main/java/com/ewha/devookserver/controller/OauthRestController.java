@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -185,7 +187,8 @@ public class OauthRestController {
   }
 
 
-  @PostMapping("/auth/login/{provider}")
+  //@PostMapping("/auth/login/{provider}")
+  @RequestMapping(value = "/auth/login/{provider}", method = {RequestMethod.GET, RequestMethod.POST})
   public ResponseEntity<?> loginUser(@PathVariable String provider,
       @RequestBody TokenRequestDto tokenRequestDto, HttpServletResponse response) {
     System.out.println("@PostMapping /auth/login/provider");
