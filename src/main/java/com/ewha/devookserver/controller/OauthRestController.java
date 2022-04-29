@@ -15,6 +15,7 @@ import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.print.attribute.standard.Media;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -190,7 +191,7 @@ public class OauthRestController {
     }
   }
 
-  @RequestMapping(value = "/auth/login/apple", method = {RequestMethod.GET, RequestMethod.POST})
+  @RequestMapping(value = "/auth/login/apple", method = {RequestMethod.GET, RequestMethod.POST}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @ResponseBody
   public ResponseEntity<?> publishData(@RequestBody JsonNode requestBody) {
 
