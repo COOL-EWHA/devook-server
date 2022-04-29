@@ -13,12 +13,15 @@ import com.ewha.devookserver.dto.auth.UserInfoResponseDto;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -186,8 +190,20 @@ public class OauthRestController {
     }
   }
 
+  @RequestMapping(value = "/auth/login/apple", method = {RequestMethod.GET, RequestMethod.POST})
+  @ResponseBody
+  public ResponseEntity<?> publishData(@RequestBody JsonNode requestBody) {
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    System.out.println(requestBody);
+
+    return ResponseEntity.status(HttpStatus.OK).body(requestBody);
+  }
+
+
 
   //@PostMapping("/auth/login/{provider}")
+  /*
   @RequestMapping(value = "/auth/login/{provider}", method = {RequestMethod.GET, RequestMethod.POST})
   public ResponseEntity<?> loginUser(@PathVariable String provider,
       @RequestBody TokenRequestDto tokenRequestDto, HttpServletResponse response) {
@@ -231,6 +247,8 @@ public class OauthRestController {
     }
   }
 
+
+   */
   @GetMapping("/users")
   public ResponseEntity<?> getUserInfo(
       @RequestHeader(value = "Authorization") String accessTokenGet, HttpServletResponse response)
