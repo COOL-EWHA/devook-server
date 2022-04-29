@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
         //.allowedOrigins("https://www.devook.com", "chrome-extension://kpmekjhlkibahaobgapnnbnhlpmihmnh", "https://pr-97.devook.com")
         .exposedHeaders("Set-Cookie")
         .allowedMethods("POST", "GET", "PUT", "DELETE", "PATCH")
-        .allowCredentials(true)
+        //.allowCredentials(true)
         .maxAge(3000);
   }
 }
