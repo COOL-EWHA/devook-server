@@ -202,7 +202,11 @@ public class OauthRestController {
       loginResponse = appleService.appleLogin(id_token, true, null);
 
     } else {
-      loginResponse = appleService.appleLogin(id_token, false, formParmameters.getFirst("user"));
+      try {
+        loginResponse = appleService.appleLogin(id_token, false, formParmameters.getFirst("user"));
+      }catch (Exception e){
+        loginResponse = appleService.appleLogin(id_token, false, null);
+      }
     }
 
     LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
@@ -225,7 +229,7 @@ public class OauthRestController {
         .path("/")
         .build();
     response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-    response.sendRedirect("https://pr-97.devook.com");
+    response.sendRedirect("https://www.devook.com");
 
     if (!loginResponse.isExistUser()) {
       return ResponseEntity.status(201).body(revisedCookieDto);

@@ -56,10 +56,15 @@ public class AppleService {
     } else {
       System.out.println("새로운 애플 유저");
       refreshToken = jwtTokenProvider.createRefreshToken();
-
+      String name;
+      if(jsonNameStr.equals(null)){
+        name = userIdFromApple(idToken).get("email");
+      }else{
+        name = getUserName(jsonNameStr);
+      }
       member = Member.builder()
           .email(userIdFromApple(idToken).get("email"))
-          .name(getUserName(jsonNameStr))
+          .name(name)
           .oauthId(userIdFromApple(idToken).get("sub"))
           .imageUrl(RandomString.make())
           .refreshToken(refreshToken)
