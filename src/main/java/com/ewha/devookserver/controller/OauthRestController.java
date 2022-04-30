@@ -11,12 +11,9 @@ import com.ewha.devookserver.dto.auth.TestLoginDto;
 import com.ewha.devookserver.dto.auth.TokenRequestDto;
 import com.ewha.devookserver.dto.auth.UserInfoResponseDto;
 import com.ewha.devookserver.repository.MemberRepository;
+import com.ewha.devookserver.service.AppleService;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.UserService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,13 +26,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -46,6 +41,7 @@ public class OauthRestController {
   private final UserService userService;
   private final MemberRepository memberRepository;
   private final JwtTokenProvider jwtTokenProvider;
+  private final AppleService appleService;
 
   // @ 0217 09:00 변경사항 test server ver.
 
@@ -193,30 +189,50 @@ public class OauthRestController {
     }
   }
 
-  /*
-  @RequestMapping(value = "/auth/login/apple", method = {RequestMethod.GET, RequestMethod.POST}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-  @ResponseBody
-  public ResponseEntity<?> publishData(@RequestBody JsonNode requestBody) {
+  @RequestMapping(value = "/auth/login/apple", method = {RequestMethod.GET,
+      RequestMethod.POST}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+  public ResponseEntity<?> appleLogin(@RequestBody MultiValueMap<String, String> formParmameters,
+      HttpServletResponse response) throws Exception {
+    String id_token = formParmameters.getFirst("id_token");
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    System.out.println(requestBody);
+    Boolean existUser = appleService.isAppleUserExists(id_token);
+    LoginResponse loginResponse;
 
-    return ResponseEntity.status(HttpStatus.OK).body(requestBody);
-  }
-*/
+    if (existUser) {
+      loginResponse = appleService.appleLogin(id_token, true, null);
 
-  @RequestMapping(value = "/auth/login/apple", method = {RequestMethod.GET, RequestMethod.POST}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-  public void loginAppleUser(
-      @RequestBody MultiValueMap<String, String> formParmameters){
-
-
-    List<String> contentValues=formParmameters.get("state");
-    for (String value : contentValues){
-      System.out.println(value);
+    } else {
+      loginResponse = appleService.appleLogin(id_token, false, formParmameters.getFirst("user"));
     }
+
+    LoginFinalResponseDto loginFinalResponseDto = LoginFinalResponseDto.builder()
+        .email(loginResponse.getEmail())
+        .nickname(loginResponse.getNickname())
+        .accessToken(loginResponse.getAccessToken())
+        .refreshToken(loginResponse.getRefreshToken())
+        .build();
+
+    RevisedCookieDto revisedCookieDto = RevisedCookieDto.builder()
+        .email(loginResponse.getEmail())
+        .nickname(loginResponse.getNickname())
+        .accessToken(loginResponse.getAccessToken())
+        .refreshToken(loginResponse.getRefreshToken())
+        .build();
+
+    ResponseCookie cookie = ResponseCookie.from("REFRESH_TOKEN",
+            loginFinalResponseDto.getRefreshToken())
+        .httpOnly(true)
+        .path("/")
+        .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+    if (!loginResponse.isExistUser()) {
+      return ResponseEntity.status(201).body(revisedCookieDto);
+    }
+    return ResponseEntity.status(200).body(revisedCookieDto);
   }
 
-  @RequestMapping(value = "/auth/login/google", method = {RequestMethod.GET, RequestMethod.POST} )
+  @RequestMapping(value = "/auth/login/google", method = {RequestMethod.GET, RequestMethod.POST})
   public ResponseEntity<?> loginUser(
       @RequestBody TokenRequestDto tokenRequestDto, HttpServletResponse response) {
     System.out.println("@PostMapping /auth/login/provider");
@@ -258,8 +274,6 @@ public class OauthRestController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
-
-
 
 
   @GetMapping("/users")
