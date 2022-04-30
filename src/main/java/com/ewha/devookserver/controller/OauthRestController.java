@@ -225,6 +225,7 @@ public class OauthRestController {
         .path("/")
         .build();
     response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    response.sendRedirect("https://pr-97.devook.com");
 
     if (!loginResponse.isExistUser()) {
       return ResponseEntity.status(201).body(revisedCookieDto);
