@@ -3,6 +3,7 @@ package com.ewha.devookserver.service;
 import com.ewha.devookserver.domain.auth.JwtTokenProvider;
 import com.ewha.devookserver.domain.auth.LoginResponse;
 import com.ewha.devookserver.domain.user.Member;
+import com.ewha.devookserver.domain.user.Role;
 import com.ewha.devookserver.repository.MemberRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -24,6 +25,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -59,8 +61,9 @@ public class AppleService {
           .email(userIdFromApple(idToken).get("email"))
           .name(getUserName(jsonNameStr))
           .oauthId(userIdFromApple(idToken).get("sub"))
-          .imageUrl(null)
+          .imageUrl(RandomString.make())
           .refreshToken(refreshToken)
+          .role(Role.GUEST)
           .build();
 
       memberRepository.save(member);
@@ -152,9 +155,9 @@ public class AppleService {
     String userId = appleAlg.getAsString();
 
     JsonElement appleAlg2 = userInfoObject.get("email");
-    String userEmail = appleAlg.getAsString();
+    String userEmail = appleAlg2.getAsString();
 
-    HashMap<String, String> map = new HashMap<String, String>();
+    HashMap<String, String> map = new HashMap<>();
     map.put("sub", userId);
     map.put("email", userEmail);
 
