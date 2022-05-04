@@ -57,9 +57,9 @@ public class AppleService {
       System.out.println("새로운 애플 유저");
       refreshToken = jwtTokenProvider.createRefreshToken();
       String name;
-      if(jsonNameStr.equals(null)){
+      if (jsonNameStr.equals(null)) {
         name = userIdFromApple(idToken).get("email");
-      }else{
+      } else {
         name = getUserName(jsonNameStr);
       }
       member = Member.builder()

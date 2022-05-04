@@ -204,7 +204,7 @@ public class OauthRestController {
     } else {
       try {
         loginResponse = appleService.appleLogin(id_token, false, formParmameters.getFirst("user"));
-      }catch (Exception e){
+      } catch (Exception e) {
         loginResponse = appleService.appleLogin(id_token, false, null);
       }
     }
