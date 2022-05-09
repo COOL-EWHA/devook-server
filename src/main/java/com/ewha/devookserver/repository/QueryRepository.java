@@ -5,9 +5,11 @@ import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.QPost;
 import com.ewha.devookserver.domain.post.QPostTag;
 import com.ewha.devookserver.domain.post.RefrenceDto;
+import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import com.ewha.devookserver.service.UserRecommService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.lang.ref.Reference;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class QueryRepository {
   private final UserRecommService userRecommService;
   private final UserBookmarkService userBookmarkService;
   private final UserBookmarkRepository userBookmarkRepository;
+  private final RecommendService recommendService;
   QPost qPost = new QPost("m");
   QPostTag qPostTag = new QPostTag("p");
 
@@ -360,6 +363,8 @@ public class QueryRepository {
     return filteredPostList.stream().collect(Collectors.toList());
   }
 
+
+  // requiredTagList = 검색 필터링(옆에 있는 배너) 용도 -> 따라서 '사용자' 추천이 아님! 함수를 새로 만들어주어야 한다.
   public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
     System.out.println("들어왔다22.");
@@ -372,7 +377,6 @@ public class QueryRepository {
     int count;
 
     if (requiredTagList.isEmpty()) {
-      requiredTagList = userRecommService.getPostTagList(userIdx);
       for (Post post : getList) {
         count = 0;
 
@@ -459,7 +463,7 @@ public class QueryRepository {
       }
     }
 
-    return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
+    return filteredPostList.stream().limit(limit).collect(Collectors.toList());
   }
 
   // 태그 리스트 필터링하는 함수
