@@ -97,7 +97,7 @@ public class RecommendController {
         List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
         List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForNoAuthUser
-            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "1", question,
+            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "2", question,
                 postTagList,
                 true, requiredTagList, limit.intValue()));
 
@@ -114,7 +114,7 @@ public class RecommendController {
         List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
         List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForNoAuthUser
-            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "1", question,
+            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "2", question,
                 postTagList,
                 true, requiredTagList, limit.intValue()));
 
@@ -129,7 +129,7 @@ public class RecommendController {
         List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
         List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForNoAuthUser
-            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "1", question,
+            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "2", question,
                 postTagList,
                 true, requiredTagList, limit.intValue()));
 
@@ -147,7 +147,7 @@ public class RecommendController {
         List<Long> postTagList = tagService.makePostTagList(requiredTagList);
 
         List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForNoAuthUser
-            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "1", question,
+            (this.queryService.getPostForNotUser(cursor, PageRequest.of(0, 10), "2", question,
                 postTagList,
                 true, requiredTagList, limit.intValue()));
 
