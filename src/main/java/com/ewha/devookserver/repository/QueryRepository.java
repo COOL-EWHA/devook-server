@@ -383,7 +383,6 @@ public class QueryRepository {
     int count;
 
     if (requiredTagList.isEmpty()) {
-      System.out.println("hello");
       for (Post post : getList) {
         count = 0;
 
@@ -404,6 +403,16 @@ public class QueryRepository {
               }
             }
           }
+
+          for(String string:userPostTag){
+            if(post.getPostTitle().contains(string)){
+              count+=3;
+            }
+            if(post.getPostDescription().contains(string)){
+              count+=1;
+            }
+          }
+
           /*
           for (PostTag postTag : eachPostTagList) {
             for (String string : requiredTagList) {
