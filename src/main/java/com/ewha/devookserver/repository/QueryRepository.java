@@ -363,9 +363,6 @@ public class QueryRepository {
   public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
     System.out.println("들어왔다22.");
-    System.out.println(userIdx);
-    // TODO 여기 편집!
-    //List<Post> getList = postRepository.findAll();
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
     List<Post> getList = postRepository.findAll();
@@ -417,7 +414,7 @@ public class QueryRepository {
         }
       }
 
-      return testFilteredPostList.stream().limit(limit).collect(Collectors.toList());
+      return filteredPostList.stream().limit(limit).collect(Collectors.toList());
 
     }
 
