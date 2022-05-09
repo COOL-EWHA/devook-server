@@ -5,6 +5,7 @@ import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.QPost;
 import com.ewha.devookserver.domain.post.QPostTag;
 import com.ewha.devookserver.domain.post.RefrenceDto;
+import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import com.ewha.devookserver.service.UserRecommService;
@@ -32,7 +33,6 @@ public class QueryRepository {
   private final UserRecommService userRecommService;
   private final UserBookmarkService userBookmarkService;
   private final UserBookmarkRepository userBookmarkRepository;
-  private final RecommendService recommendService;
   QPost qPost = new QPost("m");
   QPostTag qPostTag = new QPostTag("p");
 
@@ -368,30 +368,54 @@ public class QueryRepository {
   public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
     System.out.println("들어왔다22.");
+    //TODO
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
     List<Post> getList = postRepository.findAll();
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray = new ArrayList<>();
+    List<String> userPostTag = userRecommService.getPostUserTagList(userIdx);
+
+    for(String string:userPostTag){
+      System.out.println(string);
+    }
 
     int count;
 
     if (requiredTagList.isEmpty()) {
+      System.out.println("hello");
       for (Post post : getList) {
         count = 0;
 
+        // 해당 post의 tag 리스트
         List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
             post.getPostIdx().intValue());
-        if (!post.getUserIdx().equals(userIdx)
-            && post.getPostIdx() < id) {
 
-          for (PostTag postTag : eachPostTagList) {
-            for (String string : requiredTagList) {
-              if (postTag.getPostTagName().equals(string)) {
-                count++;
+        // 사용자의 태그를 가져와서,
+        // 만약 사용자의 태그와 해당 post의 이름이 일치하면
+        // count 를 추가하는 방식으로 수정하기
+
+        if (!post.getUserIdx().equals(userIdx) && post.getPostIdx() < id) {
+
+          for(PostTag postTag:eachPostTagList){
+            for(String string:userPostTag){
+              if(postTag.getPostTagName().equals(string)){
+                count+=10;
               }
             }
           }
+          /*
+          for (PostTag postTag : eachPostTagList) {
+            for (String string : requiredTagList) {
+              if (postTag.getPostTagName().equals(string)) {
+                count+=10;
+              }
+            }
+          }
+
+           */
+
+
 
           RefrenceDto refrenceDto = new RefrenceDto();
           refrenceDto.setPost(post);
@@ -400,7 +424,13 @@ public class QueryRepository {
 
         }
       }
+
+
       Collections.sort(resultArray);
+
+      for(RefrenceDto refrenceDto : resultArray){
+        System.out.println(refrenceDto.getRefrence());
+      }
 
       for (RefrenceDto refrenceDto : resultArray) {
         filteredPostList.add(refrenceDto.getPost());
