@@ -24,8 +24,7 @@ public class RefrenceDto implements Comparable<RefrenceDto> {
 
   @Override
   public int compareTo(RefrenceDto o) {
-    //if (this.getRefrence() > o.getRefrence() || this.getPost().getPostIdx() > o.getPost().getPostIdx())
-    if(this.getRefrence()>o.getRefrence())
+    if (this.getRefrence() > o.getRefrence() || this.getPost().getPostIdx() > o.getPost().getPostIdx())
     {
       return -1;
     } else if (this.getRefrence() < o.getRefrence()) {
