@@ -5,13 +5,11 @@ import com.ewha.devookserver.domain.post.PostTag;
 import com.ewha.devookserver.domain.post.QPost;
 import com.ewha.devookserver.domain.post.QPostTag;
 import com.ewha.devookserver.domain.post.RefrenceDto;
-import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import com.ewha.devookserver.service.UserRecommService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.lang.ref.Reference;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -258,7 +256,7 @@ public class QueryRepository {
   }
 
   public List<Post> recommendPost2(Long id, Pageable page, List<RefrenceDto> refrenceDtos,
-      int limit, String userIdx) {
+      int limit, String userIdx, Long postIndex) throws JsonProcessingException {
     System.out.println("recommendPost2");
 
     List<Post> resultList = new ArrayList<>();
@@ -273,7 +271,7 @@ public class QueryRepository {
       }
     }
 
-    List<Post> testFilteredPostList = new ArrayList<>();
+    List<Post> testFilteredPostList = recommendService.getRandomPost(postIndex);
     for (Post post : resultList) {
       if (!testFilteredPostList.stream()
           .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {

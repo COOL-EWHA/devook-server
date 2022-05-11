@@ -105,6 +105,47 @@ public class RecommendService {
     }
     return resultArray;
   }
+/*
+  @GetMapping("/random/post")
+  public ResponseEntity<?> randomReturn(@RequestHeader(value = "Authorization") Long postIndex) {
+ */
+public List<Post> getRandomPost(Long postIndex)
+    throws JsonProcessingException {
+
+  List<Post> newArray = new ArrayList<>();
+  JsonNode result = postClient.get()
+      .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+      .header("Authorization", String.valueOf(postIndex))
+      .retrieve()
+      .bodyToMono(String.class).map(s -> {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+          return mapper.readTree(s);
+        } catch (JsonProcessingException e) {
+          e.printStackTrace();
+        }
+
+        return null;
+      })
+      .block();
+
+  ObjectMapper objectMapper = new ObjectMapper();
+
+
+  if (result != null) {
+    String returnValue = objectMapper.writeValueAsString(result);
+
+    List<Post> returnPost = objectMapper.readValue(returnValue, new TypeReference<>() {
+    });
+
+    return returnPost;
+  }
+
+
+
+
+  return null;
+}
 
 
   public List<Post> getRandom(String userIdx)

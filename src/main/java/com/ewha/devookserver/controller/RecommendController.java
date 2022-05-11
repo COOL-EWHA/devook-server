@@ -188,7 +188,7 @@ public class RecommendController {
 
       List<PostBookmarkRequestDto> listDtos = postService.responseBookmarkListMakerForPost(
           this.queryService.get(cursor, PageRequest.of(0, 10), refrenceDtos, limit.intValue(),
-              userIdx), userIdx);
+              userIdx, bookmarkId), userIdx);
       List<PostBookmarkRequestDto> resultArrayList = new ArrayList<>();
 
       for (PostBookmarkRequestDto postListDto : listDtos) {
