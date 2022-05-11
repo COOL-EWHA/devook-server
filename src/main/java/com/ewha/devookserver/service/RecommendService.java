@@ -29,6 +29,8 @@ public class RecommendService {
 
   WebClient postClient = WebClient.create(
       "https://chrome.devook.com/random/list");
+  WebClient postClientPost = WebClient.create(
+      "https://chrome.devook.com/random/post");
   // 해당 글이 bookmarked 된 글인지 Boolean 리턴
 
   public boolean checkIsBookmarked(Long postId, String userIdx) {
