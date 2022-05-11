@@ -9,6 +9,7 @@ import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.UserBookmarkService;
 import com.ewha.devookserver.service.UserRecommService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.lang.ref.Reference;
 import java.sql.Timestamp;
@@ -33,6 +34,7 @@ public class QueryRepository {
   private final UserRecommService userRecommService;
   private final UserBookmarkService userBookmarkService;
   private final UserBookmarkRepository userBookmarkRepository;
+  private final RecommendService recommendService;
   QPost qPost = new QPost("m");
   QPostTag qPostTag = new QPostTag("p");
 
@@ -366,12 +368,15 @@ public class QueryRepository {
 
   // requiredTagList = 검색 필터링(옆에 있는 배너) 용도 -> 따라서 '사용자' 추천이 아님! 함수를 새로 만들어주어야 한다.
   public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx,
-      String question, boolean isUser, List<String> requiredTagList, int limit) {
+      String question, boolean isUser, List<String> requiredTagList, int limit)
+      throws JsonProcessingException {
     System.out.println("들어왔다22.");
     //TODO
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
-    List<Post> getList = postRepository.findAll();
+    // List<Post> getList = postRepository.findAll();
+    List<Post> getList = recommendService.getRandom();
+
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray = new ArrayList<>();
     List<String> userPostTag = userRecommService.getPostUserTagList(userIdx);

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -114,7 +115,8 @@ public class QueryService {
 
   public CursorResult<Post> getPostForNotUser(Long cursorId, Pageable page, String userIdx,
       String question,
-      List<Long> postTaglist, boolean isRecommend, List<String> postTagList, int limit) {
+      List<Long> postTaglist, boolean isRecommend, List<String> postTagList, int limit)
+      throws JsonProcessingException {
     final List<Post> boards = getPost(cursorId, page, userIdx, question, postTaglist, isRecommend,
         postTagList, limit);
     final Long lastIdofList = boards.isEmpty() ?
@@ -124,7 +126,8 @@ public class QueryService {
   }
 
   public CursorResult<Post> get(Long cursorId, Pageable page, String userIdx, String question,
-      List<Long> postTaglist, boolean isRecommend, List<String> postTagList, int limit) {
+      List<Long> postTaglist, boolean isRecommend, List<String> postTagList, int limit)
+      throws JsonProcessingException {
     final List<Post> boards = getPost(cursorId, page, userIdx, question, postTaglist, isRecommend,
         postTagList, limit);
     final Long lastIdofList = boards.isEmpty() ?
@@ -164,7 +167,8 @@ public class QueryService {
   }
 
   public List<Post> getPost(Long id, Pageable page, String userIdx, String question,
-      List<Long> postTagList, boolean isRecommend, List<String> requiredList, int limit) {
+      List<Long> postTagList, boolean isRecommend, List<String> requiredList, int limit)
+      throws JsonProcessingException {
     return id == null ?
         queryRepository.tagFilteringRecommendUser1(postTagList, userIdx, question, isRecommend,
             requiredList, limit) :

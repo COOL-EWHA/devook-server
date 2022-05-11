@@ -2,6 +2,7 @@ package com.ewha.devookserver.domain.post;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 
 
+// Json Return value 받을 때 오류 수정
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Setter
 @Getter
 @NoArgsConstructor
@@ -74,3 +77,4 @@ public class Post implements Comparable<Post> {
     }
   }
 }
+

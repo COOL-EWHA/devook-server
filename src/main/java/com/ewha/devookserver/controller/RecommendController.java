@@ -13,6 +13,7 @@ import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
 import com.ewha.devookserver.service.RecommendService;
 import com.ewha.devookserver.service.TagService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +51,8 @@ public class RecommendController {
       @RequestParam(name = "limit", required = false) Long limit,
       @RequestParam(name = "q", required = false) String question,
       @RequestParam(name = "tags", required = false) String tags,
-      @RequestHeader(name = "Authorization", required = false) String accessTokenGet) {
+      @RequestHeader(name = "Authorization", required = false) String accessTokenGet)
+      throws JsonProcessingException {
 
     List<String> requiredTagList = new ArrayList<>();
 

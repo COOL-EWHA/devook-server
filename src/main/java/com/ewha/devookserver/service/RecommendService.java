@@ -6,11 +6,18 @@ import com.ewha.devookserver.domain.post.RefrenceDto;
 import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.TagRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +27,8 @@ public class RecommendService {
   private final TagRepository tagRepository;
   private final UserBookmarkRepository userBookmarkRepository;
 
+  WebClient postClient = WebClient.create(
+      "https://chrome.devook.com/random/list");
   // 해당 글이 bookmarked 된 글인지 Boolean 리턴
 
   public boolean checkIsBookmarked(Long postId, String userIdx) {
@@ -65,7 +74,6 @@ public class RecommendService {
   }
 
   public List<RefrenceDto> calculateReferenceOfPost(List<PostTag> postTagList) {
-
     List<Post> allPost = postRepository.findAll();
     List<RefrenceDto> resultArray = new ArrayList<>();
     int count;
@@ -97,5 +105,45 @@ public class RecommendService {
     }
     return resultArray;
   }
+
+
+  public List<Post> getRandom()
+      throws JsonProcessingException {
+
+    List<Post> newArray = new ArrayList<>();
+    JsonNode result = postClient.get()
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .retrieve()
+        .bodyToMono(String.class).map(s -> {
+          ObjectMapper mapper = new ObjectMapper();
+          try {
+            return mapper.readTree(s);
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+
+          return null;
+        })
+        .block();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+
+
+    if (result != null) {
+      String returnValue = objectMapper.writeValueAsString(result);
+
+      List<Post> returnPost = objectMapper.readValue(returnValue, new TypeReference<>() {
+      });
+
+      return returnPost;
+    }
+
+
+
+
+    return null;
+  }
+
+
 
 }

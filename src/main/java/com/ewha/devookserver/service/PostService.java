@@ -480,7 +480,7 @@ public class PostService {
   }
 
   public String getPostCategory(CrawlerReqeustDto crawlerReqeustDto)
-      throws JsonProcessingException {
+      throws JsonProcessingException,InterruptedException {
 
     JsonNode result = crawlerClient.post()
         .uri("/category")
@@ -509,4 +509,5 @@ public class PostService {
     }
     return null;
   }
+
 }
