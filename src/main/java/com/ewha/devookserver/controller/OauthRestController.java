@@ -227,6 +227,7 @@ public class OauthRestController {
             loginFinalResponseDto.getRefreshToken())
         .httpOnly(true)
         .path("/")
+        .domain("https://www.devook.com")
         .build();
     response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     response.sendRedirect("https://www.devook.com");
