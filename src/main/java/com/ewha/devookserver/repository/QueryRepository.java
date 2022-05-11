@@ -375,7 +375,7 @@ public class QueryRepository {
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
     // List<Post> getList = postRepository.findAll();
-    List<Post> getList = recommendService.getRandom();
+    List<Post> getList = recommendService.getRandom(userIdx);
 
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray = new ArrayList<>();

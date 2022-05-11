@@ -107,12 +107,13 @@ public class RecommendService {
   }
 
 
-  public List<Post> getRandom()
+  public List<Post> getRandom(String userIdx)
       throws JsonProcessingException {
 
     List<Post> newArray = new ArrayList<>();
     JsonNode result = postClient.get()
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .header("Authorization", userIdx)
         .retrieve()
         .bodyToMono(String.class).map(s -> {
           ObjectMapper mapper = new ObjectMapper();
