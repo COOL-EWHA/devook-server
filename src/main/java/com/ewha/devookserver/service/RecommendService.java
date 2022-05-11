@@ -154,7 +154,7 @@ public List<Post> getRandomPost(Long postIndex)
       throws JsonProcessingException {
 
     List<Post> newArray = new ArrayList<>();
-    JsonNode result = postClient.get()
+    JsonNode result = postClientPost.get()
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .header("Authorization", userIdx)
         .retrieve()
