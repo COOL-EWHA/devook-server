@@ -24,12 +24,6 @@ public class DeviceController {
       , @PathVariable String player_id) {
 
     System.out.println(player_id);
-/*
-    ObjectMapper objectMapper = new ObjectMapper();
-    String returnValue = objectMapper.writeValueAsString(devicePostRequestDto);
-    System.out.println(returnValue);
-
- */
 
     String accessToken = accessTokenGet.split(" ")[1];
     if (!oauthService.validatieTokenInput(accessToken)) {
@@ -43,30 +37,6 @@ public class DeviceController {
 
     deviceService.addDeviceId(player_id, Long.valueOf(userIdx));
 
-    /*
-    String appId = devicePostRequestDto.getAppId();
-    String deviceType = devicePostRequestDto.getDeviceType();
-    OnesignalRequestDto onesignalRequestDto = new OnesignalRequestDto();
-    onesignalRequestDto.setApp_id(appId);
-    onesignalRequestDto.setDevice_type(deviceType);
-    onesignalRequestDto.setIdentifier(userIdx + LocalDateTime.now());
-    onesignalRequestDto.setLanguage("ko");
-    onesignalRequestDto.setNotification_types(1);
-    onesignalRequestDto.setGame_version("1");
-
-
-
-    OnesignalResponseDto onesignalResponseDto = deviceService.addDeviceInfo(onesignalRequestDto);
-
-
-
-    DevicePostResponseDto devicePostResponseDto = new DevicePostResponseDto();
-    devicePostResponseDto.setDeviceId(onesignalResponseDto.getId());
-
-    deviceService.addDeviceId(devicePostResponseDto.getDeviceId(), Long.valueOf(userIdx));
-
-
-     */
     return ResponseEntity.status(200).body("");
   }
 

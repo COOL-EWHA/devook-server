@@ -1,13 +1,10 @@
 package com.ewha.devookserver.controller;
 
 import com.ewha.devookserver.dto.post.PostListDto;
-import com.ewha.devookserver.repository.PostRepository;
-import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.service.OauthService;
 import com.ewha.devookserver.service.PostService;
 import com.ewha.devookserver.service.QueryService;
 import com.ewha.devookserver.service.TagService;
-import com.ewha.devookserver.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -24,12 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class QueryController {
 
-  private final UserService userService;
   private final PostService postService;
   private final OauthService oauthService;
-  private final QueryRepository queryRepository;
   private final QueryService queryService;
-  private final PostRepository postRepository;
   private final TagService tagService;
 
 

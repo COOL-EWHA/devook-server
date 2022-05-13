@@ -4,13 +4,8 @@ import com.ewha.devookserver.domain.post.Alarm;
 import com.ewha.devookserver.dto.post.AlarmPatchRequestDto;
 import com.ewha.devookserver.dto.post.AlarmResponseDto;
 import com.ewha.devookserver.repository.AlarmRepository;
-import com.ewha.devookserver.repository.PostRepository;
-import com.ewha.devookserver.repository.UserBookmarkRepository;
 import com.ewha.devookserver.service.AlarmService;
-import com.ewha.devookserver.service.NotificationService;
 import com.ewha.devookserver.service.OauthService;
-import com.ewha.devookserver.service.PostService;
-import com.ewha.devookserver.service.UserBookmarkService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,12 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AlarmController {
 
-  private final PostService postService;
   private final OauthService oauthService;
-  private final PostRepository postRepository;
-  private final UserBookmarkRepository userBookmarkRepository;
-  private final NotificationService notificationService;
-  private final UserBookmarkService userBookmarkService;
   private final AlarmService alarmService;
   private final AlarmRepository alarmRepository;
 

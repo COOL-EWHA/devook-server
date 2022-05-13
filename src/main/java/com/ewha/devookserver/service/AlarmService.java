@@ -6,10 +6,7 @@ import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.UserBookmark;
 import com.ewha.devookserver.dto.post.AlarmResponseDto;
 import com.ewha.devookserver.repository.AlarmRepository;
-import com.ewha.devookserver.repository.MemberRepository;
-import com.ewha.devookserver.repository.NotificationRepository;
 import com.ewha.devookserver.repository.PostRepository;
-import com.ewha.devookserver.repository.QueryRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -26,16 +23,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlarmService {
 
-  private final MemberRepository memberRepository;
   private final PostRepository postRepository;
-  private final QueryRepository queryRepository;
   private final UserBookmarkRepository userBookmarkRepository;
-  private final RecommendService recommendService;
-  private final NotificationRepository notificationRepository;
   private final NotificationService notificationService;
-  private final UserBookmarkService userBookmarkService;
   private final AlarmRepository alarmRepository;
-  private final DeviceService deviceService;
 
   public void saveTitlePost(Long userIdx) {
     List<Post> postList = postRepository.findAllByUserIdx(String.valueOf(userIdx));

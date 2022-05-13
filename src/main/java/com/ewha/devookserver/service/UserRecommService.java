@@ -25,7 +25,7 @@ public class UserRecommService {
 
 
   // userTagList TODO
-  public List<String> getPostUserTagList(String userIdx){
+  public List<String> getPostUserTagList(String userIdx) {
     List<Post> returnPost = postRepository.findAllByUserIdx(userIdx);
 
     List<UserBookmark> addBookmark = userBookmarkRepository.findAllByUser_userIdx(

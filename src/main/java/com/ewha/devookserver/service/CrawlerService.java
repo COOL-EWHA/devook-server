@@ -68,7 +68,6 @@ public class CrawlerService {
     return null;
   }
 
-  // GET /surfit?category=
   public List<String> getEachCategoryUrl(String category) throws JsonProcessingException {
     JsonNode result = webClient.get()
         .uri(uriBuilder -> uriBuilder.path("/surfit").queryParam("category", category).build())
