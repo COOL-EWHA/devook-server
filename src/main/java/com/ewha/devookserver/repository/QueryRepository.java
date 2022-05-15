@@ -379,7 +379,7 @@ public class QueryRepository {
     List<RefrenceDto> resultArray = new ArrayList<>();
     List<String> userPostTag = userRecommService.getPostUserTagList(userIdx);
 
-    for(String string:userPostTag){
+    for (String string : userPostTag) {
       System.out.println(string);
     }
 
@@ -399,35 +399,22 @@ public class QueryRepository {
 
         if (!post.getUserIdx().equals(userIdx) && post.getPostIdx() < id) {
 
-          for(PostTag postTag:eachPostTagList){
-            for(String string:userPostTag){
-              if(postTag.getPostTagName().equals(string)){
-                count+=10;
-              }
-            }
-          }
-
-          for(String string:userPostTag){
-            if(post.getPostTitle().contains(string)){
-              count+=3;
-            }
-            if(post.getPostDescription().contains(string)){
-              count+=1;
-            }
-          }
-
-          /*
           for (PostTag postTag : eachPostTagList) {
-            for (String string : requiredTagList) {
+            for (String string : userPostTag) {
               if (postTag.getPostTagName().equals(string)) {
-                count+=10;
+                count += 10;
               }
             }
           }
 
-           */
-
-
+          for (String string : userPostTag) {
+            if (post.getPostTitle().contains(string)) {
+              count += 3;
+            }
+            if (post.getPostDescription().contains(string)) {
+              count += 1;
+            }
+          }
 
           RefrenceDto refrenceDto = new RefrenceDto();
           refrenceDto.setPost(post);
@@ -437,12 +424,8 @@ public class QueryRepository {
         }
       }
 
-
       Collections.sort(resultArray);
 
-      for(RefrenceDto refrenceDto : resultArray){
-        System.out.println(refrenceDto.getRefrence());
-      }
 
       for (RefrenceDto refrenceDto : resultArray) {
         filteredPostList.add(refrenceDto.getPost());
