@@ -238,8 +238,7 @@ public class PostService {
 
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
-      //List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
-      List<PostTag> postTagList = queryRepository.findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
+      List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
 
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
