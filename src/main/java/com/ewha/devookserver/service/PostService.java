@@ -238,7 +238,8 @@ public class PostService {
 
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
-      List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
+      // List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
+      List<PostTag> postTagList = queryRepository.findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
 
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
@@ -265,6 +266,7 @@ public class PostService {
             .tags(forTestString)
             .url(post.getPostUrl())
             .isBookmarked(getIsBookmarked) // 여기 수정! (일단 기본값으로)
+            .value(Long.valueOf(post.getPostMemo()))
             .build();
         searchResponseDtoList.add(postListDto);
       }
@@ -280,7 +282,8 @@ public class PostService {
 
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
-      List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
+      //List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
+      List<PostTag> postTagList = queryRepository.findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
 
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
@@ -304,6 +307,7 @@ public class PostService {
             .tags(forTestString)
             .url(post.getPostUrl())
             .isBookmarked(getIsBookmarked) // 여기 수정! (일단 기본값으로)
+            .value(Long.valueOf(post.getPostMemo()))
             .build();
         searchResponseDtoList.add(postListDto);
       }
