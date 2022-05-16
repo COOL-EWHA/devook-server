@@ -15,11 +15,12 @@ public class PostBookmarkRequestDto {
   private final List<String> tags;
   private final String url;
   private final Boolean isBookmarked;
+  private final Long value;
 
 
   @Builder
   public PostBookmarkRequestDto(Long id, String title, String thumbnail, String description,
-      List<String> tags, String url, Boolean isBookmarked) {
+      List<String> tags, String url, Boolean isBookmarked, Long value) {
     this.id = id;
     this.title = title;
     this.thumbnail = thumbnail;
@@ -27,5 +28,6 @@ public class PostBookmarkRequestDto {
     this.tags = tags;
     this.url = url;
     this.isBookmarked = isBookmarked;
+    this.value=value;
   }
 }

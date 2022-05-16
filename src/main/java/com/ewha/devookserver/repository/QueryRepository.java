@@ -423,7 +423,7 @@ public class QueryRepository {
         }
       }
 
-      Collections.sort(resultArray);
+     // Collections.sort(resultArray);
 
 
       for (RefrenceDto refrenceDto : resultArray) {

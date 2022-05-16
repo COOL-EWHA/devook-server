@@ -333,6 +333,7 @@ public class PostService {
             .tags(forTestString)
             .url(post.getPostUrl())
             .isBookmarked(null) // 여기 수정! (일단 기본값으로)
+            .value(Long.valueOf(post.getPostMemo()))
             .build();
         searchResponseDtoList.add(postListDto);
       }
