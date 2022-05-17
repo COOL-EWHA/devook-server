@@ -16,6 +16,7 @@ import com.ewha.devookserver.service.TagService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -230,7 +231,7 @@ public class RecommendController {
 
     // List<String> finalResponseString = postService.getPostTagList(userIdx);
     List<String> finalResponseString = postService.getPostTagList();
-
+    Collections.sort(finalResponseString);
     // 여기 String 배열 반환
     return ResponseEntity.status(200).body(finalResponseString);
 

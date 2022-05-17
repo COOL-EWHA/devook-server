@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -243,7 +244,7 @@ public class PostController {
     // 1. userIdx와 일치하는 post
 
     List<String> finalResponseString = postService.getPostTagList(userIdx, isBookmarkRead);
-
+    Collections.sort(finalResponseString);
     // 여기 String 배열 반환
     return ResponseEntity.status(200).body(finalResponseString);
 
