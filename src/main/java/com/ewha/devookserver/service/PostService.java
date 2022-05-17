@@ -428,7 +428,7 @@ public class PostService {
     String titleName;
     List<String> stringList;
 
-    if(isPostTitleExists(title){
+    if(isPostTitleExists(title)){
       Post post1 = postRepository.getPostByPostTitle(title);
       List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(Math.toIntExact(post1.getPostIdx()));
 
