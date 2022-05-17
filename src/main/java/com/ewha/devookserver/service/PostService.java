@@ -432,9 +432,10 @@ public class PostService {
       Post post1 = postRepository.getPostByPostTitle(title);
       List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(Math.toIntExact(post1.getPostIdx()));
 
-      for(PostTag postTag :postTagList){
-        tagRepository.save(postTag);
-      }
+      PostTag postTag = PostTag.builder()
+          .postTagName(postTagList.get(0).getPostTagName())
+          .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
+          .build();
 
     }else{
       PostTag postTag = PostTag.builder()
