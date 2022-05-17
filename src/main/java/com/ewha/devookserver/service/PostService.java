@@ -437,6 +437,8 @@ public class PostService {
           .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
           .build();
 
+      tagRepository.save(postTag);
+
     }else{
       PostTag postTag = PostTag.builder()
           .postTagName(getPostCategory(crawlerReqeustDto))
