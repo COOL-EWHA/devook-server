@@ -385,6 +385,7 @@ public class QueryRepository {
     int count;
 
     if (requiredTagList.isEmpty()) {
+      System.out.println("requiredTagList Empty");
       for (Post post : getList) {
         count = 0;
 
@@ -448,9 +449,14 @@ public class QueryRepository {
 
     for (Post post : getList) {
       count = 0;
-
+/*
       List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
           post.getPostIdx().intValue());
+
+ */
+      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
+          Integer.parseInt(post.getPostMemo())
+      );
       if (postIdxList.contains(post.getPostIdx()) && !post.getUserIdx().equals(userIdx)
           && post.getPostIdx() < id) {
 
