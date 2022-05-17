@@ -19,6 +19,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
   Post getPostByPostIdx(Long postIdx);
 
+  Post getPostByPostTitle(String postTitle);
+
   Post getPostByPostUrlAndUserIdx(String postUrl, String userIdx);
 
   Integer countAllByUserIdx(String userIdx);
@@ -46,5 +48,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 
   Post findFirstByOrderByPostIdxDesc();
+
+  Boolean existsByPostTitle(String title);
 
 }

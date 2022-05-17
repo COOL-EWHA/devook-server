@@ -56,6 +56,10 @@ public class PostService {
     return postRepository.getPostByPostUrlAndUserIdx(url, userIdx) != null;
   }
 
+  public boolean isPostTitleExists(String title){
+    return postRepository.existsByPostTitle(title);
+  }
+
   public List<Post> getTestPage() {
     return postRepository.findWithPagination(Pageable.ofSize(5));
   }
@@ -421,12 +425,27 @@ public class PostService {
     CrawlerReqeustDto crawlerReqeustDto = new CrawlerReqeustDto();
     crawlerReqeustDto.setTitle(post.getPostTitle());
 
-    PostTag postTag = PostTag.builder()
-        .postTagName(getPostCategory(crawlerReqeustDto))
-        .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
-        .build();
+    String titleName;
+    List<String> stringList;
 
-    tagRepository.save(postTag);
+    if(isPostTitleExists(title){
+      Post post1 = postRepository.getPostByPostTitle(title);
+      List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(Math.toIntExact(post1.getPostIdx()));
+
+      for(PostTag postTag :postTagList){
+        tagRepository.save(postTag);
+      }
+
+    }else{
+      PostTag postTag = PostTag.builder()
+          .postTagName(getPostCategory(crawlerReqeustDto))
+          .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
+          .build();
+
+      tagRepository.save(postTag);
+    }
+
+
   }
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
