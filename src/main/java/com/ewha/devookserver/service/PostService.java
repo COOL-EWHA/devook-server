@@ -425,30 +425,12 @@ public class PostService {
     CrawlerReqeustDto crawlerReqeustDto = new CrawlerReqeustDto();
     crawlerReqeustDto.setTitle(post.getPostTitle());
 
-    String titleName;
-    List<String> stringList;
-
-    if(isPostTitleExists(title)){
-      Post post1 = postRepository.getPostByPostTitle(title);
-      List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(Math.toIntExact(post1.getPostIdx()));
-
-      PostTag postTag = PostTag.builder()
-          .postTagName(postTagList.get(0).getPostTagName())
-          .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
-          .build();
-
-      tagRepository.save(postTag);
-
-    }else{
-      PostTag postTag = PostTag.builder()
+     PostTag postTag = PostTag.builder()
           .postTagName(getPostCategory(crawlerReqeustDto))
           .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
           .build();
 
       tagRepository.save(postTag);
-    }
-
-
   }
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
