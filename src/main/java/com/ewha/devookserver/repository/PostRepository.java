@@ -23,6 +23,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
   Post getPostByPostUrlAndUserIdx(String postUrl, String userIdx);
 
+  Post getFirstByPostTitle(String postTitle);
+
   Integer countAllByUserIdx(String userIdx);
 
   @Transactional

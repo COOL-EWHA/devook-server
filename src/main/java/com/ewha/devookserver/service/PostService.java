@@ -422,15 +422,32 @@ public class PostService {
         post.getUserIdx());
 
     // post 카테고리 저장
-    CrawlerReqeustDto crawlerReqeustDto = new CrawlerReqeustDto();
-    crawlerReqeustDto.setTitle(post.getPostTitle());
 
-     PostTag postTag = PostTag.builder()
+    if(postRepository.existsByPostTitle(title)) {
+
+      Post byPostTitle = postRepository.getFirstByPostTitle(title);
+      List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(
+          Math.toIntExact(byPostTitle.getPostIdx()));
+
+      for(PostTag postTag : postTagList){
+        PostTag saveTag = PostTag.builder()
+            .postTagName(postTag.getPostTagName())
+            .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
+            .build();
+        tagRepository.save(saveTag);
+      }
+    }
+    if(!postRepository.existsByPostTitle(title)){
+      CrawlerReqeustDto crawlerReqeustDto = new CrawlerReqeustDto();
+      crawlerReqeustDto.setTitle(post.getPostTitle());
+
+      PostTag postTag = PostTag.builder()
           .postTagName(getPostCategory(crawlerReqeustDto))
           .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
           .build();
 
       tagRepository.save(postTag);
+    }
   }
 
   public void savePostBookmark(Long user_userIdx, Long post_postIdx, String memo) {
