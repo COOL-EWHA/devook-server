@@ -425,7 +425,7 @@ public class PostService {
 
     // post 카테고리 저장
 
-    if(!isExist) {
+    if(isExist) {
       System.out.println("debug1");
       Post byPostTitle = postRepository.getFirstByPostTitle(title);
       List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(
@@ -438,7 +438,8 @@ public class PostService {
             .build();
         tagRepository.save(saveTag);
       }
-    }     else{
+    }
+    if(!isExist){
       System.out.println("debug2");
 
       CrawlerReqeustDto crawlerReqeustDto = new CrawlerReqeustDto();
