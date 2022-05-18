@@ -408,6 +408,8 @@ public class PostService {
   public void savePost(String memo, String url, String description, String title, String image,
       String userIdx) throws InterruptedException, JsonProcessingException {
 
+    Boolean isExist = postRepository.existsByPostTitle(title);
+
     Post post = Post.builder()
         .postMemo(memo)
         .postUrl(url)
@@ -423,7 +425,7 @@ public class PostService {
 
     // post 카테고리 저장
 
-    if(!postRepository.findByPostTitle(title).equals(null)) {
+    if(!isExist) {
       System.out.println("debug1");
       Post byPostTitle = postRepository.getFirstByPostTitle(title);
       List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(
