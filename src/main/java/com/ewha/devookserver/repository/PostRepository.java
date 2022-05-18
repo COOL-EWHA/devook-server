@@ -51,6 +51,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
   Post findFirstByOrderByPostIdxDesc();
 
-  Boolean existsByPostTitle(String title);
+  Post findByPostTitle(String title);
 
 }

@@ -56,8 +56,8 @@ public class PostService {
     return postRepository.getPostByPostUrlAndUserIdx(url, userIdx) != null;
   }
 
-  public boolean isPostTitleExists(String title){
-    return postRepository.existsByPostTitle(title);
+  public Post isPostTitleExists(String title){
+    return postRepository.findByPostTitle(title);
   }
 
   public List<Post> getTestPage() {
@@ -423,7 +423,7 @@ public class PostService {
 
     // post 카테고리 저장
 
-    if(postRepository.existsByPostTitle(title)) {
+    if(!postRepository.findByPostTitle(title).equals(null)) {
       System.out.println("debug1");
       Post byPostTitle = postRepository.getFirstByPostTitle(title);
       List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(
