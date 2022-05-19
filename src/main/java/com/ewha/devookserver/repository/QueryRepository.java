@@ -468,7 +468,7 @@ public class QueryRepository {
         List<PostTag> postTagList = findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
 
         for(PostTag postTag : postTagList){
-          if(tagListforPostIdexList.contains(postTag.getPostTagName())&&!post.getUserIdx().equals(userIdx)){
+          if(tagListforPostIdexList.contains(postTag.getPostTagName())&&!post.getUserIdx().equals(userIdx)&& post.getPostIdx() < id){
             RefrenceDto refrenceDto = new RefrenceDto();
             refrenceDto.setPost(post);
             refrenceDto.setRefrence(0);
