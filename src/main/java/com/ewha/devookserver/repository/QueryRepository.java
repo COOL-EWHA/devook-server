@@ -55,7 +55,8 @@ public class QueryRepository {
         continue;
       }
 
-      List<PostTag> postTagList = findAllTagsByPost(post.getPostIdx().intValue());
+      //List<PostTag> postTagList = findAllTagsByPost(post.getPostIdx().intValue());
+      List<PostTag> postTagList = findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
 
       for (PostTag postTag : postTagList) {
         if (postTag.getPostTagName().equalsIgnoreCase(question)) {
