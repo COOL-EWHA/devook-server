@@ -120,7 +120,6 @@ public class PostService {
     return searchResponseDtoList;
   }
 
-  // TODO 유저에게 리턴해주는 posts 들의 tags를 리턴해줘야 함.
   public List<String> getPostTagList(String userIdx) {
     List<Post> returnPost = postRepository.findAllByUserIdx(userIdx);
 
@@ -204,14 +203,6 @@ public class PostService {
         forTestString.add(postTag.getPostTagName());
       }
 
-      /*
-      if (forTestString.size() == 0) {
-        forTestString.add("태그1");
-        forTestString.add("태그2");
-      }
-
-       */
-
       PostListDto postListDto = PostListDto.builder()
           .id(post.getId())
           .thumbnail(post.getPostThumbnail())
@@ -242,7 +233,6 @@ public class PostService {
 
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
-      //List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
       List<PostTag> postTagList = queryRepository.findAllTagsByPost(
           Integer.parseInt(post.getPostMemo()));
 
@@ -260,7 +250,7 @@ public class PostService {
 
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
 
-      boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
+      boolean getIsBookmarked = recommendService.checkIsBookmarked(Long.valueOf(post.getPostMemo()), userIdx);
 
       if (forTestString.size() != 0 && getIsBookmarked == false) {
         PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
@@ -303,7 +293,7 @@ public class PostService {
 
    */
       // userIdx는 고정값이 아니기 때문에 controller에서 직접 받아와야 한다.
-      boolean getIsBookmarked = recommendService.checkIsBookmarked(post.getId(), userIdx);
+      boolean getIsBookmarked = recommendService.checkIsBookmarked(Long.valueOf(post.getPostMemo()), userIdx);
       if (forTestString.size() != 0 && getIsBookmarked == false) {
         PostBookmarkRequestDto postListDto = PostBookmarkRequestDto.builder()
             .id(post.getId())
