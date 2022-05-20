@@ -199,7 +199,7 @@ public class QueryRepository {
 
   public List<Post> tagFiltering2(List<Long> postIdxList, Long id, String userIdx,
       String question) {
-  System.out.println("태그 필터링 타는 곳 bookarmk");
+    System.out.println("태그 필터링 타는 곳 bookarmk");
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
     System.out.println(createdAt);
 
@@ -425,8 +425,7 @@ public class QueryRepository {
         }
       }
 
-     // Collections.sort(resultArray);
-
+      // Collections.sort(resultArray);
 
       for (RefrenceDto refrenceDto : resultArray) {
         filteredPostList.add(refrenceDto.getPost());
@@ -448,34 +447,35 @@ public class QueryRepository {
 
     }
 
-
     // postIdxList는 Infrastructure 를 가지고 있는 DB의 post_postIndex 의 리스트
     // postInxList에서 태그 목록을 뽑자
 
     List<String> tagListforPostIdexList = new ArrayList<>();
-    for(Long postIdx : postIdxList){
-      if(!tagListforPostIdexList.contains(tagRepository.findAllByPost_postIdx(
-          Math.toIntExact(postIdx)).get(0).getPostTagName())){
-        tagListforPostIdexList.add(tagRepository.findAllByPost_postIdx(Math.toIntExact(postIdx)).get(0).getPostTagName());
+    for (Long postIdx : postIdxList) {
+      if (!tagListforPostIdexList.contains(tagRepository.findAllByPost_postIdx(
+          Math.toIntExact(postIdx)).get(0).getPostTagName())) {
+        tagListforPostIdexList.add(
+            tagRepository.findAllByPost_postIdx(Math.toIntExact(postIdx)).get(0).getPostTagName());
       }
     }
 
-    for(String str : tagListforPostIdexList){
+    for (String str : tagListforPostIdexList) {
       System.out.println(str);
     }
 
-    for(Post post : getList){
+    for (Post post : getList) {
 
-        List<PostTag> postTagList = findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
+      List<PostTag> postTagList = findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
 
-        for(PostTag postTag : postTagList){
-          if(tagListforPostIdexList.contains(postTag.getPostTagName())&&!post.getUserIdx().equals(userIdx)&& post.getPostIdx() < id){
-            RefrenceDto refrenceDto = new RefrenceDto();
-            refrenceDto.setPost(post);
-            refrenceDto.setRefrence(0);
-            resultArray.add(refrenceDto);
-          }
+      for (PostTag postTag : postTagList) {
+        if (tagListforPostIdexList.contains(postTag.getPostTagName()) && !post.getUserIdx()
+            .equals(userIdx) && post.getPostIdx() < id) {
+          RefrenceDto refrenceDto = new RefrenceDto();
+          refrenceDto.setPost(post);
+          refrenceDto.setRefrence(0);
+          resultArray.add(refrenceDto);
         }
+      }
     }
     /*
     for (Post post : getList) {

@@ -56,7 +56,7 @@ public class PostService {
     return postRepository.getPostByPostUrlAndUserIdx(url, userIdx) != null;
   }
 
-  public Post isPostTitleExists(String title){
+  public Post isPostTitleExists(String title) {
     return postRepository.findByPostTitle(title);
   }
 
@@ -243,7 +243,8 @@ public class PostService {
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
       //List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
-      List<PostTag> postTagList = queryRepository.findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
+      List<PostTag> postTagList = queryRepository.findAllTagsByPost(
+          Integer.parseInt(post.getPostMemo()));
 
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
@@ -287,7 +288,8 @@ public class PostService {
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
       //List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
-      List<PostTag> postTagList = queryRepository.findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
+      List<PostTag> postTagList = queryRepository.findAllTagsByPost(
+          Integer.parseInt(post.getPostMemo()));
 
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
@@ -327,7 +329,8 @@ public class PostService {
     for (Post post : productList.getValues()) {
       List<String> forTestString = new ArrayList<>();
       //List<PostTag> postTagList = queryRepository.findAllTagsByPost(post.getPostIdx().intValue());
-      List<PostTag> postTagList = queryRepository.findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
+      List<PostTag> postTagList = queryRepository.findAllTagsByPost(
+          Integer.parseInt(post.getPostMemo()));
 
       for (PostTag postTag : postTagList) {
         forTestString.add(postTag.getPostTagName());
@@ -425,13 +428,13 @@ public class PostService {
 
     // post 카테고리 저장
 
-    if(isExist) {
+    if (isExist) {
       System.out.println("debug1");
       Post byPostTitle = postRepository.getFirstByPostTitle(title);
       List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(
           Math.toIntExact(byPostTitle.getPostIdx()));
 
-      for(PostTag postTag : postTagList){
+      for (PostTag postTag : postTagList) {
         PostTag saveTag = PostTag.builder()
             .postTagName(postTag.getPostTagName())
             .post_postIdx(Math.toIntExact(savedPost.getPostIdx()))
@@ -439,7 +442,7 @@ public class PostService {
         tagRepository.save(saveTag);
       }
     }
-    if(!isExist){
+    if (!isExist) {
       System.out.println("debug2");
 
       CrawlerReqeustDto crawlerReqeustDto = new CrawlerReqeustDto();

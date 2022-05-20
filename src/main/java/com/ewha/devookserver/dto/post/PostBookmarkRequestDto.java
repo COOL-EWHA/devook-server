@@ -28,6 +28,6 @@ public class PostBookmarkRequestDto {
     this.tags = tags;
     this.url = url;
     this.isBookmarked = isBookmarked;
-    this.value=value;
+    this.value = value;
   }
 }
