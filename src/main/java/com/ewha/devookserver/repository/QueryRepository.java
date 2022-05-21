@@ -55,7 +55,6 @@ public class QueryRepository {
         continue;
       }
 
-      //List<PostTag> postTagList = findAllTagsByPost(post.getPostIdx().intValue());
       List<PostTag> postTagList = findAllTagsByPost(Integer.parseInt(post.getPostMemo()));
 
       for (PostTag postTag : postTagList) {
@@ -109,17 +108,6 @@ public class QueryRepository {
     }
     System.out.println("태그가 없을때, question이 주어진 경우+fucntion1");
 
-    /*
-    List<Post> getList=postRepository.findAll();
-    List<Post> filteredPostList = new ArrayList<>();
-
-    for(Post post : getList){
-      if(post.getUserIdx().equals(userIdx)){
-        filteredPostList.add(post);
-      }
-    }
-
-     */
 
     List<Post> filteredPostList = userBookmarkService.bookmarkExcludeUserPosts(
         Long.valueOf(userIdx));
@@ -216,7 +204,6 @@ public class QueryRepository {
     List<Post> filteredPostList = new ArrayList<>();
 
     for (Post post : getList) {
-      // TODO 여기 참고
       if (postIdxList.contains(post.getPostIdx()) && post.getPostIdx() < id && post.getCreatedAt()
           .before(createdAt)) {
         filteredPostList.add(post);
@@ -275,7 +262,7 @@ public class QueryRepository {
     List<Post> testFilteredPostList = recommendService.getRandomPost(postIndex);
     for (Post post : resultList) {
       if (!testFilteredPostList.stream()
-          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))) {
+          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl())) && !postRepository.existsByPostIdxAndUserIdx(postIndex, userIdx)) {
         testFilteredPostList.add(post);
       }
     }
@@ -477,43 +464,7 @@ public class QueryRepository {
         }
       }
     }
-    /*
-    for (Post post : getList) {
-      count = 0;
 
-      //List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
-      //    post.getPostIdx().intValue());
-
-
-      List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
-          Integer.parseInt(post.getPostMemo())
-      );
-
-
-
-
-
-
-      if (postIdxList.contains(post.getPostIdx()) && !post.getUserIdx().equals(userIdx)
-          && post.getPostIdx() < id) {
-
-        for (PostTag postTag : eachPostTagList) {
-          for (String string : requiredTagList) {
-            if (postTag.getPostTagName().equals(string)) {
-              count++;
-            }
-          }
-        }
-
-          RefrenceDto refrenceDto = new RefrenceDto();
-          refrenceDto.setPost(post);
-          refrenceDto.setRefrence(count);
-          resultArray.add(refrenceDto);
-
-      }
-    }
-
-     */
     Collections.sort(resultArray);
 
     for (RefrenceDto refrenceDto : resultArray) {
