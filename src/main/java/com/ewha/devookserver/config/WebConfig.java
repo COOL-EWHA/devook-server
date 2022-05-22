@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addMapping("/**")
         .allowedHeaders("*")
         .allowedOrigins("https://www.devook.com",
-            "chrome-extension://idpngjhpongbmmcnpkppkaaaaeanhfpb", "https://appleid.apple.com")
+            "chrome-extension://idpngjhpongbmmcnpkppkaaaaeanhfpb", "https://appleid.apple.com","https://pr-101.devook.com")
         .exposedHeaders("Set-Cookie")
         .allowedMethods("POST", "GET", "PUT", "DELETE", "PATCH")
         .allowCredentials(true)
