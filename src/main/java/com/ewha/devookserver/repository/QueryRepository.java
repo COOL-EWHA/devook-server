@@ -108,7 +108,6 @@ public class QueryRepository {
     }
     System.out.println("태그가 없을때, question이 주어진 경우+fucntion1");
 
-
     List<Post> filteredPostList = userBookmarkService.bookmarkExcludeUserPosts(
         Long.valueOf(userIdx));
 
@@ -262,7 +261,8 @@ public class QueryRepository {
     List<Post> testFilteredPostList = recommendService.getRandomPost(postIndex);
     for (Post post : resultList) {
       if (!testFilteredPostList.stream()
-          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl())) && !postRepository.existsByPostIdxAndUserIdx(postIndex, userIdx)) {
+          .anyMatch(s -> s.getPostUrl().equals(post.getPostUrl()))
+          && !postRepository.existsByPostIdxAndUserIdx(postIndex, userIdx)) {
         testFilteredPostList.add(post);
       }
     }

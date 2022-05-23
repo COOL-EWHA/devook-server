@@ -24,7 +24,6 @@ public class UserRecommService {
   private final TagRepository tagRepository;
 
 
-  // userTagList TODO
   public List<String> getPostUserTagList(String userIdx) {
     List<Post> returnPost = postRepository.findAllByUserIdx(userIdx);
 
