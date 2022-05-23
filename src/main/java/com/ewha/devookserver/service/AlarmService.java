@@ -4,6 +4,7 @@ import com.ewha.devookserver.domain.post.Alarm;
 import com.ewha.devookserver.domain.post.Notification;
 import com.ewha.devookserver.domain.post.Post;
 import com.ewha.devookserver.domain.post.UserBookmark;
+import com.ewha.devookserver.dto.device.OnesignalAlarmRequestDto;
 import com.ewha.devookserver.dto.post.AlarmResponseDto;
 import com.ewha.devookserver.repository.AlarmRepository;
 import com.ewha.devookserver.repository.PostRepository;
@@ -17,7 +18,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +32,12 @@ public class AlarmService {
   private final UserBookmarkRepository userBookmarkRepository;
   private final NotificationService notificationService;
   private final AlarmRepository alarmRepository;
+
+  WebClient usuageWebClient = WebClient.create(
+      "https://chrome.devook.com/send/usuage");
+
+  WebClient titleWebClient = WebClient.create(
+      "https://chrome.devook.com/send/title");
 
   public void saveTitlePost(Long userIdx) {
     List<Post> postList = postRepository.findAllByUserIdx(String.valueOf(userIdx));
@@ -72,6 +83,8 @@ public class AlarmService {
           .postIdx(post.getPostIdx())
           .build();
 
+      sendTitleMessage("\uD83D\uDD14 오늘은 '" + title + "' 의 읽기 마감 기한이에요. 서둘러 읽어주세요! \uD83D\uDE09",
+          String.valueOf(userIdx));
       alarmRepository.save(alarm);
     }
   }
@@ -130,6 +143,8 @@ public class AlarmService {
           .message("읽지 않은 북마크가 " + userIsReadCount + "개 있어요. 추가한 글을 읽어보세요!\uD83E\uDD29")
           .build();
 
+      sendTitleMessage("읽지 않은 북마크가 " + userIsReadCount + "개 있어요. 추가한 글을 읽어보세요!\uD83E\uDD29",
+          String.valueOf(userIdx));
       alarmRepository.save(alarm);
 
     }
@@ -166,5 +181,37 @@ public class AlarmService {
     }
     Collections.sort(responseDtos);
     return responseDtos.stream().limit(limit).collect(Collectors.toList());
+  }
+
+  public void sendUsuageMessage(String message, String userIdx)
+  {
+    OnesignalAlarmRequestDto alarmRequestDto = new OnesignalAlarmRequestDto();
+    alarmRequestDto.setMessage(message);
+    alarmRequestDto.setUserIdx(userIdx);
+
+    String stringValue = alarmRequestDto.toString();
+    System.out.println(stringValue);
+
+    usuageWebClient.post()
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .body(BodyInserters.fromValue(stringValue))
+        .retrieve()
+        .bodyToMono(String.class).subscribe(ss->System.out.println(ss));
+  }
+
+  public void sendTitleMessage(String message, String userIdx)
+  {
+    OnesignalAlarmRequestDto alarmRequestDto = new OnesignalAlarmRequestDto();
+    alarmRequestDto.setMessage(message);
+    alarmRequestDto.setUserIdx(userIdx);
+
+    String stringValue = alarmRequestDto.toString();
+    System.out.println(stringValue);
+
+    titleWebClient.post()
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .body(BodyInserters.fromValue(stringValue))
+        .retrieve()
+        .bodyToMono(String.class).subscribe(ss->System.out.println(ss));
   }
 }
