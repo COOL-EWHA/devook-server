@@ -251,7 +251,8 @@ public class QueryRepository {
     Collections.sort(refrenceDtos);
 
     for (RefrenceDto refrenceDto : refrenceDtos) {
-      if (refrenceDto.getPost().getPostIdx() < id && !Objects.equals(
+      //if (refrenceDto.getPost().getPostIdx() < id && !Objects.equals(
+      if (!Objects.equals(
           refrenceDto.getPost().getUserIdx(),
           userIdx)) {
         resultList.add(refrenceDto.getPost());
