@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class OnesignalAlarmRequestDto {
+
   public String message;
   public String userIdx;
 }

@@ -183,8 +183,7 @@ public class AlarmService {
     return responseDtos.stream().limit(limit).collect(Collectors.toList());
   }
 
-  public void sendUsuageMessage(String message, String userIdx)
-  {
+  public void sendUsuageMessage(String message, String userIdx) {
     OnesignalAlarmRequestDto alarmRequestDto = new OnesignalAlarmRequestDto();
     alarmRequestDto.setMessage(message);
     alarmRequestDto.setUserIdx(userIdx);
@@ -196,11 +195,10 @@ public class AlarmService {
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .body(BodyInserters.fromValue(stringValue))
         .retrieve()
-        .bodyToMono(String.class).subscribe(ss->System.out.println(ss));
+        .bodyToMono(String.class).subscribe(ss -> System.out.println(ss));
   }
 
-  public void sendTitleMessage(String message, String userIdx)
-  {
+  public void sendTitleMessage(String message, String userIdx) {
     OnesignalAlarmRequestDto alarmRequestDto = new OnesignalAlarmRequestDto();
     alarmRequestDto.setMessage(message);
     alarmRequestDto.setUserIdx(userIdx);
@@ -212,6 +210,6 @@ public class AlarmService {
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .body(BodyInserters.fromValue(stringValue))
         .retrieve()
-        .bodyToMono(String.class).subscribe(ss->System.out.println(ss));
+        .bodyToMono(String.class).subscribe(ss -> System.out.println(ss));
   }
 }
