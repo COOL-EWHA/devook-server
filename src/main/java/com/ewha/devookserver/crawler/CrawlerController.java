@@ -13,9 +13,6 @@ public class CrawlerController {
     ObjectMapper mapper = new ObjectMapper();
     RequestListDto[] requestListDtoList = mapper.readValue(requestListDto, RequestListDto[].class);
 
-    for (RequestListDto requestListDto1 : requestListDtoList) {
-      System.out.println(requestListDto1.getTitle());
-    }
 
   }
 }

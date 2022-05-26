@@ -27,7 +27,6 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +53,6 @@ public class AppleService {
       member = memberRepository.findMemberByOauthId(userIdFromApple(idToken).get("sub"));
       refreshToken = member.getRefreshToken();
     } else {
-      System.out.println("새로운 애플 유저");
       refreshToken = jwtTokenProvider.createRefreshToken();
       String name;
       if (jsonNameStr.equals(null)) {
@@ -145,10 +143,6 @@ public class AppleService {
         avaliableObject = appleObject;
         break;
       }
-    }
-
-    if (ObjectUtils.isEmpty(avaliableObject)) {
-      System.out.println("error");
     }
 
     PublicKey publicKey = this.getPublicKey(avaliableObject);

@@ -108,14 +108,9 @@ public class RecommendService {
     return resultArray;
   }
 
-  /*
-    @GetMapping("/random/post")
-    public ResponseEntity<?> randomReturn(@RequestHeader(value = "Authorization") Long postIndex) {
-   */
   public List<Post> getRandomPost(Long postIndex)
       throws JsonProcessingException {
 
-    List<Post> newArray = new ArrayList<>();
     JsonNode result = postClientPost.get()
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .header("Authorization", String.valueOf(postIndex))
@@ -150,7 +145,6 @@ public class RecommendService {
   public List<Post> getRandom(String userIdx)
       throws JsonProcessingException {
 
-    List<Post> newArray = new ArrayList<>();
     JsonNode result = postClient.get()
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .header("Authorization", userIdx)

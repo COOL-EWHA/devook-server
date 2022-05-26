@@ -62,8 +62,7 @@ public class CrawlerService {
     ObjectMapper objectMapper = new ObjectMapper();
     if (result != null) {
       String returnValue = objectMapper.writeValueAsString(result);
-      List<String> categoryList = objectMapper.readValue(returnValue, List.class);
-      return categoryList;
+      return objectMapper.readValue(returnValue, List.class);
     }
     return null;
   }
@@ -87,8 +86,7 @@ public class CrawlerService {
     ObjectMapper objectMapper = new ObjectMapper();
     if (result != null) {
       String returnValue = objectMapper.writeValueAsString(result);
-      List<String> categoryUrlList = objectMapper.readValue(returnValue, List.class);
-      return categoryUrlList;
+      return objectMapper.readValue(returnValue, List.class);
     }
     return null;
   }

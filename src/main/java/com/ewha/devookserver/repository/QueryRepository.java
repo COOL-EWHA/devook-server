@@ -13,7 +13,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -37,20 +36,12 @@ public class QueryRepository {
   QPostTag qPostTag = new QPostTag("p");
 
   public List<Post> searchEngine(List<Post> postList, String question) {
-    System.out.println("searchEngine for  " + question);
     List<Post> searchResult = new ArrayList<>();
 
     for (Post post : postList) {
 
       if (post.getPostTitle().toLowerCase().contains(question.toLowerCase())
           || post.getPostDescription().toLowerCase().contains(question.toLowerCase())) {
-        System.out.println(post.getPostIdx());
-        if (post.getPostTitle().contains(question)) {
-          System.out.println("title 일치" + question);
-        }
-        if (post.getPostDescription().toLowerCase().contains(question.toLowerCase())) {
-          System.out.println("description 일치" + question);
-        }
         searchResult.add(post);
         continue;
       }
@@ -59,7 +50,6 @@ public class QueryRepository {
 
       for (PostTag postTag : postTagList) {
         if (postTag.getPostTagName().equalsIgnoreCase(question)) {
-          System.out.println(postTag.getPost_postIdx() + "태그에서 일치");
           searchResult.add(post);
           break;
         }
@@ -70,16 +60,15 @@ public class QueryRepository {
     for (Post post : searchResult) {
       exampleResult.add(post.getPostIdx());
     }
-    System.out.println(exampleResult);
 
     return searchResult;
   }
 
 
-  public List<PostTag> findAllTagsByPost(int post_postIdx) {
+  public List<PostTag> findAllTagsByPost(int postIdx) {
 
     return jpaQueryFactory.selectFrom(qPostTag)
-        .where(qPostTag.post_postIdx.eq(post_postIdx))
+        .where(qPostTag.post_postIdx.eq(postIdx))
         .fetch();
   }
 
@@ -100,13 +89,11 @@ public class QueryRepository {
   public List<Post> findAllByPostIdxFunction1(Pageable page, String userIdx, String question) {
 
     if (question == null) {
-      System.out.println("비어있으면 그냥 전체 리턴");
 
       List<Post> postList = userBookmarkService.bookmarkExcludeUserPosts(Long.valueOf(userIdx));
       Collections.sort(postList);
       return postList;
     }
-    System.out.println("태그가 없을때, question이 주어진 경우+fucntion1");
 
     List<Post> filteredPostList = userBookmarkService.bookmarkExcludeUserPosts(
         Long.valueOf(userIdx));
@@ -121,7 +108,6 @@ public class QueryRepository {
       String question) {
 
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
-    System.out.println(createdAt);
 
     if (postRepository.existsByPostIdxAndUserIdx(id, userIdx)) {
       createdAt = postRepository.findByPostIdxAndUserIdx(id, userIdx).getCreatedAt();
@@ -133,7 +119,6 @@ public class QueryRepository {
     }
 
     if (question == null) {
-      System.out.println("여기?");
 
       List<Post> postList = userBookmarkService.bookmarkExcludeUserPosts(Long.valueOf(userIdx));
       List<Post> returnList = new ArrayList<>();
@@ -146,7 +131,6 @@ public class QueryRepository {
       return returnList.stream().collect(Collectors.toList());
 
     }
-    System.out.println("태그가 없을때, question이 주어진 경우+function2");
 
     List<Post> getList = userBookmarkService.bookmarkExcludeUserPosts(Long.valueOf(userIdx));
 
@@ -180,15 +164,12 @@ public class QueryRepository {
     }
 
     Collections.sort(filteredPostList);
-    System.out.println(Arrays.stream(filteredPostList.toArray()).iterator());
     return filteredPostList.stream().collect(Collectors.toList());
   }
 
   public List<Post> tagFiltering2(List<Long> postIdxList, Long id, String userIdx,
       String question) {
-    System.out.println("태그 필터링 타는 곳 bookarmk");
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
-    System.out.println(createdAt);
 
     if (postRepository.existsByPostIdxAndUserIdx(id, userIdx)) {
       createdAt = postRepository.findByPostIdxAndUserIdx(id, userIdx).getCreatedAt();
@@ -221,7 +202,6 @@ public class QueryRepository {
   public List<Post> recommendPost1(Pageable page, List<RefrenceDto> refrenceDtos, int limit,
       String userIdx) {
 
-    System.out.println("recommendPost1");
     List<Post> resultList = new ArrayList<>();
     Collections.sort(refrenceDtos);
 
@@ -244,7 +224,6 @@ public class QueryRepository {
 
   public List<Post> recommendPost2(Long id, Pageable page, List<RefrenceDto> refrenceDtos,
       int limit, String userIdx, Long postIndex) throws JsonProcessingException {
-    System.out.println("recommendPost2");
 
     List<Post> resultList = new ArrayList<>();
 
@@ -274,7 +253,6 @@ public class QueryRepository {
   public List<Post> tagFilteringRecommendUser1(List<Long> postIdxList, String userIdx,
       String question, boolean isUser, List<String> requiredTagList, int limit) {
 
-    System.out.println("들어왔다.");
     List<Post> getList = postRepository.findAll();
     List<Post> filteredPostList = new ArrayList<>();
     List<RefrenceDto> resultArray = new ArrayList<>();
@@ -325,7 +303,6 @@ public class QueryRepository {
       List<PostTag> eachPostTagList = tagRepository.findAllByPost_postIdx(
           post.getPostIdx().intValue());
       if (postIdxList.contains(post.getPostIdx()) && !post.getUserIdx().equals(userIdx)) {
-        // filteredPostList.add(post);
         for (PostTag postTag : eachPostTagList) {
           for (String string : requiredTagList) {
             if (postTag.getPostTagName().equals(string)) {
@@ -356,8 +333,6 @@ public class QueryRepository {
   public List<Post> tagFilteringRecommendUser2(List<Long> postIdxList, Long id, String userIdx,
       String question, boolean isUser, List<String> requiredTagList, int limit)
       throws JsonProcessingException {
-    System.out.println("들어왔다22.");
-    //TODO
     Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
     List<Post> getList = recommendService.getRandom(userIdx);
@@ -366,14 +341,9 @@ public class QueryRepository {
     List<RefrenceDto> resultArray = new ArrayList<>();
     List<String> userPostTag = userRecommService.getPostUserTagList(userIdx);
 
-    for (String string : userPostTag) {
-      System.out.println(string);
-    }
-
     int count;
 
     if (requiredTagList.isEmpty()) {
-      System.out.println("requiredTagList Empty");
       for (Post post : getList) {
         count = 0;
 
@@ -444,10 +414,6 @@ public class QueryRepository {
         tagListforPostIdexList.add(
             tagRepository.findAllByPost_postIdx(Math.toIntExact(postIdx)).get(0).getPostTagName());
       }
-    }
-
-    for (String str : tagListforPostIdexList) {
-      System.out.println(str);
     }
 
     for (Post post : getList) {

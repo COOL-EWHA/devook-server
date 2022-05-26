@@ -16,27 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    /*
-    @Value("${jwt.access-token.expire-length:10000}")
-    private long accessTokenValidityInMilliseconds;
-    @Value("${jwt.refresh-token.expire-length:10000}")
-    private long refreshTokenValidityInMilliseconds;
-    @Value("${jwt.token.secret-key:secret-key}")
-    private String secretKey;
-     */
-
-  // private long accessTokenValidityInMilliseconds=1000 * 60 * 60 * 2;
-
-
-  // 테스트용으로 1분으로 설정해보자
   private final long accessTokenValidityInMilliseconds = 1000 * 60 * 60 * 2;
 
-  // 무제한으로 설정
   private final long refreshTokenValidityInMilliseconds = 1000 * 60 * 60 * 24 * 14 * 100;
 
   @Value("${jwt.token.secret-key:secret-key}")
   private String secretKey;
-
 
   public String createAccessToken(String payload) {
     return createToken(payload, accessTokenValidityInMilliseconds);

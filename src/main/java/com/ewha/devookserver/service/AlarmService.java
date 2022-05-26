@@ -189,7 +189,6 @@ public class AlarmService {
     alarmRequestDto.setUserIdx(userIdx);
 
     String stringValue = alarmRequestDto.toString();
-    System.out.println(stringValue);
 
     usuageWebClient.post()
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -204,7 +203,6 @@ public class AlarmService {
     alarmRequestDto.setUserIdx(userIdx);
 
     String stringValue = alarmRequestDto.toString();
-    System.out.println(stringValue);
 
     titleWebClient.post()
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

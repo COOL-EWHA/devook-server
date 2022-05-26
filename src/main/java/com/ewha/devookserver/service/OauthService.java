@@ -87,6 +87,7 @@ public class OauthService {
   public boolean isUserExist(String accessToken) {
     String exampleResult = jwtTokenProvider.getPayload(accessToken);
     Long convertedIdx = Long.valueOf(exampleResult);
+    System.out.println(convertedIdx);
     return memberRepository.existsById(convertedIdx);
   }
 

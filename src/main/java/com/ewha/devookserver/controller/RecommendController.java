@@ -125,7 +125,6 @@ public class RecommendController {
             (listDtos));
       }
     }
-    System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       //유저 추천글 전체 목록 GET (분기)
       if (bookmarkId == null && postId == null) {
@@ -220,13 +219,11 @@ public class RecommendController {
       List<String> finalResponseString = postService.getPostTagList();
       return ResponseEntity.status(200).body(finalResponseString);
     }
-    System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       List<String> finalResponseString = postService.getPostTagList();
       return ResponseEntity.status(200).body(finalResponseString);
     }    // 유저 예외처리 완료
     String userIdx = oauthService.getUserIdx(accessToken);
-    System.out.println(userIdx);
     // 1. userIdx와 일치하는 post
 
     // List<String> finalResponseString = postService.getPostTagList(userIdx);
@@ -307,7 +304,6 @@ public class RecommendController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
-    System.out.println(oauthService.isUserExist(accessToken));
     if (!oauthService.isUserExist(accessToken)) {
       if (postRepository.existsByPostIdx((long) bookmarkId)) {
         Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);

@@ -243,8 +243,6 @@ public class QueryService {
         })
         .block();
 
-    System.out.println(result);
-
     ObjectMapper objectMapper = new ObjectMapper();
     if (result != null) {
       String returnValue = objectMapper.writeValueAsString(result);
