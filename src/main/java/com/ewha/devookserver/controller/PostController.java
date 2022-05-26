@@ -58,7 +58,6 @@ public class PostController {
   private final UserBookmarkService userBookmarkService;
   private final TagRepository tagRepository;
 
-  // @Scheduled(cron = "00 00 6 * * *")
   @GetMapping("/crawler")
   public void addCrawlerResult() throws JsonProcessingException, InterruptedException {
     crawlerService.getAICrawler();
@@ -73,16 +72,10 @@ public class PostController {
       String accessToken = tokenGet.split(" ")[1];
       List<String> forTestString = new ArrayList<>();
 
-      /*
-      forTestString.add("태그1");
-      forTestString.add("태그2");
-
-       */
       if (Objects.equals(accessToken, "undefined")) {
         return ResponseEntity.status(401).body("1");
       }
 
-      // 존재하지 않는 유저
       if (!oauthService.isUserExist(accessToken)) {
         return ResponseEntity.status(401).body("2");
       }
@@ -264,30 +257,18 @@ public class PostController {
     }
     if (!oauthService.isUserExist(accessToken)) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }    // 유저 예외처리 완료
+    }
     String userIdx = oauthService.getUserIdx(accessToken);
 
     if (postRepository.existsByPostIdx((long) bookmarkId)) {
 
-      // case 1 postRepository의 해당 userPost가 useridex와 일치할때
-      // case 2 그렇지 않을때
-
       Post userPost = postRepository.getPostByPostIdx((long) bookmarkId);
 
-      // case1
       if (userPost.getUserIdx().equals(userIdx)) {
 
         List<String> tagList = postService.getEachPostTagList(bookmarkId);
-        /*
-        if (tagList.size() == 0) {
-          tagList.add("태그1");
-          tagList.add("태그2");
-        }
-
-         */
 
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        // Date dBconvertedTime = userPost.getCreatedAt();
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(userPost.getCreatedAt());
@@ -305,7 +286,7 @@ public class PostController {
             convertedDueDate = null;
           } else {
             convertedDueDate = notification.getDueDate().format(
-                DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"));
           }
         }
 
@@ -318,24 +299,17 @@ public class PostController {
             .url(userPost.getPostUrl())
             .createdAt(dBCreatedAt)
             .memo(userPost.getPostMemo())
-            .isRead(userPost.getIsRead()) //isRead, dueDate 추가
+            .isRead(userPost.getIsRead())
             .dueDate(convertedDueDate)
             .build();
 
         return ResponseEntity.status(200).body(eachPostResponseDto);
-      } else { //case2
+      } else {
 
         UserBookmark userBookmark = userBookmarkRepository.findByPost_postIdxAndUser_userIdx(
             userPost.getPostIdx(), Long.valueOf(userIdx));
 
         List<String> tagList = postService.getEachPostTagList(bookmarkId);
-        /*
-        if (tagList.size() == 0) {
-          tagList.add("태그1");
-          tagList.add("태그2");
-        }
-
-         */
 
         SimpleDateFormat formatISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         Calendar cal = Calendar.getInstance();
@@ -354,7 +328,7 @@ public class PostController {
             convertedDueDate = null;
           } else {
             convertedDueDate = notification.getDueDate().format(
-                DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"));
           }
         }
 
@@ -412,9 +386,9 @@ public class PostController {
         notificationService.deleteDueDate((long) bookmarkId, Long.valueOf(userIdx));
       }
       if (dueDateGet != null && dueDateGet != "") {
-        String dueDateSplittedYear = dueDateGet.split("\\.")[0];
-        String dueDateSplittedMonth = dueDateGet.split("\\.")[1];
-        String dueDateSplittedDate = dueDateGet.split("\\.")[2];
+        String dueDateSplittedYear = dueDateGet.split("/")[0];
+        String dueDateSplittedMonth = dueDateGet.split("/")[1];
+        String dueDateSplittedDate = dueDateGet.split("/")[2];
 
         String dueDateIntegration = dueDateSplittedYear.concat("-")
             .concat(dueDateSplittedMonth)

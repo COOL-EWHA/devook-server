@@ -195,7 +195,7 @@ public class PostService {
           convertedDueDate = null;
         } else {
           convertedDueDate = notification.getDueDate().format(
-              DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+              DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         }
       }
 
@@ -421,7 +421,6 @@ public class PostService {
     // post 카테고리 저장
 
     if (isExist) {
-      System.out.println("debug1");
       Post byPostTitle = postRepository.getFirstByPostTitle(title);
       List<PostTag> postTagList = tagRepository.findAllByPost_postIdx(
           Math.toIntExact(byPostTitle.getPostIdx()));
@@ -435,7 +434,6 @@ public class PostService {
       }
     }
     if (!isExist) {
-      System.out.println("debug2");
 
       CrawlerReqeustDto crawlerReqeustDto = new CrawlerReqeustDto();
       crawlerReqeustDto.setTitle(post.getPostTitle());
@@ -494,8 +492,6 @@ public class PostService {
         })
         .block();
 
-    System.out.println(result);
-
     ObjectMapper objectMapper = new ObjectMapper();
     if (result != null) {
       String returnValue = objectMapper.writeValueAsString(result);
@@ -523,8 +519,6 @@ public class PostService {
           return null;
         })
         .block();
-
-    System.out.println(result);
 
     ObjectMapper objectMapper = new ObjectMapper();
     if (result != null) {
