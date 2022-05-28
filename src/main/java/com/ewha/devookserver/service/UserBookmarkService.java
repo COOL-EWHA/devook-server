@@ -6,6 +6,7 @@ import com.ewha.devookserver.repository.PostRepository;
 import com.ewha.devookserver.repository.UserBookmarkRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +69,7 @@ public class UserBookmarkService {
       count = 0;
       for (Post posts : finalResultList) {
 
-        if (post.getPostIdx() == posts.getPostIdx()) {
+        if (Objects.equals(post.getPostIdx(), posts.getPostIdx())) {
           count++;
         }
 
